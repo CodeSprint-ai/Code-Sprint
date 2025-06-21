@@ -7,6 +7,7 @@ export class RegisterCommand {
     @IsNotEmpty()
     name: string;
 
+    @IsNotEmpty()
     @MinLength(6)
     password: string;
 }

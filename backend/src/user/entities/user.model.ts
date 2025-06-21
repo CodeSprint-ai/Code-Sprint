@@ -1,12 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Document, HydratedDocument, Types } from 'mongoose';
+import { ProviderEnum } from 'src/auth/enum/ProviderEnum';
 
-export type UserDocument = User & Document;
-
+export interface IUser {
+    _id?: Types.ObjectId;
+    email: string;
+    name?: string;
+    password?: string;
+    isVerified?: boolean;
+    emailVerificationToken?: string;
+    passwordResetToken?: string | null;
+    passwordResetExpires?: Date | null;
+    provider: ProviderEnum;
+    refreshToken?: string | null;
+}
+export type UserDocument = HydratedDocument<User>;
 @Schema({ timestamps: true })
-export class User {
-    @Prop({ type: MongooseSchema.Types.ObjectId, auto: true })
-    _id: MongooseSchema.Types.ObjectId;
+export class User implements IUser {
+    // _id is automatically added by Mongoose
 
     @Prop({ unique: true, required: true })
     email: string;
@@ -29,11 +40,12 @@ export class User {
     @Prop({ type: Date, default: null })
     passwordResetExpires?: Date | null;
 
-    @Prop({ default: 'local' })
-    provider: 'local' | 'google' | 'github';
+    @Prop({ default: ProviderEnum.LOCAL })
+    provider: ProviderEnum;
 
     @Prop({ type: String, default: null })
     refreshToken?: string | null;
 }
+
 
 export const UserSchema = SchemaFactory.createForClass(User);

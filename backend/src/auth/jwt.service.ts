@@ -4,7 +4,7 @@ import { JwtService as NestJwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { TokensDto } from './dto/token.dto';
-import { Mongoose } from 'mongoose';
+import { Mongoose , Types } from 'mongoose';
 
 
 @Injectable()
@@ -14,7 +14,7 @@ export class JwtTokenService {
     private readonly config: ConfigService,
   ) {}
 
-  async generateTokens(userId: string, email: string): Promise<TokensDto> {
+  async generateTokens(userId: Types.ObjectId | String , email: string): Promise<TokensDto> {
     const payload = { sub: userId, email };
 
     const [accessToken, refreshToken] = await Promise.all([

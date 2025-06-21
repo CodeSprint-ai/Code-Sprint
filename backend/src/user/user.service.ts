@@ -1,85 +1,99 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { RegisterCommand } from 'src/auth/command/register.command';
-import { User, UserDocument } from './entities/user.model';
-import { InjectModel } from '@nestjs/mongoose';
-import { ClientSession, Model } from 'mongoose';
+import { IUser, UserDocument } from './entities/user.model';
+import { ClientSession, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { UnauthorizedException } from '@nestjs/common';
+import { ValidationFailedException } from 'src/common/exceptions/ValidationFailedException';
+import { UserRepository } from './user.repo';
+import { RequestContextService } from 'src/common/services/request-context.service';
+import { AppLogger } from 'src/common/services/logger.service';
+import { ProviderEnum } from 'src/auth/enum/ProviderEnum';
 
 @Injectable()
 export class UserService {
+    constructor(
+        private readonly userRepo: UserRepository,
+        private readonly context: RequestContextService,
+        private readonly logger: AppLogger,
+    ) { }
 
-    constructor(@InjectModel(User.name) private userModel: Model<User>) { }
-
-    async findById(userId: string) {
-        const user = await this.userModel.findById(userId);
-        if (!user) {
-            throw new UnauthorizedException('User not found');
-        }
-        return user;
-    }
-
-    async findByEmail(email: string) {
-        const user = await this.userModel.findOne({ email });
-        return user;
-    }
-
-    async createLocalUser(command: RegisterCommand , session?: ClientSession): Promise<UserDocument> {
+    async createLocalUser(command: RegisterCommand, session?: ClientSession): Promise<UserDocument> {
         const { email, password, name } = command;
 
-        // Check if email already exists
-        const existingUser = await this.userModel.findOne({ email });
+        this.logger.info(`Creating local user: ${email}`, UserService.name);
+
+        const existingUser = await this.userRepo.findByEmail(email);
         if (existingUser) {
-            throw new BadRequestException('Email already registered');
+            this.logger.warn(`Email already exists: ${email}`, UserService.name);
+            throw new ValidationFailedException('Email already registered');
         }
 
-        // Validate password strength (optional)
         if (password.length < 6) {
-            throw new BadRequestException('Password must be at least 6 characters long');
+            this.logger.warn(`Weak password attempted for email: ${email}`, UserService.name);
+            throw new ValidationFailedException('Password must be at least 6 characters long');
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create user
-        const user = new this.userModel({
-            email,
-            name,
-            password: hashedPassword,
-            provider: 'local',
-        });
+        const user = await this.userRepo.create(
+            {
+                email,
+                name,
+                password: hashedPassword,
+                provider: ProviderEnum.LOCAL,
+            },
+            session,
+        );
 
-        return user.save({session});
+        this.logger.info(`User created successfully: ${user._id}`, UserService.name);
+        return user;
     }
 
-    async validateUser(email: string, password: string) {
-        const user = await this.userModel.findOne({ email });
+    async validateUser(email: string, password: string): Promise<UserDocument> {
+        this.logger.debug(`Validating user: ${email}`, UserService.name);
+
+        const user = await this.userRepo.findByEmail(email);
         if (!user || !(await bcrypt.compare(password, user.password))) {
+            this.logger.warn(`Invalid credentials for: ${email}`, UserService.name);
             throw new UnauthorizedException();
         }
+
+        this.logger.info(`User validated successfully: ${email}`, UserService.name);
         return user;
     }
 
-    async updateRefreshToken(userId: string, refreshToken: string) {
-        await this.userModel.findByIdAndUpdate(userId, { refreshToken });
+    async updateRefreshToken(userId: Types.ObjectId | string, refreshToken: string) {
+        this.logger.debug(`Updating refresh token for: ${userId}`, UserService.name);
+        await this.userRepo.update(userId, { refreshToken });
     }
 
-    async upsertOAuthUser(oauthPayload: { email: string; name: string; provider: string }) {
-        let user = await this.userModel.findOne({ email: oauthPayload.email });
+    async upsertOAuthUser(oauthPayload: { email: string; name: string; provider: ProviderEnum }) {
+        this.logger.info(`Upserting OAuth user: ${oauthPayload.email}`, UserService.name);
+
+        let user = await this.userRepo.findByEmail(oauthPayload.email);
         if (!user) {
-            user = new this.userModel({ ...oauthPayload });
-            await user.save();
+            user = await this.userRepo.create({ ...oauthPayload });
+            this.logger.info(`OAuth user created: ${user.email}`, UserService.name);
         }
+
         return user;
     }
 
-    async createOAuthUser(profile: { email: string; name: string; provider: string }) {
-        const user = new this.userModel({
-            email: profile.email,
-            name: profile.name,
-            provider: profile.provider,
-        });
-        return user.save();
+    async createOAuthUser(profile: { email: string; name: string; provider: ProviderEnum }) {
+        this.logger.info(`Creating new OAuth user: ${profile.email}`, UserService.name);
+        return this.userRepo.create({ ...profile });
     }
 
+    async getLoggedInUser() {
+        const user = this.context.getUser();
+
+        if (!user) {
+            this.logger.warn('Attempted to fetch logged-in user but none found in context', UserService.name);
+            throw new UnauthorizedException('User is not authenticated');
+        }
+
+        this.logger.debug(`Logged-in user: ${user.email || user._id}`, UserService.name);
+        return user;
+    }
 }
