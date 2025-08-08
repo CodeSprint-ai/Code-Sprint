@@ -5,7 +5,6 @@ export class UserDto {
   email: string;
   name: string;
 
-
   public static toDto(user: UserDocument): UserDto {
     return {
       userId: user._id.toString(),

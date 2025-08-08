@@ -1,26 +1,28 @@
 // app/dashboard/page.tsx
-"use client";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import api from "../../lib/axios";
-import { useEffect, useState } from "react";
+'use client';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/redux/store';
+import api from '@/lib/axios';
+import { logout } from '@/redux/slices/authSlice';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
-export default function DashboardPage() {
-  const user = useSelector((s: RootState) => s.auth.user);
-  const [data, setData] = useState<any>(null);
+export default function Dashboard() {
+  const { user } = useSelector((s: RootState) => s.auth);
+  const [profile, setProfile] = useState<any>(null);
+  const dispatch = useDispatch();
 
-//   useEffect(() => {
-//     api
-//       .get("/users/me")
-//       .then((r) => setData(r.data))
-//       .catch(() => (window.location.href = "/login"));
-//   }, []);
+  // useEffect(() => {
+  //   api.get('/users/me').then(r => setProfile(r.data)).catch(() => dispatch(logout()));
+  // }, [dispatch]);
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>Welcome, {user?.name}</p>
-      <div>Profile data: {JSON.stringify(user)}</div>
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <Button variant="destructive" onClick={() => dispatch(logout())}>Logout</Button>
+      </div>
+      <div>Welcome, {profile?.name || user?.name}</div>
     </div>
   );
 }

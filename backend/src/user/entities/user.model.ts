@@ -26,7 +26,7 @@ export class User implements IUser {
     name: string;
 
     @Prop()
-    password: string;
+    password?: string;
 
     @Prop({ default: false })
     isVerified: boolean;

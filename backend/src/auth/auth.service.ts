@@ -56,6 +56,7 @@ export class AuthService {
 
         this.logger.info(`Login successful for: ${cmd.email}`, AuthService.name);
         return AuthTokenDto.toDto(tokens, user);
+        // return AuthTokenDto()
     }
 
     async refreshTokens(cmd: RefreshTokenCommand): Promise<AuthTokenDto> {

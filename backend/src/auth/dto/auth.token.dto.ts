@@ -7,7 +7,6 @@ export class AuthTokenDto {
     accessToken: string;
     refreshToken: string;
 
-
     public static toDto(token: TokensDto, user: UserDocument): AuthTokenDto {
         return {
             user: UserDto.toDto(user),
