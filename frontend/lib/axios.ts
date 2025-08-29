@@ -37,7 +37,7 @@ api.interceptors.response.use(
             isRefreshing = true;
             const refresh = store.getState().auth.refreshToken;
             return api
-                .post('/auth/refresh', { refreshToken: refresh, userId: store.getState().auth.user?._id })
+                .post('/auth/refresh', { refreshToken: refresh, userUuid: store.getState().auth.user?._id })
                 .then(r => {
                     const data = r.data as { accessToken: string };
                     store.dispatch(login({ accessToken: data.accessToken, refreshToken: refresh!, user: store.getState().auth.user! }));

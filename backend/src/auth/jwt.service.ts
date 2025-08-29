@@ -14,8 +14,8 @@ export class JwtTokenService {
     private readonly config: ConfigService,
   ) {}
 
-  async generateTokens(userId: Types.ObjectId | String , email: string): Promise<TokensDto> {
-    const payload = { sub: userId, email };
+  async generateTokens(userUuid: Types.ObjectId | String , email: string): Promise<TokensDto> {
+    const payload = { sub: userUuid, email };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwt.signAsync(payload, {

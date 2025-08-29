@@ -1,34 +1,50 @@
 // src/common/base/base.repository.ts
-import { Model, ClientSession, FilterQuery, UpdateQuery, Document, Mongoose, Types, HydratedDocument } from 'mongoose';
+import {
+  Repository,
+  DeepPartial,
+  FindOptionsWhere,
+  ObjectLiteral,
+} from 'typeorm';
 
-export class BaseRepository<T extends Document> {
-    constructor(protected readonly model: Model<T>) { }
+import { _QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
-    async findAll(): Promise<T[]> {
-        return this.model.find().exec();
-    }
+export class BaseRepository<T extends ObjectLiteral> {
+  constructor(protected readonly repository: Repository<T>) {}
 
-    async findById(id: Types.ObjectId | String): Promise<T | null> {
-        return this.model.findById(id).exec();
-    }
+  async findAll(): Promise<T[]> {
+    return this.repository.find();
+  }
 
-    async findOne(filter: FilterQuery<T>): Promise<T | null> {
-        return this.model.findOne(filter).exec();
-    }
+  async findByUuid(uuid: string | number): Promise<T | null> {
+    return this.repository.findOne({
+      where: { uuid } as unknown as FindOptionsWhere<T>,
+    });
+  }
 
-    async create(data: Partial<T>, session?: ClientSession): Promise<T> {
-        return new this.model(data).save({ session });
-    }
+  async findOne(where: FindOptionsWhere<T>): Promise<T | null> {
+    return this.repository.findOne({ where });
+  }
 
-    async update(id: Types.ObjectId | String, update: UpdateQuery<T>, session?: ClientSession): Promise<T | null> {
-        return this.model.findByIdAndUpdate(id, update, { new: true, session }).exec();
-    }
+  async create(data: DeepPartial<T>): Promise<T> {
+    const entity = this.repository.create(data);
+    return this.repository.save(entity);
+  }
 
-    async delete(id: Types.ObjectId | String): Promise<T | null> {
-        return this.model.findByIdAndDelete(id).exec();
-    }
+  async update(
+    uuid: string | number,
+    update: _QueryDeepPartialEntity<T>,
+  ): Promise<T | null> {
+    await this.repository.update(uuid, update);
+    return this.findByUuid(uuid);
+  }
 
-    async exists(filter: FilterQuery<T>): Promise<boolean> {
-        return this.model.exists(filter).then((res) => !!res);
-    }
+  async delete(uuid: string | number): Promise<boolean> {
+    const result = await this.repository.delete(uuid);
+    return result.affected !== 0;
+  }
+
+  async exists(where: FindOptionsWhere<T>): Promise<boolean> {
+    const count = await this.repository.count({ where });
+    return count > 0;
+  }
 }

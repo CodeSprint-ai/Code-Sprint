@@ -11,7 +11,7 @@ import { GoogleStrategy } from './strategies/google.stategy';
 import { CommonModule } from 'src/common/common.module';
 
 @Module({
-  imports: [UserModule,CommonModule],
+  imports: [UserModule, CommonModule],
   providers: [
     AuthService,
     JwtTokenService,

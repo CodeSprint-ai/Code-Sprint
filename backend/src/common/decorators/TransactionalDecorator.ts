@@ -1,5 +1,4 @@
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection, ClientSession } from 'mongoose';
+import { DataSource, QueryRunner } from 'typeorm';
 
 export function Transactional() {
   return function (
@@ -10,24 +9,29 @@ export function Transactional() {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-      const connection: Connection = this.connection || this['connection'];
-      if (!connection) {
-        throw new Error('MongoDB connection not found in class instance');
+      // Ensure DataSource is available in class
+      const dataSource: DataSource = this.dataSource || this['dataSource'];
+      if (!dataSource) {
+        throw new Error('DataSource not found in class instance');
       }
 
-      const session: ClientSession = await connection.startSession();
-      session.startTransaction();
+      const queryRunner: QueryRunner = dataSource.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
 
       try {
-        // Inject session into args if needed by downstream
-        const result = await originalMethod.apply(this, [...args, session]);
-        await session.commitTransaction();
+        // Inject queryRunner into method args
+        const result = await originalMethod.apply(this, [
+          ...args,
+          queryRunner.manager,
+        ]);
+        await queryRunner.commitTransaction();
         return result;
       } catch (error) {
-        await session.abortTransaction();
+        await queryRunner.rollbackTransaction();
         throw error;
       } finally {
-        session.endSession();
+        await queryRunner.release();
       }
     };
 

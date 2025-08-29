@@ -9,7 +9,7 @@ export class ContextMiddleware implements NestMiddleware {
   constructor(private readonly contextService: RequestContextService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
-    const user = req.user; // set by JwtAuthGuard
+    const user = req.user || null; // set by JwtAuthGuard
     this.contextService.run(user, () => next());
   }
 }

@@ -1,15 +1,15 @@
-import { User, UserDocument } from "../entities/user.model";
+import { User } from "../entities/user.model";
 
 export class UserDto {
-  userId: string;
+  userUuid: string;
   email: string;
   name: string;
 
-  public static toDto(user: UserDocument): UserDto {
+  public static toDto(user: User): UserDto {
     return {
-      userId: user._id.toString(),
+      userUuid: user.uuid,
       email: user.email,
-      name: user.name,
+      name: user.name || "",
     };
   }
 

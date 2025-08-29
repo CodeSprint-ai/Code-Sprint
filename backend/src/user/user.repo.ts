@@ -1,21 +1,23 @@
-
+// src/modules/user/user.repository.ts
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { Model, Document } from 'mongoose';
-import { User, UserDocument } from './entities/user.model';
-import { BaseRepository } from 'src/common/base/BaseRepo';
-
+import { BaseRepository } from '../common/base/BaseRepo';
+import { User } from './entities/user.model';
 
 @Injectable()
-export class UserRepository extends BaseRepository<UserDocument> {
-    constructor(@InjectModel(User.name) userModel: Model<UserDocument>) {
-        super(userModel);
-    }
+export class UserRepository extends BaseRepository<User> {
+  constructor(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+  ) {
+    super(userRepo);
+  }
 
-    async findByEmail(email: string): Promise<UserDocument | null> {
-        return this.model.findOne({ email }).exec();
-    }
-
-    // Add other custom user-specific methods here
+  // You can add custom queries here if needed
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepo.findOne({ where: { email } });
+  }
 }

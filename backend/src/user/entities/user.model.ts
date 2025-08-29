@@ -1,51 +1,51 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument, Types } from 'mongoose';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ProviderEnum } from 'src/auth/enum/ProviderEnum';
+import { RoleEnum } from 'src/user/enum/RoleEnum';
 
-export interface IUser {
-    _id?: Types.ObjectId;
-    email: string;
-    name?: string;
-    password?: string;
-    isVerified?: boolean;
-    emailVerificationToken?: string;
-    passwordResetToken?: string | null;
-    passwordResetExpires?: Date | null;
-    provider: ProviderEnum;
-    refreshToken?: string | null;
+@Entity({ name: 'users' })
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  uuid: string;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column({ nullable: true })
+  name?: string;
+
+  @Column({ nullable: true })
+  password?: string;
+
+  @Column({ default: false })
+  isVerified: boolean;
+
+  @Column({ nullable: true })
+  emailVerificationToken?: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  passwordResetToken?: string | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  passwordResetExpires?: Date | null;
+
+  @Column({ type: 'enum', enum: ProviderEnum, default: ProviderEnum.LOCAL })
+  provider: ProviderEnum;
+
+  @Column({ type: 'varchar', nullable: true })
+  refreshToken?: string | null;
+
+  @Column({ type: 'enum', enum: RoleEnum, default: RoleEnum.USER })
+  role: RoleEnum;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
-export type UserDocument = HydratedDocument<User>;
-@Schema({ timestamps: true })
-export class User implements IUser {
-    // _id is automatically added by Mongoose
-
-    @Prop({ unique: true, required: true })
-    email: string;
-
-    @Prop()
-    name: string;
-
-    @Prop()
-    password?: string;
-
-    @Prop({ default: false })
-    isVerified: boolean;
-
-    @Prop()
-    emailVerificationToken?: string;
-
-    @Prop({ type: String, default: null })
-    passwordResetToken?: string | null;
-
-    @Prop({ type: Date, default: null })
-    passwordResetExpires?: Date | null;
-
-    @Prop({ default: ProviderEnum.LOCAL })
-    provider: ProviderEnum;
-
-    @Prop({ type: String, default: null })
-    refreshToken?: string | null;
-}
-
-
-export const UserSchema = SchemaFactory.createForClass(User);
