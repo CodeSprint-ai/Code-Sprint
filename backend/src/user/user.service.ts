@@ -23,8 +23,7 @@ export class UserService {
   ) {}
 
   async createLocalUser(
-    command: RegisterCommand,
-    session?: ClientSession,
+    command: RegisterCommand
   ): Promise<User> {
     const { email, password, name } = command;
 

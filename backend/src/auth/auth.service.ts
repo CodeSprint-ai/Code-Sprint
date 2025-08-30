@@ -34,15 +34,14 @@ export class AuthService {
 
   @Transactional()
   async register(
-    cmd: RegisterCommand,
-    session?: ClientSession,
+    cmd: RegisterCommand
   ): Promise<{ message: string }> {
     this.logger.info(
       `Registering user with email: ${cmd.email}`,
       AuthService.name,
     );
 
-    const user = await this.userService.createLocalUser(cmd, session);
+    const user = await this.userService.createLocalUser(cmd);
 
     const token = this.jwtService.sign(
       { userUuid: user.uuid },
@@ -74,7 +73,6 @@ export class AuthService {
 
     this.logger.info(`Login successful for: ${cmd.email}`, AuthService.name);
     return AuthTokenDto.toDto(tokens, user);
-    // return AuthTokenDto()
   }
 
   async refreshTokens(cmd: RefreshTokenCommand): Promise<AuthTokenDto> {

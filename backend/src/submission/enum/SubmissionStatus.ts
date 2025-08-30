@@ -1,0 +1,7 @@
+export enum SubmissionStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  WRONG_ANSWER = 'WRONG_ANSWER',
+  RUNTIME_ERROR = 'RUNTIME_ERROR',
+  TLE = 'TLE',
+}

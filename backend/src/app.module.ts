@@ -8,6 +8,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppDataSource } from './data-sourse';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.model';
+import { ProblemModule } from './problem/problem.module';
+import { SubmissionModule } from './submission/submission.module';
+import { SprintService } from './sprint/sprint.service';
+import { SprintModule } from './sprint/sprint.module';
 
 
 @Module({
@@ -30,8 +34,11 @@ import { User } from './user/entities/user.model';
     }),
     AuthModule,
     UserModule,
+    ProblemModule,
+    SubmissionModule,
+    SprintModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SprintService],
 })
 export class AppModule { }
