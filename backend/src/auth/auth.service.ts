@@ -11,7 +11,6 @@ import { UserService } from 'src/user/user.service';
 import { AuthTokenDto } from './dto/auth.token.dto';
 import { JwtTokenService } from './jwt.service';
 import { JwtService } from '@nestjs/jwt';
-import { ClientSession, Connection } from 'mongoose';
 import { MailService } from 'src/common/services/mail.service';
 import * as bcrypt from 'bcrypt';
 import { ValidationFailedException } from 'src/common/exceptions/ValidationFailedException';
@@ -19,7 +18,7 @@ import { Transactional } from 'src/common/decorators/TransactionalDecorator';
 import { UserRepository } from 'src/user/user.repo';
 import { AppLogger } from 'src/common/services/logger.service';
 import { ProviderEnum } from './enum/ProviderEnum';
-import { InjectConnection } from '@nestjs/mongoose';
+import { DataSource, EntityManager } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -30,11 +29,13 @@ export class AuthService {
     private readonly jwtTokenService: JwtTokenService,
     private readonly mailService: MailService,
     private readonly logger: AppLogger,
+    private readonly dataSource: DataSource,
   ) {}
 
   @Transactional()
   async register(
-    cmd: RegisterCommand
+    cmd: RegisterCommand,
+    manager?: EntityManager,
   ): Promise<{ message: string }> {
     this.logger.info(
       `Registering user with email: ${cmd.email}`,
@@ -161,7 +162,7 @@ export class AuthService {
         );
 
       user.isVerified = true;
-      await this.userRepo.update(user.uuid,user);
+      await this.userRepo.update(user.uuid, user);
 
       this.logger.info(
         `Email verified for user: ${user.email}`,
@@ -179,7 +180,7 @@ export class AuthService {
   }
 
   @Transactional()
-  async forgotPassword(email: string, session?: ClientSession) {
+  async forgotPassword(email: string, manager?: EntityManager) {
     this.logger.debug(
       `Initiating forgot password for: ${email}`,
       AuthService.name,
@@ -194,13 +195,10 @@ export class AuthService {
     );
 
     const passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000);
-    await this.userRepo.update(
-      user.uuid,
-      {
-        passwordResetToken: token,
-        passwordResetExpires,
-      },
-    );
+    await this.userRepo.update(user.uuid, {
+      passwordResetToken: token,
+      passwordResetExpires,
+    });
 
     await this.mailService.sendPasswordReset(user.email, token);
 

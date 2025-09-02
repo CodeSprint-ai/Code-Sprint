@@ -12,9 +12,9 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<any>(null);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   api.get('/users/me').then(r => setProfile(r.data)).catch(() => dispatch(logout()));
-  // }, [dispatch]);
+  useEffect(() => {
+    api.get('/user/me').then(r => setProfile(r.data)).catch(() => dispatch(logout()));
+  }, [dispatch]);
 
   return (
     <div className="p-6">
