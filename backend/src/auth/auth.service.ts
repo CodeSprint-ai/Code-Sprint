@@ -117,7 +117,7 @@ export class AuthService {
     email: string;
     name: string;
     provider: ProviderEnum;
-  }) {
+  }): Promise<AuthTokenDto> {
     this.logger.info(
       `OAuth login from ${profile.provider} for ${profile.email}`,
       AuthService.name,
@@ -135,15 +135,7 @@ export class AuthService {
     );
     await this.userService.updateRefreshToken(user.uuid, tokens.refreshToken);
 
-    return {
-      user: {
-        uuid: user.uuid,
-        email: user.email,
-        name: user.name,
-        provider: user.provider,
-      },
-      ...tokens,
-    };
+    return AuthTokenDto.toDto(tokens, user);
   }
 
   async verifyEmail(token: string) {

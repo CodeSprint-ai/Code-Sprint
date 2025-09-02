@@ -9,6 +9,7 @@ import { UserModule } from 'src/user/user.module';
 import { GithubStrategy } from './strategies/github.strategy';
 import { GoogleStrategy } from './strategies/google.stategy';
 import { CommonModule } from 'src/common/common.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [UserModule, CommonModule],
@@ -20,6 +21,7 @@ import { CommonModule } from 'src/common/common.module';
     ConfigService,
     GoogleStrategy,
     GithubStrategy,
+    JwtStrategy,
   ],
   controllers: [AuthController],
 })
