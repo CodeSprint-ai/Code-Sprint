@@ -6,7 +6,7 @@ import {
   ObjectLiteral,
 } from 'typeorm';
 
-import { _QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class BaseRepository<T extends ObjectLiteral> {
   constructor(protected readonly repository: Repository<T>) {}
@@ -32,7 +32,7 @@ export class BaseRepository<T extends ObjectLiteral> {
 
   async update(
     uuid: string | number,
-    update: _QueryDeepPartialEntity<T>,
+    update: QueryDeepPartialEntity<T>,
   ): Promise<T | null> {
     await this.repository.update(uuid, update);
     return this.findByUuid(uuid);
