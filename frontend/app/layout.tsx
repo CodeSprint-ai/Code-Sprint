@@ -1,16 +1,20 @@
 // app/layout.tsx
-import { Provider } from 'react-redux';
-import { store } from '@/redux/store';
-import '@/app/globals.css';
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
+import "@/app/globals.css";
+import ReduxProvider from "@/redux/reduxProvider";
 import { ThemeProvider } from "./providers";
-import ReduxProvider from '@/redux/reduxProvider';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <ReduxProvider>{children}</ReduxProvider>
+          <ReduxProvider>{children}</ReduxProvider>
         </ThemeProvider>
       </body>
     </html>
