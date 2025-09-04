@@ -1,6 +1,7 @@
 // commands/create-problem.command.ts
 import { IsArray, IsEnum, IsNotEmpty, IsOptional, Length } from 'class-validator';
 import { DifficultyEnum } from "../enum/DifficultyEnum"
+import { User } from '../../user/entities/user.model';
 
 export class ProblemCommand {
   @IsNotEmpty()
@@ -36,5 +37,5 @@ export class ProblemCommand {
   tags?: string[];
 
   @IsOptional()
-  createdBy?: string;
+  createdBy?: User;
 }
