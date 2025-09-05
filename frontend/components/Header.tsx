@@ -6,8 +6,8 @@ import { Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 
 const navItems = [
-  { label: "Home", href: "/home" },
-  { label: "Challenges", href: "/challenges" },
+  { label: "Home", href: "/landing" },       // existing route
+  { label: "Challenges", href: "/dashboard" }, // your current challenges area
   { label: "Leaderboard", href: "/leaderboard" },
   { label: "Login", href: "/login" },
   { label: "Signup", href: "/register" },
@@ -28,16 +28,16 @@ export default function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-6">
+        <nav className="hidden md:flex items-center gap-6">
           {navItems.map((item) => (
-            <motion.div whileHover={{ scale: 1.1 }} key={item.href}>
+            <motion.div whileHover={{ scale: 1.06 }} key={item.href}>
               <Link
                 href={item.href}
-                className={`${
+                className={
                   item.label === "Signup"
                     ? "px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
                     : "text-gray-800 dark:text-gray-200 hover:text-green-600 transition-colors"
-                }`}
+                }
               >
                 {item.label}
               </Link>
@@ -48,6 +48,7 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
           className="md:hidden text-gray-800 dark:text-gray-200"
         >
           {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -57,20 +58,21 @@ export default function Header() {
       {/* Mobile Nav */}
       {isOpen && (
         <motion.nav
-          initial={{ height: 0 }}
-          animate={{ height: "auto" }}
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
           className="md:hidden bg-white/90 dark:bg-black/90 backdrop-blur-md shadow-md"
         >
-          <ul className="flex flex-col items-center space-y-4 py-6">
+          <ul className="flex flex-col items-center gap-4 py-6">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`${
+                  className={
                     item.label === "Signup"
                       ? "px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
                       : "text-gray-800 dark:text-gray-200 hover:text-green-600 transition-colors"
-                  }`}
+                  }
+                  onClick={() => setIsOpen(false)}
                 >
                   {item.label}
                 </Link>
