@@ -7,22 +7,22 @@ import { motion } from "framer-motion";
 
 const navItems = [
   { label: "Home", href: "/home" },
-  { label: "Problems", href: "/dashboard" },
+  { label: "Challenges", href: "/challenges" },
   { label: "Leaderboard", href: "/leaderboard" },
-  { label: "Sign Up", href: "/register" },
-  { label: "Log In", href: "/login" },
+  { label: "Login", href: "/login" },
+  { label: "Signup", href: "/register" },
 ];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="w-full sticky top-0 z-50 backdrop-blur-md bg-white/30 dark:bg-black/30 shadow-md">
+    <header className="w-full sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-black/70 shadow-md">
       <div className="mx-auto flex items-center justify-between px-6 py-4 max-w-7xl">
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent"
+          className="text-2xl font-extrabold bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent"
         >
           CodeSprint
         </Link>
@@ -30,13 +30,14 @@ export default function Header() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6">
           {navItems.map((item) => (
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              key={item.href}
-            >
+            <motion.div whileHover={{ scale: 1.1 }} key={item.href}>
               <Link
                 href={item.href}
-                className="text-gray-800 dark:text-gray-200 hover:text-purple-500 transition-colors"
+                className={`${
+                  item.label === "Signup"
+                    ? "px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
+                    : "text-gray-800 dark:text-gray-200 hover:text-green-600 transition-colors"
+                }`}
               >
                 {item.label}
               </Link>
@@ -58,14 +59,18 @@ export default function Header() {
         <motion.nav
           initial={{ height: 0 }}
           animate={{ height: "auto" }}
-          className="md:hidden bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-md"
+          className="md:hidden bg-white/90 dark:bg-black/90 backdrop-blur-md shadow-md"
         >
           <ul className="flex flex-col items-center space-y-4 py-6">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="text-gray-800 dark:text-gray-200 hover:text-purple-500 transition-colors"
+                  className={`${
+                    item.label === "Signup"
+                      ? "px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
+                      : "text-gray-800 dark:text-gray-200 hover:text-green-600 transition-colors"
+                  }`}
                 >
                   {item.label}
                 </Link>
@@ -74,7 +79,6 @@ export default function Header() {
           </ul>
         </motion.nav>
       )}
-    
     </header>
   );
 }
