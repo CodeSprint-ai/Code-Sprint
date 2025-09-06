@@ -1,56 +1,64 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section className="relative w-full bg-white dark:bg-black">
-      <div className="mx-auto max-w-7xl px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <section className="relative bg-[#0f1117] text-white py-20">
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 flex flex-col md:flex-row items-center gap-12">
         
-        {/* Left Content */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="space-y-6"
-        >
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 leading-tight">
-            Sharpen Your <span className="text-green-600">Coding Skills</span> with CodeSprint
+        {/* Left Side - Text */}
+        <div className="flex-1 text-center md:text-left">
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+            Become the <span className="text-green-500">next generation</span>{" "}
+            developer
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Join thousands of developers practicing coding challenges, 
-            competing in contests, and climbing the global leaderboard.
+          <p className="text-lg text-gray-300 mb-8 max-w-lg">
+            Master coding skills, practice interviews, and land your dream job
+            with the world’s leading developer platform.
           </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="px-6 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition">
-              Start Coding
-            </button>
-            <button className="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-              For Companies
-            </button>
-          </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">26+ million</span> developers already learning on CodeSprint
-          </div>
-        </motion.div>
 
-        {/* Right Side Illustration */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex justify-center md:justify-end"
-        >
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <button className="px-6 py-3 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition">
+              Start a free trial
+            </button>
+            <button className="px-6 py-3 border border-gray-500 rounded-lg font-medium hover:bg-gray-800 transition">
+              For developers
+            </button>
+          </div>
+
+          {/* Logos */}
+          <div className="mt-10 flex flex-wrap items-center justify-center md:justify-start gap-6 opacity-80">
+            <Image
+              src="/logos/airbnb.svg"
+              alt="Airbnb"
+              width={100}
+              height={40}
+            />
+            <Image
+              src="/logos/stripe.svg"
+              alt="Stripe"
+              width={100}
+              height={40}
+            />
+            <Image
+              src="/logos/ibm.svg"
+              alt="IBM"
+              width={100}
+              height={40}
+            />
+          </div>
+        </div>
+
+        {/* Right Side - Illustration */}
+        <div className="flex-1">
           <Image
             src="/hero-illustration.png"
-            alt="Hero Illustration"
+            alt="Developer illustration"
             width={500}
             height={400}
-            className="w-full h-auto object-contain"
-            priority
+            className="mx-auto"
           />
-        </motion.div>
+        </div>
       </div>
     </section>
   );
