@@ -1,86 +1,56 @@
+// components/Header.tsx
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { motion } from "framer-motion";
-
-const navItems = [
-  { label: "Home", href: "/landing" },       // existing route
-  { label: "Challenges", href: "/dashboard" }, // your current challenges area
-  { label: "Leaderboard", href: "/leaderboard" },
-  { label: "Login", href: "/login" },
-  { label: "Signup", href: "/register" },
-];
+import { Button } from "@/components/ui/button";
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <header className="w-full sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-black/70 shadow-md">
-      <div className="mx-auto flex items-center justify-between px-6 py-4 max-w-7xl">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/80 backdrop-blur">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link
-          href="/"
-          className="text-2xl font-extrabold bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent"
-        >
+        <Link href="/" className="text-2xl font-bold text-green-500">
           CodeSprint
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <motion.div whileHover={{ scale: 1.06 }} key={item.href}>
-              <Link
-                href={item.href}
-                className={
-                  item.label === "Signup"
-                    ? "px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
-                    : "text-gray-800 dark:text-gray-200 hover:text-green-600 transition-colors"
-                }
-              >
-                {item.label}
-              </Link>
-            </motion.div>
-          ))}
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center space-x-8 text-gray-300">
+          <Link href="/products" className="hover:text-white">
+            Products
+          </Link>
+          <Link href="/solutions" className="hover:text-white">
+            Solutions
+          </Link>
+          <Link href="/resources" className="hover:text-white">
+            Resources
+          </Link>
+          <Link href="/pricing" className="hover:text-white">
+            Pricing
+          </Link>
+          <Link href="/developers" className="hover:text-white">
+            For Developers
+          </Link>
         </nav>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
-          className="md:hidden text-gray-800 dark:text-gray-200"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        {/* Actions */}
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="ghost"
+            className="text-gray-300 hover:text-white hover:bg-transparent"
+          >
+            Log in
+          </Button>
+          <Button
+            variant="outline"
+            className="border-green-500 text-green-500 hover:bg-green-500 hover:text-black"
+          >
+            Request Demo
+          </Button>
+          <Button className="bg-green-500 text-black hover:bg-green-600">
+            Create a free account
+          </Button>
+        </div>
       </div>
-
-      {/* Mobile Nav */}
-      {isOpen && (
-        <motion.nav
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          className="md:hidden bg-white/90 dark:bg-black/90 backdrop-blur-md shadow-md"
-        >
-          <ul className="flex flex-col items-center gap-4 py-6">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={
-                    item.label === "Signup"
-                      ? "px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition-colors"
-                      : "text-gray-800 dark:text-gray-200 hover:text-green-600 transition-colors"
-                  }
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </motion.nav>
-      )}
     </header>
   );
 }
