@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function DeveloperFocused() {
   return (
@@ -37,10 +38,13 @@ export default function DeveloperFocused() {
           viewport={{ once: true }}
           className="flex justify-center"
         >
-          <img
+           <Image
             src="/editor.png"
             alt="Code editor preview"
+            width={800}
+            height={500}
             className="rounded-xl shadow-lg border border-gray-800"
+            priority
           />
         </motion.div>
       </div>

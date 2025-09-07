@@ -2,6 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function CompanyFocused() {
   return (
@@ -38,10 +39,13 @@ export default function CompanyFocused() {
           
         >
           <div className="w-full h-64 rounded-lg flex items-center justify-center border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 text-gray-500 italic">
-            <img
+            <Image
             src="/analytics.png"
-            alt="Code editor preview"
+            alt="Analytics dashboard preview"
+            width={800}
+            height={500}
             className="rounded-xl shadow-lg border border-gray-800"
+            priority
           />
           </div>
         </motion.div>
