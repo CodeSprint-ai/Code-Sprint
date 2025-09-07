@@ -1,5 +1,6 @@
 import Hero from '../../components/Hero';
 import Features from '@/components/Features';
+import DeveloperFocused from '@/components/DeveloperFocused';
 import CallToAction from "../../components/call"
 
 export default function LandingPage() {
@@ -8,6 +9,7 @@ export default function LandingPage() {
             <main className="flex-grow">
                 <Hero />
                 <Features />
+                <DeveloperFocused />
                 <CallToAction />
             </main>
         </div>
