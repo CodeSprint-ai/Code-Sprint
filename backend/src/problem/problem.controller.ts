@@ -75,7 +75,7 @@ export class ProblemController {
     return ResponseWrapper.success(problem, 'Problem fetched successfully');
   }
 
-  @Patch(':uuid')
+  @Post("/update")
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
@@ -89,13 +89,9 @@ export class ProblemController {
     description: 'Problem not found.',
   })
   async update(
-    @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() updateProblemCommand: UpdateProblemCommand,
   ): Promise<ReturnType<typeof ResponseWrapper.success>> {
-    const updatedProblem = await this.problemService.update({
-      ...updateProblemCommand,
-      problemUuid: uuid,
-    });
+    const updatedProblem = await this.problemService.update(updateProblemCommand);
     return ResponseWrapper.success(
       updatedProblem,
       'Problem updated successfully',
