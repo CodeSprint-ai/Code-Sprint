@@ -1,14 +1,22 @@
-// app/layout.tsx
-import { Provider } from 'react-redux';
-import { store } from '@/redux/store';
-import '@/app/globals.css';
-import ReduxProvider from '@/redux/reduxProvider';
+import "@/app/globals.css";
+import ReduxProvider from "@/redux/reduxProvider";
+import { ThemeProvider } from "./providers";
+import Header from "@/components/Header";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
-      <body>
-        <ReduxProvider>{children}</ReduxProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-black text-white">
+        <ThemeProvider>
+          <ReduxProvider>
+            <Header />        {/* ✅ ab header global hai */}
+            <main>{children}</main>
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
