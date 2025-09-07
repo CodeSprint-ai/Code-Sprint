@@ -74,6 +74,7 @@ export default function Header() {
           </ul>
         </motion.nav>
       )}
+    
     </header>
   );
 }
