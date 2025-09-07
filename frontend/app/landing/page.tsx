@@ -2,6 +2,8 @@ import Hero from '../../components/Hero';
 import Features from '@/components/Features';
 import DeveloperFocused from '@/components/DeveloperFocused';
 import CompanyFocused from '@/components/CompanyFocused';
+import Testimonials from '@/components/Testimonials';
+import AIIntegration from '@/components/AIIntegration';
 import CallToAction from "../../components/call"
 
 export default function LandingPage() {
@@ -12,6 +14,8 @@ export default function LandingPage() {
                 <Features />
                 <DeveloperFocused />
                 <CompanyFocused />
+                <Testimonials />
+                <AIIntegration />
                 <CallToAction />
             </main>
         </div>
