@@ -1,6 +1,7 @@
 import Hero from '../../components/Hero';
 import Features from '@/components/Features';
 import DeveloperFocused from '@/components/DeveloperFocused';
+import CompanyFocused from '@/components/CompanyFocused';
 import CallToAction from "../../components/call"
 
 export default function LandingPage() {
@@ -10,6 +11,7 @@ export default function LandingPage() {
                 <Hero />
                 <Features />
                 <DeveloperFocused />
+                <CompanyFocused />
                 <CallToAction />
             </main>
         </div>
