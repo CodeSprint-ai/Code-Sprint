@@ -49,8 +49,14 @@ export class Problem {
   @Column('text', { array: true, default: '{}' })
   tags: string[];
 
-  @Column('text', { nullable: true })
-  createdBy: string;
+  @Column({ default: 2, nullable: true })
+  timeLimitSeconds: number; // Execution limit
+
+  @Column({ default: 256, nullable: true })
+  memoryLimitMB: number; // Memory limit
+
+  @ManyToOne(() => User, { nullable: true })
+  createdBy: User;
 
   @OneToMany(() => TestCase, (testCase) => testCase.problem, { cascade: true })
   testCases: TestCase[];

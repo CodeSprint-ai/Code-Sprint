@@ -1,35 +1,31 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterCommand } from 'src/auth/command/register.command';
-import { ClientSession, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { UnauthorizedException } from '@nestjs/common';
 import { ValidationFailedException } from 'src/common/exceptions/ValidationFailedException';
-import { UserRepository } from './user.repo';
 import { RequestContextService } from 'src/common/services/request-context.service';
 import { AppLogger } from 'src/common/services/logger.service';
 import { ProviderEnum } from 'src/auth/enum/ProviderEnum';
 import { User } from './entities/user.model';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { RoleEnum } from './enum/RoleEnum';
+import { UserLevel } from './enum/UserLevel';
 
 @Injectable()
 export class UserService {
   constructor(
-    private readonly userRepo: UserRepository,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly context: RequestContextService,
     private readonly logger: AppLogger,
   ) {}
 
-  async createLocalUser(
-    command: RegisterCommand
-  ): Promise<User> {
+  async createLocalUser(command: RegisterCommand): Promise<User> {
     const { email, password, name } = command;
 
     this.logger.info(`Creating local user: ${email}`, UserService.name);
 
-    const existingUser = await this.userRepo.findByEmail(email);
+    const existingUser = await this.userRepository.findOneBy({ email });
     if (existingUser) {
       this.logger.warn(`Email already exists: ${email}`, UserService.name);
       throw new ValidationFailedException('Email already registered');
@@ -47,24 +43,27 @@ export class UserService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await this.userRepo.create({
+    const user = this.userRepository.create({
       email,
       name,
       password: hashedPassword,
       provider: ProviderEnum.LOCAL,
+      isVerified: false,
+      role: RoleEnum.USER,
+      level: UserLevel.BEGINNER,
     });
-
+    const savedUser = await this.userRepository.save(user);
     this.logger.info(
-      `User created successfully: ${user.uuid}`,
-      UserService.name,
+      `User created successfully: ${savedUser.uuid}`,
+      savedUser.name,
     );
-    return user;
+    return savedUser;
   }
 
   async validateUser(email: string, password: string): Promise<User> {
     this.logger.debug(`Validating user: ${email}`, UserService.name);
 
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this.userRepository.findOneBy({ email });
     if (!user || !(await bcrypt.compare(password, <string>user.password))) {
       this.logger.warn(`Invalid credentials for: ${email}`, UserService.name);
       throw new UnauthorizedException();
@@ -79,7 +78,7 @@ export class UserService {
       `Updating refresh token for: ${userUuid}`,
       UserService.name,
     );
-    await this.userRepo.update(userUuid, { refreshToken });
+    await this.userRepository.update(userUuid, { refreshToken });
   }
 
   async upsertOAuthUser(oauthPayload: {
@@ -92,9 +91,12 @@ export class UserService {
       UserService.name,
     );
 
-    let user = await this.userRepo.findByEmail(oauthPayload.email);
+    let user = await this.userRepository.findOneBy({
+      email: oauthPayload.email,
+    });
     if (!user) {
-      user = await this.userRepo.create({ ...oauthPayload });
+      user = this.userRepository.create({ ...oauthPayload });
+      user = await this.userRepository.save(user);
       this.logger.info(`OAuth user created: ${user.email}`, UserService.name);
     }
 
@@ -110,7 +112,8 @@ export class UserService {
       `Creating new OAuth user: ${profile.email}`,
       UserService.name,
     );
-    return this.userRepo.create({ ...profile });
+    const user = this.userRepository.create({ ...profile });
+    return this.userRepository.save(user);
   }
 
   getLoggedInUser() {

@@ -1,66 +1,61 @@
+"use client";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Code2, Award, Users, Briefcase } from "lucide-react";
 import { motion } from "framer-motion";
-import { Code, Trophy, Users, Rocket } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 
 const features = [
   {
-    icon: <Code className="w-8 h-8 text-indigo-500" />,
-    title: "Coding Challenges",
-    desc: "Sharpen your skills with real-world coding problems across multiple domains.",
+    title: "Practice Challenges",
+    description:
+      "Sharpen your coding skills with real-world challenges and problems.",
+    icon: <Code2 className="h-8 w-8 text-green-500" />,
   },
   {
-    icon: <Trophy className="w-8 h-8 text-indigo-500" />,
-    title: "Rank & Rewards",
-    desc: "Compete globally, earn ranks, and showcase your achievements to recruiters.",
+    title: "Certify Skills",
+    description:
+      "Earn certificates that showcase your technical expertise to employers.",
+    icon: <Award className="h-8 w-8 text-green-500" />,
   },
   {
-    icon: <Users className="w-8 h-8 text-indigo-500" />,
-    title: "Community",
-    desc: "Learn, share, and grow together with a vibrant developer community.",
+    title: "Compete in Contests",
+    description:
+      "Join global competitions and test yourself against other developers.",
+    icon: <Users className="h-8 w-8 text-green-500" />,
   },
   {
-    icon: <Rocket className="w-8 h-8 text-indigo-500" />,
-    title: "Career Growth",
-    desc: "Boost your profile with hands-on projects and tailored coding practice.",
+    title: "For Companies",
+    description:
+      "Hire top talent and assess skills with AI-powered tools.",
+    icon: <Briefcase className="h-8 w-8 text-green-500" />,
   },
 ];
 
 export default function Features() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6 text-center">
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-gray-900"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Why Choose <span className="text-indigo-600">CodeSprint?</span>
-        </motion.h2>
-        <motion.p
-          className="mt-4 text-lg text-gray-600"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          Practice, compete, and grow as a developer with our platform.
-        </motion.p>
-
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <section className="py-20 bg-black text-white">
+      <div className="max-w-6xl mx-auto px-6">
+        <h2 className="text-4xl font-bold text-center mb-12">
+          Why Choose <span className="text-green-500">CodeSprint</span>?
+        </h2>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              whileHover={{ scale: 1.05 }}
             >
-              <Card className="rounded-2xl shadow-md hover:shadow-xl transition bg-white">
-                <CardContent className="p-6 flex flex-col items-center text-center">
+              <Card className="bg-gray-900 border border-gray-800 hover:border-green-500 transition">
+                <CardHeader className="flex items-center space-x-4">
                   {feature.icon}
-                  <h3 className="mt-4 text-xl font-semibold text-gray-900">
-                    {feature.title}
-                  </h3>
-                  <p className="mt-2 text-gray-600">{feature.desc}</p>
+                  <CardTitle className="text-white">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-green-400 text-sm">
+                    {feature.description}
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>

@@ -10,6 +10,7 @@ import { Problem } from '../../problem/entities/Problem';
 import { SprintSession } from '../../sprint/entities/SprintSession';
 import { SubmissionStatus } from '../enum/SubmissionStatus';
 
+
 @Entity('submissions')
 export class Submission {
   @PrimaryGeneratedColumn('uuid')
@@ -35,13 +36,16 @@ export class Submission {
   status: SubmissionStatus;
 
   @Column({ nullable: true })
-  language: string; // "python", "cpp"
+  language: string;
 
   @Column({ type: 'float', nullable: true })
   executionTime: number;
 
   @Column({ type: 'float', nullable: true })
   memoryUsage: number;
+
+  @Column({ type: 'jsonb', nullable: true })
+  testResults: any; // [{input, expected, got, verdict, runtime}]
 
   @CreateDateColumn()
   createdAt: Date;

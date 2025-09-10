@@ -15,16 +15,18 @@ import { MailService } from 'src/common/services/mail.service';
 import * as bcrypt from 'bcrypt';
 import { ValidationFailedException } from 'src/common/exceptions/ValidationFailedException';
 import { Transactional } from 'src/common/decorators/TransactionalDecorator';
-import { UserRepository } from 'src/user/user.repo';
 import { AppLogger } from 'src/common/services/logger.service';
 import { ProviderEnum } from './enum/ProviderEnum';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.model';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly userRepo: UserRepository,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly jwtTokenService: JwtTokenService,
     private readonly mailService: MailService,
@@ -82,7 +84,7 @@ export class AuthService {
       AuthService.name,
     );
 
-    const user = await this.userRepo.findByUuid(cmd.userUuid);
+    const user = await this.userRepository.findOneBy({ uuid: cmd.userUuid });
     if (!user || !user.refreshToken) {
       this.logger.warn(
         `Refresh denied for userUuid: ${cmd.userUuid}`,
@@ -123,7 +125,7 @@ export class AuthService {
       AuthService.name,
     );
 
-    let user = await this.userRepo.findByEmail(profile.email);
+    let user = await this.userRepository.findOneBy({ email: profile.email });
     if (!user) {
       user = await this.userService.createOAuthUser(profile);
       this.logger.info(`OAuth user created: ${user.email}`, AuthService.name);
@@ -146,7 +148,9 @@ export class AuthService {
         secret: process.env.EMAIL_TOKEN_SECRET,
       });
 
-      const user = await this.userRepo.findByUuid(payload.userUuid);
+      const user = await this.userRepository.findOneBy({
+        uuid: payload.userUuid,
+      });
       if (!user)
         throw new ValidationFailedException(
           'Invalid user',
@@ -154,7 +158,7 @@ export class AuthService {
         );
 
       user.isVerified = true;
-      await this.userRepo.update(user.uuid, user);
+      await this.userRepository.update(user.uuid, user);
 
       this.logger.info(
         `Email verified for user: ${user.email}`,
@@ -178,7 +182,7 @@ export class AuthService {
       AuthService.name,
     );
 
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this.userRepository.findOneBy({ email });
     if (!user) throw new NotFoundException('No user found with this email');
 
     const token = this.jwtService.sign(
@@ -187,7 +191,7 @@ export class AuthService {
     );
 
     const passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000);
-    await this.userRepo.update(user.uuid, {
+    await this.userRepository.update(user.uuid, {
       passwordResetToken: token,
       passwordResetExpires,
     });
@@ -217,7 +221,9 @@ export class AuthService {
       throw new ValidationFailedException('Invalid or expired token');
     }
 
-    const user = await this.userRepo.findByUuid(payload.userUuid);
+    const user = await this.userRepository.findOneBy({
+      uuid: payload.userUuid,
+    });
     if (!user) throw new NotFoundException('User not found');
 
     if (
@@ -236,7 +242,7 @@ export class AuthService {
     user.password = await bcrypt.hash(newPassword, 10);
     user.passwordResetToken = null;
     user.passwordResetExpires = null;
-    await this.userRepo.update(user.uuid, user);
+    await this.userRepository.update(user.uuid, user);
 
     this.logger.info(
       `Password reset successful for: ${user.email}`,
