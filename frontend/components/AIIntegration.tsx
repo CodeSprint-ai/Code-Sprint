@@ -78,7 +78,7 @@ export default function FutureSection() {
           <Image
             src="/ai-illustration.png" // replace with your Freepik image
             alt="Human + AI Illustration"
-            width={600}
+            width={500}
             height={500}
             className="rounded-2xl object-cover"
           />
