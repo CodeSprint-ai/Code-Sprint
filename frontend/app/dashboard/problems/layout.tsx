@@ -1,25 +1,19 @@
 // app/dashboard/layout.tsx
 "use client";
 
-import DashboardMenu from "@/components/DashboardMenu";
 import { Sidebar } from "@/components/Sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 // import useAuth from "@/hooks/useAuth";
 
-export default function DashboardLayout({
+export default function ProblemsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   // useAuth();
   return (
-    <SidebarProvider>
-      <Sidebar />
-      <main className="w-full">
-        <SidebarTrigger />
-        <DashboardMenu />
+      <main>
         {children}
       </main>
-    </SidebarProvider>
   );
 }

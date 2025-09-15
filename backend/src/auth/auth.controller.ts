@@ -17,6 +17,7 @@ import { ForgotPasswordCommand } from './command/forgotPassword.command';
 import { ResetPasswordCommand } from './command/resetPassword.command';
 import { AuthGuard } from '@nestjs/passport';
 import { ResponseWrapper } from 'src/common/dtos/ResponseWrapper';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -29,14 +30,14 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() body: LoginCommand) {
-    const result = await this.authService.login(body);
+  async login(@Body() body: LoginCommand,@Res({ passthrough: true }) res: Response) {
+    const result = await this.authService.login(body,res);
     return ResponseWrapper.success(result, 'Login successful');
   }
 
   @Post('refresh')
-  async refresh(@Body() body: RefreshTokenCommand) {
-    const result = await this.authService.refreshTokens(body);
+  async refresh(@Req() req: Request,@Res({ passthrough: true }) res:Response) {
+    const result = await this.authService.refreshTokens(req,res);
     return ResponseWrapper.success(result, 'Tokens refreshed');
   }
 

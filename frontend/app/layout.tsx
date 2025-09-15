@@ -13,7 +13,7 @@ export default function RootLayout({
       <body className="bg-black text-white">
         <ThemeProvider>
           <ReduxProvider>
-            <Header />        {/* ✅ ab header global hai */}
+            {/* <Header />        ✅ ab header global hai */}
             <main>{children}</main>
           </ReduxProvider>
         </ThemeProvider>

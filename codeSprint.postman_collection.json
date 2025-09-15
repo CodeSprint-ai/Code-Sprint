@@ -1,0 +1,222 @@
+{
+	"info": {
+		"_postman_id": "40cf7198-0c35-40b2-a938-0ce31b7a11e8",
+		"name": "codeSprint",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28825415",
+		"_collection_link": "https://grey-comet-546588.postman.co/workspace/BACKEND~ef4d9602-e131-4c76-9c35-4457b2379855/collection/28825415-40cf7198-0c35-40b2-a938-0ce31b7a11e8?action=share&source=collection_link&creator=28825415"
+	},
+	"item": [
+		{
+			"name": "problem",
+			"item": [
+				{
+					"name": "create-problems",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNmY4MWFmOC1kZjM0LTQzYzQtOWNiNS1hYTY2MjQwZjZjMzMiLCJlbWFpbCI6Im1vaW5AZ21haWwuY29tIiwiaWF0IjoxNzU3MjU4MjU0LCJleHAiOjE3NTcyNTkxNTR9.HOstdZ8keNCpOzVno23uUcxM5BSU6iurx6a7tgHwC5g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Two Sum\",\n  \"description\": \"Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\",\n  \"inputFormat\": \"The first line contains an integer `n` followed by `n` space-separated integers. The second line contains the integer `target`.\",\n  \"outputFormat\": \"Two space-separated integers representing the indices of the two numbers.\",\n  \"constraints\": \"Each input would have exactly one solution. You may not use the same element twice.\",\n  \"sampleInput\": \"2 7 11 15\\n9\",\n  \"sampleOutput\": \"0 1\",\n  \"difficulty\": \"EASY\",\n  \"tags\": [\"Array\", \"Hash Table\"],\n  \"createdByUuid\": \"a6f81af8-df34-43c4-9cb5-aa66240f6c33\",\n  \"timeLimitSeconds\": 1,\n  \"memoryLimitMB\": 128,\n  \"testCases\": [\n    {\n      \"input\": \"2 7 11 15\\n9\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": true\n    },\n    {\n      \"input\": \"3 2 4\\n6\",\n      \"expectedOutput\": \"1 2\",\n      \"isSample\": false\n    },\n    {\n      \"input\": \"3 3\\n6\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": false\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/problems",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"problems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNmY4MWFmOC1kZjM0LTQzYzQtOWNiNS1hYTY2MjQwZjZjMzMiLCJlbWFpbCI6Im1vaW5AZ21haWwuY29tIiwiaWF0IjoxNzU3MjU4MjU0LCJleHAiOjE3NTcyNTkxNTR9.HOstdZ8keNCpOzVno23uUcxM5BSU6iurx6a7tgHwC5g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Two Sum\",\n  \"description\": \"Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\",\n  \"inputFormat\": \"The first line contains an integer `n` followed by `n` space-separated integers. The second line contains the integer `target`.\",\n  \"outputFormat\": \"Two space-separated integers representing the indices of the two numbers.\",\n  \"constraints\": \"Each input would have exactly one solution. You may not use the same element twice.\",\n  \"sampleInput\": \"2 7 11 15\\n9\",\n  \"sampleOutput\": \"0 1\",\n  \"difficulty\": \"EASY\",\n  \"tags\": [\"Array\", \"Hash Table\"],\n  \"createdByUuid\": \"a6f81af8-df34-43c4-9cb5-aa66240f6c33\",\n  \"timeLimitSeconds\": 1,\n  \"memoryLimitMB\": 128,\n  \"testCases\": [\n    {\n      \"input\": \"2 7 11 15\\n9\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": true\n    },\n    {\n      \"input\": \"3 2 4\\n6\",\n      \"expectedOutput\": \"1 2\",\n      \"isSample\": false\n    },\n    {\n      \"input\": \"3 3\\n6\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": false\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{server}}/problems",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"problems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find-by-slug",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNmY4MWFmOC1kZjM0LTQzYzQtOWNiNS1hYTY2MjQwZjZjMzMiLCJlbWFpbCI6Im1vaW5AZ21haWwuY29tIiwiaWF0IjoxNzU3MjU4MjU0LCJleHAiOjE3NTcyNTkxNTR9.HOstdZ8keNCpOzVno23uUcxM5BSU6iurx6a7tgHwC5g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Two Sum\",\n  \"description\": \"Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\",\n  \"inputFormat\": \"The first line contains an integer `n` followed by `n` space-separated integers. The second line contains the integer `target`.\",\n  \"outputFormat\": \"Two space-separated integers representing the indices of the two numbers.\",\n  \"constraints\": \"Each input would have exactly one solution. You may not use the same element twice.\",\n  \"sampleInput\": \"2 7 11 15\\n9\",\n  \"sampleOutput\": \"0 1\",\n  \"difficulty\": \"EASY\",\n  \"tags\": [\"Array\", \"Hash Table\"],\n  \"createdByUuid\": \"a6f81af8-df34-43c4-9cb5-aa66240f6c33\",\n  \"timeLimitSeconds\": 1,\n  \"memoryLimitMB\": 128,\n  \"testCases\": [\n    {\n      \"input\": \"2 7 11 15\\n9\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": true\n    },\n    {\n      \"input\": \"3 2 4\\n6\",\n      \"expectedOutput\": \"1 2\",\n      \"isSample\": false\n    },\n    {\n      \"input\": \"3 3\\n6\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": false\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{server}}/problems/three-sum",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"problems",
+								"three-sum"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-problem",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNmY4MWFmOC1kZjM0LTQzYzQtOWNiNS1hYTY2MjQwZjZjMzMiLCJlbWFpbCI6Im1vaW5AZ21haWwuY29tIiwiaWF0IjoxNzU3MjU5NDQ5LCJleHAiOjE3NTcyNjAzNDl9.s8nvF0O8QNn7O8XzK1ia-jYHKHCpEFZlyi1g21K_vMM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"problemUuid\": \"0c576f76-6b1c-46f4-8ccc-e78037edc8cb\",\n  \"title\": \"three Sum\",\n  \"description\": \"Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\",\n  \"inputFormat\": \"The first line contains an integer `n` followed by `n` space-separated integers. The second line contains the integer `target`.\",\n  \"outputFormat\": \"Two space-separated integers representing the indices of the two numbers.\",\n  \"constraints\": \"Each input would have exactly one solution. You may not use the same element twice.\",\n  \"sampleInput\": \"2 7 11 15\\n9\",\n  \"sampleOutput\": \"0 1\",\n  \"difficulty\": \"EASY\",\n  \"tags\": [\"Array\", \"Hash Table\"],\n  \"createdByUuid\": \"a6f81af8-df34-43c4-9cb5-aa66240f6c33\",\n  \"timeLimitSeconds\": 1,\n  \"memoryLimitMB\": 128,\n  \"testCases\": [\n    {\n      \"input\": \"2 7 11 15\\n9\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": true\n    },\n    {\n      \"input\": \"3 2 4\\n6\",\n      \"expectedOutput\": \"1 2\",\n      \"isSample\": false\n    },\n    {\n      \"input\": \"3 3\\n6\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": false\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/problems/update",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"problems",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-problem",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNmY4MWFmOC1kZjM0LTQzYzQtOWNiNS1hYTY2MjQwZjZjMzMiLCJlbWFpbCI6Im1vaW5AZ21haWwuY29tIiwiaWF0IjoxNzU3MjU5ODk0LCJleHAiOjE3NTcyODUwOTR9.ZLDhSIwplvV6uCnGXr7VGwaRw8y4UNQDfWLOJl_8j1M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Two Sum\",\n  \"description\": \"Given an array of integers `nums` and an integer `target`, return indices of the two numbers such that they add up to `target`.\",\n  \"inputFormat\": \"The first line contains an integer `n` followed by `n` space-separated integers. The second line contains the integer `target`.\",\n  \"outputFormat\": \"Two space-separated integers representing the indices of the two numbers.\",\n  \"constraints\": \"Each input would have exactly one solution. You may not use the same element twice.\",\n  \"sampleInput\": \"2 7 11 15\\n9\",\n  \"sampleOutput\": \"0 1\",\n  \"difficulty\": \"EASY\",\n  \"tags\": [\"Array\", \"Hash Table\"],\n  \"createdByUuid\": \"a6f81af8-df34-43c4-9cb5-aa66240f6c33\",\n  \"timeLimitSeconds\": 1,\n  \"memoryLimitMB\": 128,\n  \"testCases\": [\n    {\n      \"input\": \"2 7 11 15\\n9\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": true\n    },\n    {\n      \"input\": \"3 2 4\\n6\",\n      \"expectedOutput\": \"1 2\",\n      \"isSample\": false\n    },\n    {\n      \"input\": \"3 3\\n6\",\n      \"expectedOutput\": \"0 1\",\n      \"isSample\": false\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{server}}/problems/0c576f76-6b1c-46f4-8ccc-e78037edc8cb",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"problems",
+								"0c576f76-6b1c-46f4-8ccc-e78037edc8cb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"moin@gmail.com\",\n    \"password\":\"moin1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
