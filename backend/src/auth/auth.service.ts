@@ -88,11 +88,13 @@ export class AuthService {
       user.email,
     );
 
+    console.log({ tokens });
+
     // Store refresh token in cookie (HttpOnly, Secure, SameSite=Strict)
     res.cookie('refresh_token', tokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/', // or "/api/auth/refresh" if you want it scoped
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });

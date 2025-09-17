@@ -14,11 +14,19 @@ import {
 } from "../types/auth";
 import { useRouter } from "next/navigation";
 
-
-
 interface UseAuthReturn {
-  login: UseMutationResult<AuthResponse, Error, LoginCredentials, unknown>["mutate"];
-  signup: UseMutationResult<AuthResponse, Error, SignupCredentials, unknown>["mutate"];
+  login: UseMutationResult<
+    AuthResponse,
+    Error,
+    LoginCredentials,
+    unknown
+  >["mutate"];
+  signup: UseMutationResult<
+    AuthResponse,
+    Error,
+    SignupCredentials,
+    unknown
+  >["mutate"];
   logout: UseMutationResult<void, Error, void, unknown>["mutate"];
   isLoading: boolean;
   error: Error | null;
@@ -29,28 +37,35 @@ interface UseAuthReturn {
 
 export const useAuth = (): UseAuthReturn => {
   const { user, token, setAuth, clearAuth } = useAuthStore();
-  const router = useRouter()
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   // Login mutation
   const loginMutation = useMutation<AuthResponse, Error, LoginCredentials>({
-    mutationFn: async (credentials: LoginCredentials): Promise<AuthResponse> => {
+    mutationFn: async (
+      credentials: LoginCredentials
+    ): Promise<AuthResponse> => {
       console.log(credentials);
-      
+
       const response = await api.post<AuthResponse>("/auth/login", credentials);
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
       setAuth(data.user, data.accessToken);
       queryClient.invalidateQueries();
-        router.push("/dashboard"); // ✅ Redirect globally
+      router.push("/dashboard"); // ✅ Redirect globally
     },
   });
 
   // Signup mutation
   const signupMutation = useMutation<AuthResponse, Error, SignupCredentials>({
-    mutationFn: async (credentials: SignupCredentials): Promise<AuthResponse> => {
-      const response = await api.post<AuthResponse>("/auth/register", credentials);
+    mutationFn: async (
+      credentials: SignupCredentials
+    ): Promise<AuthResponse> => {
+      const response = await api.post<AuthResponse>(
+        "/auth/register",
+        credentials
+      );
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
@@ -71,11 +86,13 @@ export const useAuth = (): UseAuthReturn => {
   });
 
   return {
-    login: loginMutation.mutate,
-    signup: signupMutation.mutate,
-    logout: logoutMutation.mutate,
+    login: loginMutation.mutateAsync, // ← mutateAsync instead of mutate
+    signup: signupMutation.mutateAsync,
+    logout: logoutMutation.mutateAsync,
     isLoading:
-      loginMutation.isPending || signupMutation.isPending || logoutMutation.isPending,
+      loginMutation.isPending ||
+      signupMutation.isPending ||
+      logoutMutation.isPending,
     error: loginMutation.error || signupMutation.error || logoutMutation.error,
     token,
     user,

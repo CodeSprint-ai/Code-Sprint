@@ -67,6 +67,9 @@ api.interceptors.response.use(
           { withCredentials: true }
         );
 
+        console.log({accessToken:data.accessToken});
+        
+
         // ✅ Save new token in store
         authStore.setToken(data.accessToken);
 
@@ -78,7 +81,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         authStore.clearAuth();
-        window.location.href = "/login";
+        window.location.href = "/auth/login";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

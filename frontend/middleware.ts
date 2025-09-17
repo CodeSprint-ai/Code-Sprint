@@ -4,13 +4,17 @@ import type { NextRequest } from "next/server";
 
 // Centralized route rules
 const authConfig = {
-  protected: ["/dashboard", "/profile", "/settings", "/posts", "/api/posts"],
-  public: ["/login", "/register", "/forgot-password"],
+  protected: ["/dashboard"],
+  public: ["/auth/login", "/auth/signup"],
 };
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get("token")?.value;
+  const token = request.cookies.get("refresh_token")?.value;
+
+  
+  console.log({ token });
+
   const isAuthenticated = Boolean(token);
 
   // Helper: matches if route is in protected list
@@ -23,7 +27,7 @@ export function middleware(request: NextRequest) {
 
   // 1️⃣ Not authenticated → accessing protected page → redirect to login
   if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
+    const loginUrl = new URL("/auth/login", request.url);
     // Preserve "redirect" param so we can send user back after login
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
