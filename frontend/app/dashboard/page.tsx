@@ -1,6 +1,6 @@
 // app/dashboard/page.tsx
 
-import DashboardContainer from "@/containers/Dashboard/Dashboard";
+import DashboardContainer from "@/containers/DashboardContainer";
 
 export default function Dashboard() {
     // const { user } = useSelector((state: RootState) => state.auth);

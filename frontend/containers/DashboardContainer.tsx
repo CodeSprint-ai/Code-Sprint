@@ -1,11 +1,8 @@
 "use client";
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/redux/store";
 import { ProblemCard } from "@/components/ProblemCard";
 
 import api from "@/lib/axios";
-import { logout } from "@/redux/slices/authSlice";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
