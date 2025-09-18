@@ -30,14 +30,20 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() body: LoginCommand,@Res({ passthrough: true }) res: Response) {
-    const result = await this.authService.login(body,res);
+  async login(
+    @Body() body: LoginCommand,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.login(body, res);
     return ResponseWrapper.success(result, 'Login successful');
   }
 
   @Post('refresh')
-  async refresh(@Req() req: Request,@Res({ passthrough: true }) res:Response) {
-    const result = await this.authService.refreshTokens(req,res);
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.refreshTokens(req, res);
     return ResponseWrapper.success(result, 'Tokens refreshed');
   }
 
@@ -52,22 +58,27 @@ export class AuthController {
     const result = await this.authService.handleOAuthLogin(req.user);
 
     // ✅ Set tokens in HttpOnly cookies
-    res.cookie('accessToken', result.accessToken, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60 * 1000, // 15 min
-    });
+    // res.cookie('accessToken', result.accessToken, {
+    //   httpOnly: false,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'strict',
+    //   maxAge: 15 * 60 * 1000, // 15 min
+    // });
 
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: false,
+    res.cookie('refresh_token', result.refreshToken, {
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
+      path: '/', // or "/api/auth/refresh" if you want it scoped
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // ✅ Redirect frontend – no tokens in URL
-    return res.redirect('http://localhost:3000/dashboard');
+    // Get original redirect (fallback = dashboard)
+    const redirectUrl = req.query.redirect || '/dashboard';
+
+    return res.redirect(
+      `http://localhost:3000/?oauth=true&redirect=${redirectUrl}`,
+    );
   }
 
   @Get('github')
@@ -81,22 +92,27 @@ export class AuthController {
   async githubCallback(@Req() req, @Res() res: any) {
     const result = await this.authService.handleOAuthLogin(req.user);
     // ✅ Set tokens in HttpOnly cookies
-    res.cookie('accessToken', result.accessToken, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60 * 1000, // 15 min
-    });
+    // res.cookie('accessToken', result.accessToken, {
+    //   httpOnly: false,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'strict',
+    //   maxAge: 15 * 60 * 1000, // 15 min
+    // });
 
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: false,
+    res.cookie('refresh_token', result.refreshToken, {
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
+      path: '/', // or "/api/auth/refresh" if you want it scoped
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-
     // ✅ Redirect frontend – no tokens in URL
-    return res.redirect('http://localhost:3000/dashboard');
+    // Get original redirect (fallback = dashboard)
+    const redirectUrl = req.query.redirect || '/dashboard';
+
+    return res.redirect(
+      `http://localhost:3000/?oauth=true&redirect=${redirectUrl}`,
+    );
   }
 
   @Post('verify-email')

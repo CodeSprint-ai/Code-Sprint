@@ -160,13 +160,13 @@ export class AuthService {
       );
 
       // update cookie
-      res.cookie('refresh_token', tokens.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+     res.cookie('refresh_token', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/', // or "/api/auth/refresh" if you want it scoped
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
       return AuthTokenDto.toDto({ accessToken: tokens.accessToken }, user);
     } catch (e) {

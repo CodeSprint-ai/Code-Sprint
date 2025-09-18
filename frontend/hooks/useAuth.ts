@@ -3,6 +3,7 @@ import {
   useMutation,
   useQueryClient,
   UseMutationResult,
+  useQuery,
 } from "@tanstack/react-query";
 import api from "../services/api";
 import { useAuthStore } from "../store/authStore";
@@ -12,7 +13,7 @@ import {
   SignupCredentials,
   User,
 } from "../types/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface UseAuthReturn {
   login: UseMutationResult<
@@ -20,24 +21,31 @@ interface UseAuthReturn {
     Error,
     LoginCredentials,
     unknown
-  >["mutate"];
+  >["mutateAsync"];
+
   signup: UseMutationResult<
     AuthResponse,
     Error,
     SignupCredentials,
     unknown
-  >["mutate"];
-  logout: UseMutationResult<void, Error, void, unknown>["mutate"];
+  >["mutateAsync"];
+
+  logout: UseMutationResult<void, Error, void, unknown>["mutateAsync"];
+
   isLoading: boolean;
   error: Error | null;
   token: string | null;
   user: User | null;
   isAuthenticated: boolean;
+
+  initializeOAuth: () => Promise<void>;
 }
 
 export const useAuth = (): UseAuthReturn => {
   const { user, token, setAuth, clearAuth } = useAuthStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const queryClient = useQueryClient();
 
   // Login mutation
@@ -53,7 +61,8 @@ export const useAuth = (): UseAuthReturn => {
     onSuccess: (data: AuthResponse) => {
       setAuth(data.user, data.accessToken);
       queryClient.invalidateQueries();
-      router.push("/dashboard"); // ✅ Redirect globally
+      const redirect = searchParams.get("redirect") || "/dashboard";
+      router.push(redirect);
     },
   });
 
@@ -85,10 +94,20 @@ export const useAuth = (): UseAuthReturn => {
     },
   });
 
+  const initializeOAuth = async (): Promise<void> => {
+    try {
+      const { data } = await api.get<AuthResponse>("/auth/me");
+      setAuth(data.user, data.accessToken);
+    } catch {
+      clearAuth();
+    }
+  };
+
   return {
-    login: loginMutation.mutateAsync, // ← mutateAsync instead of mutate
+    login: loginMutation.mutateAsync, 
     signup: signupMutation.mutateAsync,
     logout: logoutMutation.mutateAsync,
+    initializeOAuth,
     isLoading:
       loginMutation.isPending ||
       signupMutation.isPending ||
