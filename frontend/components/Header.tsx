@@ -124,15 +124,15 @@ export default function Header() {
   const [openMenu, setOpenMenu] = useState<keyof MenuItems | null>(null);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/80 backdrop-blur">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="fixed top-0 z-50 w-full border-b border-gray-800 bg-black/80 backdrop-blur h-20 flex items-center">
+      <div className="container mx-auto flex  items-center justify-between ">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-green-500">
+        <Link href="/" className="text-2xl font-bold text-green-500 ">
           CodeSprintAI
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center space-x-8 text-gray-300">
+        <nav className="hidden md:flex items-center space-x-8 text-gray-300 ">
           {Object.keys(menuItems).map((menu) => (
             <div
               key={menu}
@@ -200,17 +200,17 @@ export default function Header() {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 ">
           <Button
-            variant="ghost"
-            className="text-gray-300 hover:border hover:text-black hover:bg-yellow-500 transition-all"
+            // variant="ghost"
+            className="text-white hover:text-black font-bold bg-green-500 hover:bg-white transition-all"
           >
             Log In
           </Button>
-          <Button className="border-green-500 text-green-500 hover:border-green-400 hover:text-black hover:bg-green-600 transition-all">
+          <Button className="text-black   hover:text-white hover:bg-black transition-all">
             Request Demo
           </Button>
-          <Button className="border-green-500 text-green-500 hover:border-green-400 hover:text-black hover:bg-green-600 transition-all">
+          <Button className="text-black   hover:text-white hover:bg-black transition-all">
             Create a free account
           </Button>
         </div>

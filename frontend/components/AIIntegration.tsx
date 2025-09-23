@@ -17,7 +17,10 @@ const wordVariants = {
 
 export default function FutureSection() {
   return (
-    <section className="relative overflow-hidden py-32 bg-black">
+    <section className="relative overflow-hidden py-32 bg-black w-full ">
+      {/* <div>
+
+</div> */}
       {/* Aurora top */}
       <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-emerald-400/30 to-transparent blur-3xl" />
       {/* Aurora bottom */}
@@ -25,9 +28,9 @@ export default function FutureSection() {
       {/* Starry background */}
       <div className="absolute inset-0 bg-[radial-gradient(white,transparent_1px)] [background-size:22px_22px] opacity-20" />
 
-      <div className="relative max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center px-6">
+      <div className="relative container mx-auto flex    gap-16 items-center  ">
         {/* LEFT: TEXT */}
-        <div className="space-y-10 text-left">
+        <div className="space-y-10 text-left w-1/2 ">
           {/* First Line */}
           <motion.h2
             initial={{ opacity: 0 }}
@@ -67,22 +70,24 @@ export default function FutureSection() {
         </div>
 
         {/* RIGHT: IMAGE */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: false, amount: 0.5 }}
-          className="rounded-2xl overflow-hidden shadow-lg"
-        >
-          <Image
-            src="/ai-illustration.png" // replace with your Freepik image
-            alt="Human + AI Illustration"
-            width={500}
-            height={500}
-            className="rounded-2xl object-cover"
-          />
-        </motion.div>
+        <div className="w-1/2 flex justify-end ">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: false, amount: 0.5 }}
+            className="rounded-2xl overflow-hidden shadow-lg"
+          >
+            <Image
+              src="/ai-illustration.png" // replace with your Freepik image
+              alt="Human + AI Illustration"
+              width={500} // give natural dimensions (any values, keeps ratio)
+              height={500}
+              className=" rounded-2xl object-cover"
+            />
+          </motion.div>
+        </div>
       </div>
     </section>
   );

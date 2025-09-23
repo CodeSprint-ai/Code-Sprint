@@ -4,8 +4,8 @@ import { Github, Twitter, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-10 mt-12">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-gray-900 text-gray-300 py-10 mt-12 overflow-hidden ">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Brand Section */}
         <div>
           <h2 className="text-2xl font-bold text-white">CodeSprint</h2>

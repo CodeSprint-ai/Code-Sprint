@@ -1,6 +1,5 @@
 import "@/app/globals.css";
-import ReduxProvider from "@/redux/reduxProvider";
-import { ThemeProvider } from "./providers";
+import { Provider } from "./providers";
 import Header from "@/components/Header";
 
 export default function RootLayout({
@@ -11,12 +10,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-black text-white">
-        <ThemeProvider>
-          <ReduxProvider>
-            <Header />        {/* ✅ ab header global hai */}
-            <main>{children}</main>
-          </ReduxProvider>
-        </ThemeProvider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

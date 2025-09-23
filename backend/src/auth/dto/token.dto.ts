@@ -1,6 +1,6 @@
 export class TokensDto {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
 
   public static toDto(accessToken,refreshToken): TokensDto {
     return {

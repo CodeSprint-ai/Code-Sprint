@@ -1,46 +1,120 @@
-"use client";
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "@/redux/store"
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import {login, logout} from "@/redux/slices/authSlice";
+// src/hooks/useAuth.ts
+import {
+  useMutation,
+  useQueryClient,
+  UseMutationResult,
+  useQuery,
+} from "@tanstack/react-query";
+import api from "../services/api";
+import { useAuthStore } from "../store/authStore";
+import {
+  AuthResponse,
+  LoginCredentials,
+  SignupCredentials,
+  User,
+} from "../types/auth";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function useAuth() {
-    const { accessToken }: any = useSelector((s: RootState) => s.auth);
-    const dispatch = useDispatch();
-    const router = useRouter();
+interface UseAuthReturn {
+  login: UseMutationResult<
+    AuthResponse,
+    Error,
+    LoginCredentials,
+    unknown
+  >["mutateAsync"];
 
-    useEffect(() => {
-        let token = accessToken;
-        // console.log("token", token)
+  signup: UseMutationResult<
+    AuthResponse,
+    Error,
+    SignupCredentials,
+    unknown
+  >["mutateAsync"];
 
-        // If no token in Redux, try cookies
-        if (!token) {
-            const cookieToken = Cookies.get("accessToken");
-            const cookieRefresh = Cookies.get("refreshToken");
-            const cookieUser = Cookies.get("user"); // optional if you also set user info in cookies
+  logout: UseMutationResult<void, Error, void, unknown>["mutateAsync"];
 
-            // console.log("cookieToken", cookieToken)
-            // console.log("cookieRefresh", cookieRefresh)
-            // console.log("cookieUser", cookieUser)
+  isLoading: boolean;
+  error: Error | null;
+  token: string | null;
+  user: User | null;
+  isAuthenticated: boolean;
 
-            if (cookieToken && cookieRefresh) {
-                dispatch(
-                    login({
-                        accessToken: cookieToken,
-                        refreshToken: cookieRefresh,
-                        user: cookieUser ? JSON.parse(cookieUser) : null,
-                    })
-                );
-                token = cookieToken;
-            }
-        }
-
-        // If still no token, redirect
-        if (!token) {
-            dispatch(logout()); // make sure state is clean
-            router.replace("/login");
-        }
-    }, [accessToken, dispatch, router]);
+  initializeOAuth: () => Promise<void>;
 }
+
+export const useAuth = (): UseAuthReturn => {
+  const { user, token, setAuth, clearAuth } = useAuthStore();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const queryClient = useQueryClient();
+
+  // Login mutation
+  const loginMutation = useMutation<AuthResponse, Error, LoginCredentials>({
+    mutationFn: async (
+      credentials: LoginCredentials
+    ): Promise<AuthResponse> => {
+      console.log(credentials);
+
+      const response = await api.post<AuthResponse>("/auth/login", credentials);
+      return response.data;
+    },
+    onSuccess: (data: AuthResponse) => {
+      setAuth(data.user, data.accessToken);
+      queryClient.invalidateQueries();
+      const redirect = searchParams.get("redirect") || "/dashboard";
+      router.push(redirect);
+    },
+  });
+
+  // Signup mutation
+  const signupMutation = useMutation<AuthResponse, Error, SignupCredentials>({
+    mutationFn: async (
+      credentials: SignupCredentials
+    ): Promise<AuthResponse> => {
+      const response = await api.post<AuthResponse>(
+        "/auth/register",
+        credentials
+      );
+      return response.data;
+    },
+    onSuccess: (data: AuthResponse) => {
+      setAuth(data.user, data.accessToken);
+      queryClient.invalidateQueries();
+    },
+  });
+
+  // Logout mutation
+  const logoutMutation = useMutation<void, Error, void>({
+    mutationFn: async (): Promise<void> => {
+      await api.post("/auth/logout");
+    },
+    onSuccess: () => {
+      clearAuth();
+      queryClient.clear();
+    },
+  });
+
+  const initializeOAuth = async (): Promise<void> => {
+    try {
+      const { data } = await api.get<AuthResponse>("/auth/me");
+      setAuth(data.user, data.accessToken);
+    } catch {
+      clearAuth();
+    }
+  };
+
+  return {
+    login: loginMutation.mutateAsync, 
+    signup: signupMutation.mutateAsync,
+    logout: logoutMutation.mutateAsync,
+    initializeOAuth,
+    isLoading:
+      loginMutation.isPending ||
+      signupMutation.isPending ||
+      logoutMutation.isPending,
+    error: loginMutation.error || signupMutation.error || logoutMutation.error,
+    token,
+    user,
+    isAuthenticated: !!token,
+  };
+};

@@ -7,8 +7,8 @@ import { ArrowRight } from "lucide-react";
 
 export default function Community() {
   return (
-    <section className="py-20 bg-black text-white">
-      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <section className="py-20 bg-black text-white overflow-hidden ">
+      <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center">
         
         {/* Left Content */}
         <motion.div
