@@ -32,8 +32,8 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-20 bg-black text-white">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-20 bg-black text-white overflow-hidden">
+      <div className="container mx-auto">
         <h2 className="text-4xl font-bold text-center mb-12">
           Why Choose <span className="text-green-500">CodeSprint</span>?
         </h2>
@@ -48,12 +48,12 @@ export default function Features() {
               whileHover={{ scale: 1.05 }}
             >
               <Card className="bg-gray-900 border border-gray-800 hover:border-green-500 transition">
-                <CardHeader className="flex items-center space-x-4">
+                <CardHeader className="flex flex-col space-y-4 items-center ">
                   {feature.icon}
                   <CardTitle className="text-white">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-green-400 text-sm">
+                  <p className="text-green-400 text-sm text-center">
                     {feature.description}
                   </p>
                 </CardContent>

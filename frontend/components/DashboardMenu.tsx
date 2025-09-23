@@ -12,7 +12,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 
 const DashboardMenu = () => {
   return (
-    <div className=" flex justify-end">
+    <div className="z-50 w-screen flex justify-end h-20 border-2 border-white">
       <ThemeSwitcher />
       <Button variant="destructive" onClick={() => {}}>
         Logout

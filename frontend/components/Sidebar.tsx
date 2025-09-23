@@ -47,13 +47,10 @@ export function Sidebar() {
   const { state } = useSidebar();
 
   return (
-    <ShadSidebar collapsible="icon">
+    <ShadSidebar collapsible="icon" className="static h-full" >
       <SidebarContent>
         <SidebarGroup>
-          <div className={`flex  ${state === "expanded" ? "space-x-4 p-4" : "pl-1 py-2"} `}>
-            <CodeXml />
-            {state === "expanded" && <span>Code Sprint</span>}
-          </div>
+          
           <SidebarGroupLabel className="px-4">Tabs</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

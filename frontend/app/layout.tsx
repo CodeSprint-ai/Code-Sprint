@@ -10,10 +10,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-black text-white">
-        <Provider>
-            {/* <Header />        ✅ ab header global hai */}
-            <main>{children}</main>
-        </Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

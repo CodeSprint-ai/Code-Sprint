@@ -13,12 +13,12 @@
                 <main className="flex-grow">
     
                     <Hero />
+                    <AIIntegration />
                     <Features />
                     <DeveloperFocused />
                     <CompanyFocused />
                     <Community />
                     <Testimonials />
-                    <AIIntegration />
                     <Footer />
                 </main>
             </div>
