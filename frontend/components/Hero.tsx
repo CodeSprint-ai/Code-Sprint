@@ -12,8 +12,8 @@ export default function Hero() {
   });
 
   return (
-    <section className="relative bg-[#0f1117] text-white py-20">
-      <div className="container mx-auto px-6 md:px-12 lg:px-20 flex flex-col items-center text-center">
+    <section className="relative bg-[#0f1117] text-white py-20  flex items-center flex-1">
+      <div className="container mx-auto  md:px-12 lg:px-20 flex flex-col items-center text-center">
         
         {/* Animated Heading */}
         <motion.h1

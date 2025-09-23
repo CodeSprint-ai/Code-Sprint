@@ -5,8 +5,8 @@ import Image from "next/image";
 
 export default function DeveloperFocused() {
   return (
-    <section className="py-20 bg-black text-white">
-      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <section className="py-20 bg-black text-white overflow-hidden ">
+      <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center">
         
         {/* Left Side Text */}
         <motion.div
@@ -41,8 +41,8 @@ export default function DeveloperFocused() {
            <Image
             src="/editor.png"
             alt="Code editor preview"
-            width={800}
-            height={500}
+             width={500}
+            height={350}
             className="rounded-xl shadow-lg border border-gray-800"
             priority
           />

@@ -6,8 +6,8 @@ import Image from "next/image";
 
 export default function CompanyFocused() {
   return (
-    <section className="py-20 bg-black text-white">
-      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <section className="py-20 bg-black text-white overflow-hidden ">
+      <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center">
         
         {/* Left column (text) */}
         <motion.div
@@ -38,12 +38,12 @@ export default function CompanyFocused() {
           className="flex justify-center"
           
         >
-          <div className="w-full h-64 rounded-lg flex items-center justify-center border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 text-gray-500 italic">
+          <div className="w-full h-64 rounded-lg flex items-center justify-center  to-gray-900 text-gray-500 italic">
             <Image
             src="/analytics.png"
             alt="Analytics dashboard preview"
-            width={800}
-            height={500}
+            width={500}
+            height={350}
             className="rounded-xl shadow-lg border border-gray-800"
             priority
           />

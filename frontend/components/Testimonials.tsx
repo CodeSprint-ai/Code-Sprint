@@ -26,8 +26,8 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="py-20 bg-black text-white">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-20 bg-black text-white overflow-hidden ">
+      <div className="container mx-auto ">
         <h2 className="text-4xl font-bold text-center mb-12">
           Success Stories from <span className="text-green-500">Developers</span> &{" "}
           <span className="text-green-500">Companies</span>
