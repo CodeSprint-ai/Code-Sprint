@@ -20,6 +20,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ResponseWrapper } from '../common/dtos/ResponseWrapper';
+import { Roles } from 'src/common/decorators/roleDecorater';
 
 @ApiTags('problems')
 @Controller('problems')
@@ -28,7 +29,7 @@ export class ProblemController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(AuthGuard('jwt'))
+  @Roles('ADMIN')
   @ApiBearerAuth()
   @ApiResponse({
     status: 201,
@@ -53,6 +54,7 @@ export class ProblemController {
     description: 'Returns a list of all problems.',
     type: [ProblemDto],
   })
+  
   async findAll(): Promise<ReturnType<typeof ResponseWrapper.success>> {
     const problems = await this.problemService.findAll();
     return ResponseWrapper.success(problems, 'Problems fetched successfully');
@@ -75,7 +77,7 @@ export class ProblemController {
     return ResponseWrapper.success(problem, 'Problem fetched successfully');
   }
 
-  @Post("/update")
+  @Post('/update')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
@@ -91,7 +93,8 @@ export class ProblemController {
   async update(
     @Body() updateProblemCommand: UpdateProblemCommand,
   ): Promise<ReturnType<typeof ResponseWrapper.success>> {
-    const updatedProblem = await this.problemService.update(updateProblemCommand);
+    const updatedProblem =
+      await this.problemService.update(updateProblemCommand);
     return ResponseWrapper.success(
       updatedProblem,
       'Problem updated successfully',

@@ -44,7 +44,7 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto p-6 rounded-xl shadow-md border">
+    <div className="w-96 mx-auto p-6 rounded-xl shadow-md border">
       <h2 className="text-xl font-semibold mb-4 text-center">Sign Up</h2>
 
       <Form {...form}>

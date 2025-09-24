@@ -35,10 +35,10 @@ export default function CompanyFocused() {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="flex justify-center"
+          className="flex justify-end"
           
         >
-          <div className="w-full h-64 rounded-lg flex items-center justify-center  to-gray-900 text-gray-500 italic">
+          {/* <div className="w-full h-64 rounded-lg flex items-center justify-center  to-gray-900 text-gray-500 italic"> */}
             <Image
             src="/analytics.png"
             alt="Analytics dashboard preview"
@@ -47,7 +47,7 @@ export default function CompanyFocused() {
             className="rounded-xl shadow-lg border border-gray-800"
             priority
           />
-          </div>
+          {/* </div> */}
         </motion.div>
       </div>
     </section>

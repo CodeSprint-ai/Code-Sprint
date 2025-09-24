@@ -23,22 +23,22 @@ const items = [
   },
   {
     title: "Submission",
-    url: "/dashboard/submission",
+    url: "/submission",
     icon: FileText,
   },
   {
     title: "Problems",
-    url: "/dashboard/problems",
+    url: "/problems",
     icon: BookOpen,
   },
   {
     title: "Contest",
-    url: "/dashboard/contest",
+    url: "/contest",
     icon: Trophy,
   },
   {
     title: "Profile",
-    url: "/dashboard/profile",
+    url: "/profile",
     icon: User,
   },
 ];

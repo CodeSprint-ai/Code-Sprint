@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +14,9 @@ import { User } from 'src/user/entities/user.model';
 import { TestCase } from './entities/TestCase';
 import { CreateTestCaseCommand } from './command/CreateTestCaseCommand';
 import { ProblemDto } from './dto/ProblemDto';
+import { AuthGuard } from '@nestjs/passport';
+
+
 
 @Injectable()
 export class ProblemService {
