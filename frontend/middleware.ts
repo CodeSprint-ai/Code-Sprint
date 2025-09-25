@@ -18,6 +18,7 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("refresh_token")?.value;
 
   let role: RoleEnum | null = null;
+  console.log({ token });
 
   if (token) {
     try {

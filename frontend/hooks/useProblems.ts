@@ -14,10 +14,10 @@ import {
 } from "@/types/problems";
 
 interface UseProblemsReturn {
-  allProblems: UseQueryResult<
-    ProblemsResponse, // response
-    Error // error
-  >;
+  // allProblems: UseQueryResult<
+  //   ProblemsResponse, // response
+  //   Error // error
+  // >;
 
   singleProblem: UseQueryResult<ProblemResponse, Error>;
 
@@ -33,14 +33,14 @@ export const useProblem = (slug?: string): UseProblemsReturn => {
   const queryClient = useQueryClient();
 
   // Get all problems
-  const allProblemsQuery = useQuery<ProblemsResponse, Error>({
-    queryKey: ["problems"],
-    queryFn: async () => {
-      const response = await api.get<ProblemsResponse>("/problems");
-      return response.data;
-    },
-    enabled: !slug, // only run if slug is not provided
-  });
+  // const allProblemsQuery = useQuery<ProblemsResponse, Error>({
+  //   queryKey: ["problems"],
+  //   queryFn: async () => {
+  //     const response = await api.get<ProblemsResponse>("/problems");
+  //     return response.data;
+  //   },
+  //   enabled: !slug, // only run if slug is not provided
+  // });
 
   // Get one problem by slug
   const singleProblemQuery = useQuery<ProblemResponse, Error>({
@@ -65,13 +65,15 @@ export const useProblem = (slug?: string): UseProblemsReturn => {
       return response.data;
     },
     onSuccess: () => {
+      console.log({check:'coming here'});
+      
       // Refresh the problems list after creation
       queryClient.invalidateQueries({ queryKey: ["problems"] });
     },
   });
 
   return {
-    allProblems: allProblemsQuery,
+    // allProblems: allProblemsQuery,
     singleProblem: singleProblemQuery,
     createProblem: createProblemMutation.mutateAsync,
   };

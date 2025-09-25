@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
-import { signupSchema, SignupFormValues } from "@/lib/validations/authForm";
+import { signupSchema, SignupFormValues } from "@/validations/authForm";
 
 const SignUpForm: React.FC = () => {
   const { signup, isLoading, error } = useAuth();

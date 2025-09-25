@@ -45,7 +45,7 @@ export interface ProblemResponse {
 
 export interface CreateProblemInput {
   title: string;
-  slug: string;
+  // slug: string;
   description: string;
   inputFormat: string;
   outputFormat: string;
@@ -54,4 +54,10 @@ export interface CreateProblemInput {
   sampleOutput: string;
   difficulty: "EASY" | "MEDIUM" | "HARD";
   tags: string[];
+}
+
+
+export interface ProblemStore {
+ isAddProblemPopupForm:boolean
+ setIsAddProblemPopupForm:(isAddProblemPopupForm:boolean)=> void;
 }

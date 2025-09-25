@@ -30,8 +30,9 @@ const processQueue = (error: any, token: string | null = null) => {
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;
-    console.log({token});
-    
+    // const user = useAuthStore.getState().user
+    // console.log({ token, user });
+
     if (token) {
       config.headers = {
         ...config.headers,
@@ -49,6 +50,9 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config as any;
     const authStore = useAuthStore.getState();
+
+    console.log({authStore});
+    
 
     // ✅ Skip refresh logic for login/signup requests
     if (
@@ -83,12 +87,14 @@ api.interceptors.response.use(
         );
 
         // ✅ Save new token in store
-        authStore.setToken(data.accessToken);
+        authStore.setToken(data.data.accessToken);
 
-        processQueue(null, data.accessToken);
+        processQueue(null, data.data.accessToken); // response should be like data.accesstoken right now its compromized
 
         // Retry the failed request with new token
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        originalRequest.headers[
+          "Authorization"
+        ] = `Bearer ${data.data.accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
