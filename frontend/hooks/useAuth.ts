@@ -67,8 +67,8 @@ export const useAuth = (): UseAuthReturn => {
       setAuth(data.data.user, data.data.accessToken);
       console.log("🔥 Zustand state after login:", useAuthStore.getState());
       // queryClient.invalidateQueries();
-      // const redirect = searchParams.get("redirect") || "/dashboard";
-      // router.push(redirect);
+      const redirect = searchParams.get("redirect") || "/dashboard";
+      router.push(redirect);
     },
   });
 
