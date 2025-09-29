@@ -1,9 +1,7 @@
 // app/page.jsx
 "use client";
-import Features from "@/components/Features";
 import DeveloperFocused from "@/components/DeveloperFocused";
 import CompanyFocused from "@/components/CompanyFocused";
-import Community from "@/components/CommunitySection";
 import Testimonials from "@/components/Testimonials";
 import AIIntegration from "@/components/AIIntegration";
 import Footer from "@/components/Footer";
@@ -20,10 +18,8 @@ export default function Home() {
         </div>
         {/* <div className="overflow-hidden w-full"> */}
         <AIIntegration />
-        <Features />
         <DeveloperFocused />
         <CompanyFocused />
-        <Community />
         <Testimonials />
         <Footer />
         {/* </div> */}
