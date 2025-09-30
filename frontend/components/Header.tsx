@@ -201,22 +201,18 @@ export default function Header() {
 
         {/* Actions */}
         <div className="flex items-center space-x-3 ">
-          <Link href="/auth/login">
-            <Button
-              // variant="ghost"
-              className="text-white hover:text-black font-bold bg-green-500 hover:bg-white transition-all"
-            >
-              Log In
-            </Button>
-          </Link>
-          <Button className="text-black hover:text-white hover:bg-black transition-all">
+          <Button
+            // variant="ghost"
+            className="text-white hover:text-black  bg-green-500 hover:bg-white transition-all"
+          >
+            Log In
+          </Button>
+          <Button className="text-green-500   hover:text-black hover:bg-green-600 transition-all">
             Request Demo
           </Button>
-          <Link href="/auth/signup">
-            <Button className="text-black hover:text-white hover:bg-black transition-all">
-              Create a free account
-            </Button>
-          </Link>
+          <Button className="text-green-500  hover:text-black hover:bg-green-600 transition-all">
+            Create a free account
+          </Button>
         </div>
       </div>
     </header>
