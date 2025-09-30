@@ -83,9 +83,12 @@ export class AuthService {
     this.logger.info(`Login attempt for: ${cmd.email}`, AuthService.name);
 
     const user = await this.userService.validateUser(cmd.email, cmd.password);
+    console.log({user});
+    
     const tokens = await this.jwtTokenService.generateTokens(
       user.uuid,
       user.email,
+      user.role
     );
 
     console.log({ tokens });
@@ -157,6 +160,7 @@ export class AuthService {
       const tokens = await this.jwtTokenService.generateTokens(
         user.uuid,
         user.email,
+        user.role
       );
 
       // update cookie
@@ -193,6 +197,7 @@ export class AuthService {
     const tokens = await this.jwtTokenService.generateTokens(
       user.uuid,
       user.email,
+      user.role
     );
 
     if (tokens.refreshToken)
