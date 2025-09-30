@@ -2,7 +2,7 @@
 import React from "react";
 import { ProblemCard } from "@/components/ProblemCard";
 
-import api from "@/lib/axios";
+// import api from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
