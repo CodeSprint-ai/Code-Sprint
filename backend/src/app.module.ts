@@ -12,6 +12,10 @@ import { ProblemModule } from './problem/problem.module';
 import { SubmissionModule } from './submission/submission.module';
 import { SprintService } from './sprint/sprint.service';
 import { SprintModule } from './sprint/sprint.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from './auth/guard/role.guard';
+import { JwtAuthGuard } from './auth/guard/jwt.guard';
 
 @Module({
   imports: [
@@ -38,6 +42,16 @@ import { SprintModule } from './sprint/sprint.module';
     SprintModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SprintService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, //, // First: always check JWT
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard, // Then: always check roles if @Roles() is present
+    },
+  ],
 })
 export class AppModule {}
