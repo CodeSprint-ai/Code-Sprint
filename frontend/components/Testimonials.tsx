@@ -8,13 +8,13 @@ import { Card, CardContent } from "@/components/ui/card";
 const testimonials = [
   {
     logo: "/logos/akamai.svg",
-    text: "The proctoring features of HackerRank have a profound impact on the candidate experience. It reassures them that their skills and potential are what truly matter to us.",
+    text: "The proctoring features of CodeSprint have a profound impact on the candidate experience. It reassures them that their skills and potential are what truly matter to us.",
     author: "K. Thomas",
     role: "Head of Talent Acquisition",
   },
   {
     logo: "/logos/atlassian.svg",
-    text: "HackerRank helped us go beyond traditional universities. We've scaled up our college hiring from zero to 200.",
+    text: "CodeSprint helped us go beyond traditional universities. We've scaled up our college hiring from zero to 200.",
     author: "A. Viswanathan",
     role: "Head of Engineering",
   },
@@ -32,13 +32,13 @@ const testimonials = [
   },
   {
     logo: "/logos/doordash.svg",
-    text: "We cut down hiring time by months, which was huge for us. We owe that to HackerRank.",
+    text: "We cut down hiring time by months, which was huge for us. We owe that to CodeSprint.",
     author: "M. Patino",
     role: "University Recruiting",
   },
   {
     logo: "/logos/deliveroo.svg",
-    text: "HackerRank SkillUp received rave reviews. We started with our junior team and have now extended it to our mid-level.",
+    text: "CodeSprint SkillUp received rave reviews. We started with our junior team and have now extended it to our mid-level.",
     author: "A. Coleman",
     role: "Senior Recruiting Manager",
   },
