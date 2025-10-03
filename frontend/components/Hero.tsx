@@ -13,6 +13,7 @@ export default function Hero() {
 
   return (
     <section className="relative bg-[#0f1117] text-white py-20  flex items-center flex-1">
+      <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-emerald-400/30 to-transparent blur-3xl" />
       <div className="container mx-auto  md:px-12 lg:px-20 flex flex-col items-center text-center">
         
         {/* Animated Heading */}
@@ -20,7 +21,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-4xl md:text-6xl font-bold leading-tight mb-6"
+          className="text-4xl md:text-6xl font-bold leading-tight mb-6 text-emerald-400"
         >
           <span className="text-green-500">
             {word}

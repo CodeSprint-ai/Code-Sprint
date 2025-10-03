@@ -42,6 +42,7 @@ export default function DeveloperFocused() {
 
   return (
     <section className="bg-black text-white pb-24 px-6 relative">
+      <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-emerald-400/30 to-transparent blur-3xl" />
       <div className="max-w-6xl mx-auto space-y-32">
         {/* First Block */}
         <div
