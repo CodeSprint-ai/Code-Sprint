@@ -1,3 +1,4 @@
+// components/Header.tsx
 "use client";
 
 import { useState } from "react";
@@ -125,7 +126,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-gray-800 bg-black/80 backdrop-blur h-20 flex items-center">
-      <div className="container mx-auto flex  items-center justify-between ">
+      <div className="container mx-auto max-w-7xl flex items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold text-green-500 ">
           CodeSprintAI
