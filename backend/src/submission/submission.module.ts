@@ -6,13 +6,20 @@ import { Submission } from './entities/Submission';
 import { Problem } from '../problem/entities/Problem';
 
 import { SprintModule } from '../sprint/sprint.module';
+import { BullModule } from '@nestjs/bull';
+import { SubmissionProcessor } from './processor/submissionProcessor';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Submission, Problem]), // only entities needed here
-    SprintModule, // 👈 gives access to SprintService + SprintSessionRepository
+    SprintModule,
+    CommonModule,
+    BullModule.registerQueue({
+      name: 'submissions',   // 👈 name must match
+    }),
   ],
   controllers: [SubmissionController],
-  providers: [SubmissionService],
+  providers: [SubmissionService, SubmissionProcessor],
 })
-export class SubmissionModule {}
+export class SubmissionModule { }

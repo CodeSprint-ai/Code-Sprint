@@ -16,6 +16,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './auth/guard/role.guard';
 import { JwtAuthGuard } from './auth/guard/jwt.guard';
+import { BullModule } from '@nestjs/bull';
+import { SubmissionProcessor } from './submission/processor/submissionProcessor';
 
 @Module({
   imports: [
@@ -35,6 +37,11 @@ import { JwtAuthGuard } from './auth/guard/jwt.guard';
       }),
       inject: [ConfigService],
     }),
+    BullModule.forRoot({
+      // @ts-ignore
+      redis: { url: process.env.REDIS_URL || 'redis://localhost:6379' },
+    }),
+    BullModule.registerQueue({ name: 'submissions' }),
     AuthModule,
     UserModule,
     ProblemModule,
@@ -54,4 +61,4 @@ import { JwtAuthGuard } from './auth/guard/jwt.guard';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
