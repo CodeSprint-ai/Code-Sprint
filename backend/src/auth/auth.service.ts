@@ -15,16 +15,19 @@ import { MailService } from 'src/common/services/mail.service';
 import * as bcrypt from 'bcrypt';
 import { ValidationFailedException } from 'src/common/exceptions/ValidationFailedException';
 import { Transactional } from 'src/common/decorators/TransactionalDecorator';
-import { UserRepository } from 'src/user/user.repo';
 import { AppLogger } from 'src/common/services/logger.service';
 import { ProviderEnum } from './enum/ProviderEnum';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.model';
+import { Response, Request } from 'express';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly userRepo: UserRepository,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly jwtTokenService: JwtTokenService,
     private readonly mailService: MailService,
@@ -58,7 +61,25 @@ export class AuthService {
     return { message: 'Verification email sent' };
   }
 
-  async login(cmd: LoginCommand): Promise<AuthTokenDto> {
+  // async login(cmd: LoginCommand): Promise<AuthTokenDto> {
+  //   this.logger.info(`Login attempt for: ${cmd.email}`, AuthService.name);
+
+  //   const user = await this.userService.validateUser(cmd.email, cmd.password);
+  //   const tokens = await this.jwtTokenService.generateTokens(
+  //     user.uuid,
+  //     user.email,
+  //   );
+  //   const hashedRefresh = await this.jwtTokenService.hashRefreshToken(
+  //     tokens.refreshToken,
+  //   );
+
+  //   await this.userService.updateRefreshToken(user.uuid, hashedRefresh);
+
+  //   this.logger.info(`Login successful for: ${cmd.email}`, AuthService.name);
+  //   return AuthTokenDto.toDto(tokens, user);
+  // }
+
+  async login(cmd: LoginCommand, res: Response): Promise<AuthTokenDto> {
     this.logger.info(`Login attempt for: ${cmd.email}`, AuthService.name);
 
     const user = await this.userService.validateUser(cmd.email, cmd.password);
@@ -66,51 +87,91 @@ export class AuthService {
       user.uuid,
       user.email,
     );
-    const hashedRefresh = await this.jwtTokenService.hashRefreshToken(
-      tokens.refreshToken,
-    );
 
-    await this.userService.updateRefreshToken(user.uuid, hashedRefresh);
+    console.log({ tokens });
+
+    // Store refresh token in cookie (HttpOnly, Secure, SameSite=Strict)
+    res.cookie('refresh_token', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/', // or "/api/auth/refresh" if you want it scoped
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     this.logger.info(`Login successful for: ${cmd.email}`, AuthService.name);
-    return AuthTokenDto.toDto(tokens, user);
+
+    // Only return access token + user
+    return AuthTokenDto.toDto({ accessToken: tokens.accessToken }, user);
   }
 
-  async refreshTokens(cmd: RefreshTokenCommand): Promise<AuthTokenDto> {
-    this.logger.debug(
-      `Refreshing tokens for userUuid: ${cmd.userUuid}`,
-      AuthService.name,
-    );
+  // async refreshTokens(cmd: RefreshTokenCommand): Promise<AuthTokenDto> {
+  //   this.logger.debug(
+  //     `Refreshing tokens for userUuid: ${cmd.userUuid}`,
+  //     AuthService.name,
+  //   );
 
-    const user = await this.userRepo.findByUuid(cmd.userUuid);
-    if (!user || !user.refreshToken) {
-      this.logger.warn(
-        `Refresh denied for userUuid: ${cmd.userUuid}`,
-        AuthService.name,
+  //   const user = await this.userRepository.findOneBy({ uuid: cmd.userUuid });
+  //   if (!user || !user.refreshToken) {
+  //     this.logger.warn(
+  //       `Refresh denied for userUuid: ${cmd.userUuid}`,
+  //       AuthService.name,
+  //     );
+  //     throw new ForbiddenException('Access Denied');
+  //   }
+
+  //   await this.jwtTokenService.validateRefreshToken(
+  //     cmd.refreshToken,
+  //     user.refreshToken,
+  //   );
+
+  //   const tokens = await this.jwtTokenService.generateTokens(
+  //     user.uuid,
+  //     user.email,
+  //   );
+  //   const hashedRefresh = await this.jwtTokenService.hashRefreshToken(
+  //     tokens.refreshToken,
+  //   );
+
+  //   await this.userService.updateRefreshToken(user.uuid, hashedRefresh);
+
+  //   this.logger.info(
+  //     `Refresh token success for userUuid: ${cmd.userUuid}`,
+  //     AuthService.name,
+  //   );
+  //   return AuthTokenDto.toDto(tokens, user);
+  // }
+
+  async refreshTokens(req: Request, res: Response): Promise<AuthTokenDto> {
+    const refreshToken = req.cookies['refresh_token'];
+    if (!refreshToken) throw new ForbiddenException('No refresh token found');
+
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
+
+      const user = await this.userRepository.findOneBy({ uuid: payload.sub });
+      if (!user) throw new ForbiddenException('User not found');
+
+      const tokens = await this.jwtTokenService.generateTokens(
+        user.uuid,
+        user.email,
       );
-      throw new ForbiddenException('Access Denied');
+
+      // update cookie
+     res.cookie('refresh_token', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/', // or "/api/auth/refresh" if you want it scoped
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+      return AuthTokenDto.toDto({ accessToken: tokens.accessToken }, user);
+    } catch (e) {
+      throw new ForbiddenException('Invalid or expired refresh token');
     }
-
-    await this.jwtTokenService.validateRefreshToken(
-      cmd.refreshToken,
-      user.refreshToken,
-    );
-
-    const tokens = await this.jwtTokenService.generateTokens(
-      user.uuid,
-      user.email,
-    );
-    const hashedRefresh = await this.jwtTokenService.hashRefreshToken(
-      tokens.refreshToken,
-    );
-
-    await this.userService.updateRefreshToken(user.uuid, hashedRefresh);
-
-    this.logger.info(
-      `Refresh token success for userUuid: ${cmd.userUuid}`,
-      AuthService.name,
-    );
-    return AuthTokenDto.toDto(tokens, user);
   }
 
   async handleOAuthLogin(profile: {
@@ -123,7 +184,7 @@ export class AuthService {
       AuthService.name,
     );
 
-    let user = await this.userRepo.findByEmail(profile.email);
+    let user = await this.userRepository.findOneBy({ email: profile.email });
     if (!user) {
       user = await this.userService.createOAuthUser(profile);
       this.logger.info(`OAuth user created: ${user.email}`, AuthService.name);
@@ -133,7 +194,9 @@ export class AuthService {
       user.uuid,
       user.email,
     );
-    await this.userService.updateRefreshToken(user.uuid, tokens.refreshToken);
+
+    if (tokens.refreshToken)
+      await this.userService.updateRefreshToken(user.uuid, tokens.refreshToken);
 
     return AuthTokenDto.toDto(tokens, user);
   }
@@ -146,7 +209,9 @@ export class AuthService {
         secret: process.env.EMAIL_TOKEN_SECRET,
       });
 
-      const user = await this.userRepo.findByUuid(payload.userUuid);
+      const user = await this.userRepository.findOneBy({
+        uuid: payload.userUuid,
+      });
       if (!user)
         throw new ValidationFailedException(
           'Invalid user',
@@ -154,7 +219,7 @@ export class AuthService {
         );
 
       user.isVerified = true;
-      await this.userRepo.update(user.uuid, user);
+      await this.userRepository.update(user.uuid, user);
 
       this.logger.info(
         `Email verified for user: ${user.email}`,
@@ -178,7 +243,7 @@ export class AuthService {
       AuthService.name,
     );
 
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this.userRepository.findOneBy({ email });
     if (!user) throw new NotFoundException('No user found with this email');
 
     const token = this.jwtService.sign(
@@ -187,7 +252,7 @@ export class AuthService {
     );
 
     const passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000);
-    await this.userRepo.update(user.uuid, {
+    await this.userRepository.update(user.uuid, {
       passwordResetToken: token,
       passwordResetExpires,
     });
@@ -217,7 +282,9 @@ export class AuthService {
       throw new ValidationFailedException('Invalid or expired token');
     }
 
-    const user = await this.userRepo.findByUuid(payload.userUuid);
+    const user = await this.userRepository.findOneBy({
+      uuid: payload.userUuid,
+    });
     if (!user) throw new NotFoundException('User not found');
 
     if (
@@ -236,7 +303,7 @@ export class AuthService {
     user.password = await bcrypt.hash(newPassword, 10);
     user.passwordResetToken = null;
     user.passwordResetExpires = null;
-    await this.userRepo.update(user.uuid, user);
+    await this.userRepository.update(user.uuid, user);
 
     this.logger.info(
       `Password reset successful for: ${user.email}`,

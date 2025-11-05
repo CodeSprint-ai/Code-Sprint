@@ -12,6 +12,8 @@ import { ProblemModule } from './problem/problem.module';
 import { SubmissionModule } from './submission/submission.module';
 import { SprintService } from './sprint/sprint.service';
 import { SprintModule } from './sprint/sprint.module';
+import { BullModule } from '@nestjs/bull';
+import { SubmissionProcessor } from './submission/processor/submissionProcessor';
 
 @Module({
   imports: [
@@ -31,6 +33,11 @@ import { SprintModule } from './sprint/sprint.module';
       }),
       inject: [ConfigService],
     }),
+    BullModule.forRoot({
+      // @ts-ignore
+      redis: { url: process.env.REDIS_URL || 'redis://localhost:6379' },
+    }),
+    BullModule.registerQueue({ name: 'submissions' }),
     AuthModule,
     UserModule,
     ProblemModule,
@@ -40,4 +47,4 @@ import { SprintModule } from './sprint/sprint.module';
   controllers: [AppController],
   providers: [AppService, SprintService],
 })
-export class AppModule {}
+export class AppModule { }

@@ -35,13 +35,26 @@ export class Submission {
   status: SubmissionStatus;
 
   @Column({ nullable: true })
-  language: string; // "python", "cpp"
+  language: string;
 
   @Column({ type: 'float', nullable: true })
   executionTime: number;
 
   @Column({ type: 'float', nullable: true })
   memoryUsage: number;
+
+  @Column({ type: 'jsonb', nullable: true })
+  testResults: any; // [{input, expected, got, verdict, runtime}]
+
+  // additions to Submission entity
+  @Column({ type: 'text', nullable: true })
+  judgeTokens?: string; // JSON stringified array of tokens from Judge0
+
+  @Column({ type: 'text', nullable: true })
+  compileOutput?: string; // optional aggregate compile output
+
+  @Column({ nullable: true })
+  finishedAt?: Date;
 
   @CreateDateColumn()
   createdAt: Date;
