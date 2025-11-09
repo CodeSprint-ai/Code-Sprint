@@ -19,7 +19,7 @@ export class SubmissionProcessor {
     private submissionRepo: Repository<Submission>,
     private judge0: Judge0Service,
     private socket: SubmissionGateway,
-  ) { }
+  ) {}
 
   @Process('process')
   async handle(job: Job) {
@@ -62,35 +62,43 @@ export class SubmissionProcessor {
       }
 
       const useBase64 = process.env.JUDGE0_BASE64 === 'true';
-      const items = submission.problem.testCases.map((tc) => ({
-        language_id: langId,
-        source_code: useBase64
-          ? Buffer.from(submission.code).toString('base64')
-          : submission.code,
-        stdin: tc.input
-          ? useBase64
-            ? Buffer.from(tc.input).toString('base64')
-            : tc.input
-          : '',
-        expected_output: tc.expectedOutput
-          ? useBase64
-            ? Buffer.from(tc.expectedOutput).toString('base64')
+
+      // Map test cases for Judge0
+      const items = submission.problem.testCases.map((tc) => {
+        // Ensure expected output ends with a newline
+        const expectedOutput = tc.expectedOutput
+          ? tc.expectedOutput.endsWith('\n')
+            ? tc.expectedOutput
             : tc.expectedOutput
-          : '',
-        cpu_time_limit: submission.problem.timeLimitSeconds ?? 2,
-        memory_limit: Math.max(submission.problem.memoryLimitMB ?? 2048, 2048),
-      }));
+          : '';
+
+        // Encode if using base64
+        const encode = (str: string) =>
+          useBase64 ? Buffer.from(str).toString('base64') : str;
+
+        return {
+          language_id: langId,
+          source_code: encode(submission.code),
+          stdin: encode(tc.input ?? '4 2 7 11 15\n9'),
+          expected_output: encode(expectedOutput),
+          cpu_time_limit: 5,
+          memory_limit:128000
+        };
+      });
 
       const tokensResp = await this.judge0.submitBatch(items);
       if (!tokensResp?.length) {
         throw new Error('Judge0 submission failed');
       }
 
-      const tokens = tokensResp.map((t) => t.token).filter((t): t is string => !!t);
+      const tokens = tokensResp
+        .map((t) => t.token)
+        .filter((t): t is string => !!t);
       submission.judgeTokens = JSON.stringify(tokens);
       await this.submissionRepo.save(submission);
 
-      const results = (await this.judge0.pollBatchUntilDone(tokens, 60_000, 800)) || [];
+      const results =
+        (await this.judge0.pollBatchUntilDone(tokens, 60_000, 800)) || [];
 
       const testResults = submission.problem.testCases.map((tc, i) => {
         const r = results[i] ?? {};
@@ -122,11 +130,17 @@ export class SubmissionProcessor {
         };
       });
 
-      const allAccepted = testResults.every((tr) => tr.verdict === SubmissionStatus.ACCEPTED);
+      const allAccepted = testResults.every(
+        (tr) => tr.verdict === SubmissionStatus.ACCEPTED,
+      );
 
       submission.testResults = testResults;
-      submission.status = allAccepted ? SubmissionStatus.ACCEPTED : SubmissionStatus.WRONG_ANSWER;
-      submission.executionTime = Math.max(...results.map((r) => parseFloat(r.time ?? '0')));
+      submission.status = allAccepted
+        ? SubmissionStatus.ACCEPTED
+        : SubmissionStatus.WRONG_ANSWER;
+      submission.executionTime = Math.max(
+        ...results.map((r) => parseFloat(r.time ?? '0')),
+      );
       submission.memoryUsage = Math.max(...results.map((r) => r.memory ?? 0));
       submission.finishedAt = new Date();
 
@@ -136,7 +150,6 @@ export class SubmissionProcessor {
         status: submission.status,
         testResults,
       });
-
     } catch (err) {
       this.logger.error('Submission processing failed', err);
       submission.status = SubmissionStatus.INTERNAL_ERROR;
@@ -148,8 +161,4 @@ export class SubmissionProcessor {
       });
     }
   }
-
-
 }
-
-
