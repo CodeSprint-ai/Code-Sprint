@@ -3,12 +3,13 @@ import { MailService } from './services/mail.service';
 import { RequestContextService } from './services/request-context.service';
 import { AppLogger } from './services/logger.service';
 import { Judge0Service } from './services/judge.service';
-import { SocketGateway } from './utils/socket-gateway';
+import { SubmissionGateway } from './utils/socket-gateway';
+import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 
 @Module({
   imports: [],
-  providers: [MailService, RequestContextService, AppLogger,Judge0Service,SocketGateway],
-  exports: [MailService, RequestContextService, AppLogger, Judge0Service,SocketGateway],
+  providers: [MailService, RequestContextService, AppLogger,Judge0Service,SubmissionGateway,JwtStrategy],
+  exports: [MailService, RequestContextService, AppLogger, Judge0Service,SubmissionGateway],
   controllers: [],
 })
 export class CommonModule { }

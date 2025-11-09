@@ -29,7 +29,7 @@ interface UseProblemsReturn {
   >["mutateAsync"];
 }
 
-export const useProblem = (slug?: string): UseProblemsReturn => {
+export const useProblem = (uuid?: string): UseProblemsReturn => {
   const queryClient = useQueryClient();
 
   // Get all problems
@@ -44,12 +44,12 @@ export const useProblem = (slug?: string): UseProblemsReturn => {
 
   // Get one problem by slug
   const singleProblemQuery = useQuery<ProblemResponse, Error>({
-    queryKey: ["problem", slug],
+    queryKey: ["problem", uuid],
     queryFn: async () => {
-      const response = await api.get<ProblemResponse>(`/problems/${slug}`);
+      const response = await api.get<ProblemResponse>(`/problems/${uuid}`);
       return response.data;
     },
-    enabled: !!slug, // only run if slug is provided
+    enabled: !!uuid, // only run if slug is provided
   });
 
   // Create a problem

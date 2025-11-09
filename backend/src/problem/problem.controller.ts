@@ -60,7 +60,25 @@ export class ProblemController {
     return ResponseWrapper.success(problems, 'Problems fetched successfully');
   }
 
-  @Get(':slug')
+  // @Get(':slug')
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Returns a single problem by slug.',
+  //   type: ProblemDto,
+  // })
+  // @ApiResponse({
+  //   status: 404,
+  //   description: 'Problem not found.',
+  // })
+  // async findOneBySlug(
+  //   @Param('slug') slug: string,
+  // ): Promise<ReturnType<typeof ResponseWrapper.success>> {
+  //   const problem = await this.problemService.findOneBySlug(slug);
+  //   return ResponseWrapper.success(problem, 'Problem fetched successfully');
+  // }
+
+
+  @Get(':uuid')
   @ApiResponse({
     status: 200,
     description: 'Returns a single problem by slug.',
@@ -70,12 +88,14 @@ export class ProblemController {
     status: 404,
     description: 'Problem not found.',
   })
-  async findOneBySlug(
-    @Param('slug') slug: string,
+  async findOneByUuid(
+    @Param('uuid') uuid: string,
   ): Promise<ReturnType<typeof ResponseWrapper.success>> {
-    const problem = await this.problemService.findOneBySlug(slug);
-    return ResponseWrapper.success(problem, 'Problem fetched successfully');
+    const problem = await this.problemService.findOneByUuid(uuid);
+    return ResponseWrapper.success(ProblemDto.toDto(problem), 'Problem fetched successfully');
   }
+
+
 
   @Post('/update')
   @HttpCode(HttpStatus.OK)

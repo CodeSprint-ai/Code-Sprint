@@ -15,13 +15,13 @@ export class Submission {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false, eager: true })
   user: User;
 
-  @ManyToOne(() => Problem, { nullable: false })
+  @ManyToOne(() => Problem, { nullable: false, eager: true })
   problem: Problem;
 
-  @ManyToOne(() => SprintSession, { nullable: true })
+  @ManyToOne(() => SprintSession, { nullable: true, eager: true })
   sprintSession: SprintSession;
 
   @Column('text')

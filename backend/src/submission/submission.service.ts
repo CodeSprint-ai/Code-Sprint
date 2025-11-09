@@ -8,6 +8,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { SubmissionCommand } from './command/SubmissionCommand';
 import { SubmissionStatus } from './enum/SubmissionStatus';
+import { SubmissionDto } from './dto/SubmissionDto';
 
 @Injectable()
 export class SubmissionService {
@@ -40,5 +41,22 @@ export class SubmissionService {
     await this.repo.save(submission);
 
     return submission;
+  }
+
+  async getSubmissionsByUuid(submissionUuid: string) : Promise<SubmissionDto> {
+    const submissions = await this.repo.findOne({
+      where: {uuid: submissionUuid },
+    });
+    if (!submissions) throw new Error('Submission not found');
+    return SubmissionDto.toDto(submissions) ;
+  }
+
+  // get submissions by problem UUID
+  async getSubmissionsByProblemUuid(problemUuid: string) : Promise<SubmissionDto[]> {
+    const submissions = await this.repo.find({
+      where: { problem: { uuid: problemUuid } },
+      order: { createdAt: 'DESC' },
+    });
+    return submissions.map(SubmissionDto.toDto);
   }
 }

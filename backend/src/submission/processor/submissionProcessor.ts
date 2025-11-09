@@ -6,8 +6,8 @@ import { Submission } from '../entities/Submission';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Judge0Service } from '../../common/services/judge.service';
-import { SocketGateway } from '../../common/utils/socket-gateway';
 import { SubmissionStatus } from '../enum/SubmissionStatus';
+import { SubmissionGateway } from 'src/common/utils/socket-gateway';
 
 @Processor('submissions')
 @Injectable()
@@ -18,7 +18,7 @@ export class SubmissionProcessor {
     @InjectRepository(Submission)
     private submissionRepo: Repository<Submission>,
     private judge0: Judge0Service,
-    private socket: SocketGateway,
+    private socket: SubmissionGateway,
   ) { }
 
   @Process('process')
@@ -32,87 +32,124 @@ export class SubmissionProcessor {
 
     submission.status = SubmissionStatus.PROCESSING;
     await this.submissionRepo.save(submission);
-    this.socket.emitToUser(submission.user.uuid, 'submission.update', {
+    this.socket.sendSubmissionUpdate(submission.user.uuid, {
       id: submission.uuid,
       status: submission.status,
     });
 
-    const langId = await this.judge0.getLanguageIdByNameHint(submission.language);
-    const items = submission.problem.testCases.map((tc) => ({
-      language_id: langId,
-      source_code: submission.code,
-      stdin: tc.input ?? '',
-      expected_output: tc.expectedOutput ?? '',
-      cpu_time_limit: submission.problem.timeLimitSeconds ?? 2,
-      memory_limit: Math.max(submission.problem.memoryLimitMB ?? 2048, 2048),
-    }));
+    try {
+      // const langId = await this.judge0.getLanguageIdByNameHint(submission.language);
+      let langId: number;
 
-    // ✅ Submit to Judge0
-    const tokensResp = await this.judge0.submitBatch(items);
-    if (!tokensResp?.length) throw new Error('Failed to submit to Judge0');
+      if (!submission.language) {
+        throw new Error('Language not specified in submission');
+      }
 
-    const tokens = tokensResp.map((t) => t.token).filter((t): t is string => !!t);
-    submission.judgeTokens = JSON.stringify(tokens);
-    await this.submissionRepo.save(submission);
+      switch (submission.language.toLowerCase()) {
+        case 'python':
+        case 'python3':
+          langId = 71;
+          break;
+        case 'java':
+          langId = 62;
+          break;
+        case 'c++':
+        case 'cpp':
+          langId = 54;
+          break;
+        default:
+          throw new Error(`Unsupported language: ${submission.language}`);
+      }
 
-    // ✅ Poll Judge0
-    let results = await this.judge0.pollBatchUntilDone(tokens, 60_000, 800);
-    if (!results) results = [];
+      const useBase64 = process.env.JUDGE0_BASE64 === 'true';
+      const items = submission.problem.testCases.map((tc) => ({
+        language_id: langId,
+        source_code: useBase64
+          ? Buffer.from(submission.code).toString('base64')
+          : submission.code,
+        stdin: tc.input
+          ? useBase64
+            ? Buffer.from(tc.input).toString('base64')
+            : tc.input
+          : '',
+        expected_output: tc.expectedOutput
+          ? useBase64
+            ? Buffer.from(tc.expectedOutput).toString('base64')
+            : tc.expectedOutput
+          : '',
+        cpu_time_limit: submission.problem.timeLimitSeconds ?? 2,
+        memory_limit: Math.max(submission.problem.memoryLimitMB ?? 2048, 2048),
+      }));
 
-    // ✅ Map test results
-    const testResults = results.map((r, i) => {
-      const tc = submission.problem.testCases[i];
-      const statusId = r.status?.id ?? r.status_id;
-      const statusMap: Record<number, SubmissionStatus> = {
-        11: SubmissionStatus.ACCEPTED,
-        4: SubmissionStatus.WRONG_ANSWER,
-        5: SubmissionStatus.TIME_LIMIT_EXCEEDED,
-        6: SubmissionStatus.COMPILATION_ERROR,
-        7: SubmissionStatus.RUNTIME_ERROR,
-        8: SubmissionStatus.RUNTIME_ERROR,
-        9: SubmissionStatus.RUNTIME_ERROR,
-        10: SubmissionStatus.RUNTIME_ERROR,
-        12: SubmissionStatus.RUNTIME_ERROR,
-        13: SubmissionStatus.RUNTIME_ERROR,
-        14: SubmissionStatus.INTERNAL_ERROR,
-        15: SubmissionStatus.INTERNAL_ERROR,
-      };
+      const tokensResp = await this.judge0.submitBatch(items);
+      if (!tokensResp?.length) {
+        throw new Error('Judge0 submission failed');
+      }
 
-      const verdict = statusMap[statusId] || SubmissionStatus.INTERNAL_ERROR;
-      return {
-        input: tc.input,
-        expected: tc.expectedOutput,
-        got: r.stdout ?? '',
-        verdict,
-        time: r.time,
-        memory: r.memory,
-        token: r.token,
-      };
-    });
+      const tokens = tokensResp.map((t) => t.token).filter((t): t is string => !!t);
+      submission.judgeTokens = JSON.stringify(tokens);
+      await this.submissionRepo.save(submission);
 
-    const allAccepted = testResults.every(
-      (tr) => tr.verdict?.toUpperCase() === 'ACCEPTED',
-    );
+      const results = (await this.judge0.pollBatchUntilDone(tokens, 60_000, 800)) || [];
 
-    submission.testResults = testResults;
-    submission.status = allAccepted
-      ? SubmissionStatus.ACCEPTED
-      : SubmissionStatus.WRONG_ANSWER;
+      const testResults = submission.problem.testCases.map((tc, i) => {
+        const r = results[i] ?? {};
+        const statusId = r.status?.id ?? r.status_id ?? 13;
+        const statusMap: Record<number, SubmissionStatus> = {
+          3: SubmissionStatus.ACCEPTED,
+          4: SubmissionStatus.WRONG_ANSWER,
+          5: SubmissionStatus.TIME_LIMIT_EXCEEDED,
+          6: SubmissionStatus.COMPILATION_ERROR,
+          7: SubmissionStatus.RUNTIME_ERROR,
+          8: SubmissionStatus.RUNTIME_ERROR,
+          9: SubmissionStatus.RUNTIME_ERROR,
+          10: SubmissionStatus.RUNTIME_ERROR,
+          11: SubmissionStatus.RUNTIME_ERROR,
+          12: SubmissionStatus.RUNTIME_ERROR,
+          13: SubmissionStatus.INTERNAL_ERROR,
+          14: SubmissionStatus.INTERNAL_ERROR,
+          15: SubmissionStatus.INTERNAL_ERROR,
+        };
+        const verdict = statusMap[statusId] || SubmissionStatus.INTERNAL_ERROR;
+        return {
+          input: tc.input ?? '',
+          expected: tc.expectedOutput ?? '',
+          got: r.stdout ?? '',
+          verdict,
+          time: r.time ?? 0,
+          memory: r.memory ?? 0,
+          token: r.token ?? '',
+        };
+      });
 
-    submission.executionTime = Math.max(
-      ...results.map((r) => parseFloat(r.time || 0)),
-    );
-    submission.memoryUsage = Math.max(...results.map((r) => r.memory || 0));
-    submission.finishedAt = new Date();
+      const allAccepted = testResults.every((tr) => tr.verdict === SubmissionStatus.ACCEPTED);
 
-    await this.submissionRepo.save(submission);
+      submission.testResults = testResults;
+      submission.status = allAccepted ? SubmissionStatus.ACCEPTED : SubmissionStatus.WRONG_ANSWER;
+      submission.executionTime = Math.max(...results.map((r) => parseFloat(r.time ?? '0')));
+      submission.memoryUsage = Math.max(...results.map((r) => r.memory ?? 0));
+      submission.finishedAt = new Date();
 
-    // ✅ Emit socket update
-    this.socket.emitToUser(submission.user.uuid, 'submission.update', {
-      id: submission.uuid,
-      status: submission.status,
-      testResults,
-    });
+      await this.submissionRepo.save(submission);
+      this.socket.sendSubmissionUpdate(submission.user.uuid, {
+        id: submission.uuid,
+        status: submission.status,
+        testResults,
+      });
+
+    } catch (err) {
+      this.logger.error('Submission processing failed', err);
+      submission.status = SubmissionStatus.INTERNAL_ERROR;
+      submission.finishedAt = new Date();
+      await this.submissionRepo.save(submission);
+      this.socket.sendSubmissionUpdate(submission.user.uuid, {
+        id: submission.uuid,
+        status: submission.status,
+      });
+    }
   }
 
+
 }
+
+
