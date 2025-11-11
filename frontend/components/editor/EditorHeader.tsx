@@ -43,7 +43,7 @@ export default function EditorHeader({
             <SelectValue placeholder="Select language" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="python3">Python</SelectItem>
+            <SelectItem value="python">Python</SelectItem>
             <SelectItem value="javascript">JavaScript</SelectItem>
             <SelectItem value="cpp">C++</SelectItem>
           </SelectContent>
@@ -51,9 +51,9 @@ export default function EditorHeader({
       </div>
 
       <div className="flex gap-2">
-        <Button variant="outline" onClick={onRun} disabled={isDisabled}>
+        {/* <Button variant="outline" onClick={onRun} disabled={isDisabled}>
           {isRunning ? "Running..." : "Run"}
-        </Button>
+        </Button> */}
         <Button onClick={onSubmit} disabled={isDisabled}>
           {isSubmitting ? "Submitting..." : "Submit"}
         </Button>

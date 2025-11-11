@@ -4,23 +4,23 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react"; // Assuming you have lucide-react for icons
+import { Submission, SubmissionResponse } from "@/types/submission";
 
 interface ResultTabsProps {
   // result can be null initially, or hold the output/status object
-  result: {
-    status: string;
-    message: string;
-    output?: string; // Used for "Run" operations
-    // Add more fields for detailed results like testCaseResults
-  } | null;
+  result: Submission | null;
   isLoading: boolean;
 }
 
 export default function ResultTabs({ result, isLoading }: ResultTabsProps) {
   const [tab, setTab] = useState("console");
 
-  const isSuccess = result?.status === "Accepted";
-  const statusColor = isSuccess ? "text-green-500" : (result?.status === "Error" ? "text-red-500" : "text-yellow-500");
+  const isSuccess = result?.status === "ACCEPTED";
+  const statusColor = isSuccess
+    ? "text-green-500"
+    : result?.status === "WRONG_ANSWER"
+    ? "text-red-500"
+    : "text-yellow-500";
 
   return (
     <Tabs
@@ -71,37 +71,49 @@ export default function ResultTabs({ result, isLoading }: ResultTabsProps) {
       </TabsContent>
 
       {/* --- Results Tab (Status and Summary) --- */}
-      <TabsContent
-        value="results"
-        className="flex-1 overflow-auto p-3 text-sm"
-      >
-        {/* Display spinner when running/submitting */}
-        {isLoading && (
-          <div className="flex items-center space-x-2 text-primary">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Awaiting results...</span>
+      <TabsContent value="results" className="flex-1 overflow-auto p-3 text-sm">
+        {/* Display live status */}
+        {result && (
+          <div className="space-y-3">
+            <h3 className="font-bold text-lg">
+              Status:{" "}
+              <span
+                className={
+                  result.status === "ACCEPTED"
+                    ? "text-green-500"
+                    : result.status === "WRONG_ANSWER"
+                    ? "text-red-500"
+                    : "text-yellow-500"
+                }
+              >
+                {result.status}
+              </span>
+            </h3>
+            {/* {result.testResults && (
+              <div>
+                <h4 className="font-semibold">Test Cases:</h4>
+                <ul className="list-disc pl-5">
+                  {result.testResults.map((tr: any, i: number) => (
+                    <li
+                      key={i}
+                      className={
+                        tr.verdict === "ACCEPTED"
+                          ? "text-green-400"
+                          : "text-red-400"
+                      }
+                    >
+                      Test {i + 1}: {tr.verdict} | Time: {tr.time}s | Memory:{" "}
+                      {tr.memory}KB
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <p>{result.message}</p> */}
           </div>
         )}
 
-        {/* Display submission result */}
-        {!isLoading && result && (
-          <div className="space-y-3">
-            <h3 className="font-bold text-lg">
-              Status: <span className={statusColor}>{result.status}</span>
-            </h3>
-            <p>{result.message}</p>
-            
-            {/* You can add more detailed result components here, e.g., a table showing test case pass/fail */}
-            <div className="mt-4 p-3 bg-gray-800 rounded">
-              <p className="text-xs text-gray-400">Detailed Report Placeholder</p>
-            </div>
-          </div>
-        )}
-        
-        {/* Default message */}
-        {!isLoading && !result && (
-          <div>Submission results will be displayed here.</div>
-        )}
+        {!result && <div>Submission results will be displayed here.</div>}
       </TabsContent>
     </Tabs>
   );

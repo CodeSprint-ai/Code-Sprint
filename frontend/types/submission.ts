@@ -2,7 +2,7 @@ export interface Submission {
   id: string;
   code: string;
   language: string;
-  status: "QUEUED" | "RUNNING" | "SUCCESS" | "FAILED";
+  status: "PENDING" | "QUEUED" | "PROCESSING" | "ACCEPTED" | "WRONG_ANSWER" | "TIME_LIMIT_EXCEEDED" | "RUNTIME_ERROR" | "COMPILATION_ERROR" | "INTERNAL_ERROR";
   output?: string;
   userId: string;
   problemId: string;

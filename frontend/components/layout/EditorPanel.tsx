@@ -8,7 +8,7 @@ import CodeEditor from "../editor/CodeEditor";
 import { useSubmission } from "@/hooks/useSubmission";
 
 export default function EditorPanel({ problem }: any) {
-  const [language, setLanguage] = useState("python3");
+  const [language, setLanguage] = useState("python");
   const [code, setCode] = useState("// Write your code here");
 
   // State for submission/run status
