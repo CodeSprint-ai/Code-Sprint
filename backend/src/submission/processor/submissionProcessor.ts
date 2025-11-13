@@ -72,7 +72,7 @@ export class SubmissionProcessor {
             : tc.expectedOutput
           : '';
 
-        // Encode if using base64
+        // Encode if using base64 encoded
         const encode = (str: string) =>
           useBase64 ? Buffer.from(str).toString('base64') : str;
 
