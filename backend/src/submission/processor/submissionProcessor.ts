@@ -31,7 +31,7 @@ export class SubmissionProcessor {
     if (!submission) throw new Error('Submission not found');
 
     submission.status = SubmissionStatus.PROCESSING;
-    await this.submissionRepo.save(submission);
+    await this.submissionRepo.save(submission); // this line change value in database
     this.socket.sendSubmissionUpdate(submission.user.uuid, {
       id: submission.uuid,
       status: submission.status,
