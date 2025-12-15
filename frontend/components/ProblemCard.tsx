@@ -63,18 +63,24 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
   return (
     <Card
       // onClick={handleClick}
-      className={`border rounded-lg p-4 px-0  dark:text-white dark:bg-black ${
-        difficulty === Difficulty.EASY &&
+      className={`border rounded-lg p-4 px-0  dark:text-white dark:bg-black ${difficulty === Difficulty.EASY &&
         "dark:bg-green-600/10 border border-green-800"
-      } ${
-        difficulty === Difficulty.MEDIUM &&
+        } ${difficulty === Difficulty.MEDIUM &&
         "dark:bg-yellow-600/10 border border-yellow-800"
-      } ${
-        difficulty === Difficulty.HARD &&
+        } ${difficulty === Difficulty.HARD &&
         "dark:bg-red-600/10 border border-red-800"
-      } space-y-4 hover:shadow-lg transition`}
+        } space-y-4 hover:shadow-lg transition`}
     >
-      <Link href={`/admin/submission/${uuid}`}>
+      {/* <Link href={`/admin/submission/${uuid}`}>
+        <CardHeader className="flex justify-between items-start">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-bold">#{index + 1}</span>
+            {type && icon[type]}
+          </div>
+          {starred && <Star className="w-5 h-5 text-yellow-400" />}
+        </CardHeader>
+      </Link> */}
+      <Link href={`/problems/problem/${uuid}`}>
         <CardHeader className="flex justify-between items-start">
           <div className="flex items-center space-x-2">
             <span className="text-sm font-bold">#{index + 1}</span>
@@ -83,7 +89,6 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
           {starred && <Star className="w-5 h-5 text-yellow-400" />}
         </CardHeader>
       </Link>
-
       <CardContent className="space-y-2">
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
         <CardDescription className="text-gray-400">

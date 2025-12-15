@@ -5,10 +5,11 @@ import { AppLogger } from './services/logger.service';
 import { Judge0Service } from './services/judge.service';
 import { SubmissionGateway } from './utils/socket-gateway';
 import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [],
-  providers: [MailService, RequestContextService, AppLogger,Judge0Service,SubmissionGateway,JwtStrategy],
+  providers: [MailService, RequestContextService, AppLogger,Judge0Service,SubmissionGateway,JwtStrategy,JwtService],
   exports: [MailService, RequestContextService, AppLogger, Judge0Service,SubmissionGateway],
   controllers: [],
 })

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 
 import { useSubmission } from "@/hooks/useSubmission";
-import useSocket from "@/lib/socket-io";
+import { initSocket } from "@/lib/socket-io";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -25,7 +25,7 @@ const DEFAULT_CODE: Record<string, string> = {
 export default function SubmissionEditor({ problem }: any) {
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState(DEFAULT_CODE["python"]);
-  const socket = useSocket();
+  // const socket = initSocket();
 
   const { createSubmission } = useSubmission(problem?.uuid);
 

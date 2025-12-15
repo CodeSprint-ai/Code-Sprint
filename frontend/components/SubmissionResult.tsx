@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useSocket from "@/lib/socket-io";
+// import useSocket from "@/lib/socket-io";
 import { useSubmission } from "@/hooks/useSubmission";
 
 export default function SubmissionResult({
@@ -7,7 +7,7 @@ export default function SubmissionResult({
 }: {
   problemUuid: string;
 }) {
-  const socket = useSocket();
+  // const socket = useSocket();
   const [submissions, setSubmissions] = useState<any[]>([]);
 
   // ✅ use your React Query hook
@@ -33,18 +33,18 @@ export default function SubmissionResult({
   }, [allSubmissions.data]);
 
   // ✅ real-time update listener
-  useEffect(() => {
-    const handleUpdate = (payload: any) => {
-      console.log("📩 Submission update received:", payload);
-      allSubmissions.refetch?.(); 
-    };
+  // useEffect(() => {
+  //   const handleUpdate = (payload: any) => {
+  //     console.log("📩 Submission update received:", payload);
+  //     allSubmissions.refetch?.(); 
+  //   };
 
-    socket.on("submission.update", handleUpdate);
+  //   socket.on("submission.update", handleUpdate);
 
-    return () => {
-      socket.off("submission.update", handleUpdate);
-    };
-  }, [socket, allSubmissions]);
+  //   return () => {
+  //     socket.off("submission.update", handleUpdate);
+  //   };
+  // }, [socket, allSubmissions]);
 
   return (
     <div className="p-4 border rounded-lg">
