@@ -15,10 +15,8 @@ interface Props {
 
 export default function CodeEditor({ language, code, setCode }: Props) {
   return (
-    <div className="h-full w-full">
+    <div className="flex-auto ">
       <MonacoEditor
-        height="100%"
-        width="100%"
         language={language}
         value={code}
         theme="vs-dark"

@@ -59,6 +59,9 @@ export function Sidebar() {
   const { state } = useSidebar();
   const { user } = useAuthStore();
 
+console.log({user});
+
+
   return (
     <ShadSidebar collapsible="icon" className="static h-full">
       <SidebarContent>

@@ -15,11 +15,11 @@ export default function DashboardLayout({
   // useAuth();
   return (
     <SidebarProvider>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col lg:h-screen">
         <Header />
         <div className="flex flex-1">
           <Sidebar />
-          <main className="w-full">
+          <main className="flex flex-col flex-1 border ">
             <SidebarTrigger />
             {children}
           </main>

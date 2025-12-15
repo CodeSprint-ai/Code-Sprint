@@ -96,7 +96,7 @@ export default function EditorPanel({ problem }: any) {
   };
 
   return (
-    <div className="flex flex-col h-full w-full overflow-hidden">
+    <div className="flex flex-col h-full ">
       {/* Header (Pass handlers and loading state) */}
       <EditorHeader
         language={language}
@@ -110,9 +110,9 @@ export default function EditorPanel({ problem }: any) {
       />
 
       {/* Code Editor */}
-      <div className="flex-1 overflow-hidden">
+      {/* <div className=""> */}
         <CodeEditor language={language} code={code} setCode={setCode} />
-      </div>
+      {/* </div> */}
 
       {/* Tabs (Pass results) */}
       <div className="h-50 border-t border-gray-800 overflow-hidden">

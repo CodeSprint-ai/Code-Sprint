@@ -29,7 +29,7 @@ export default function ResultTabs({ initialResult, isLoading }: ResultTabsProps
       : "text-yellow-500";
 
   return (
-    <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full bg-background">
+    <Tabs value={tab} onValueChange={setTab} className=" bg-background">
       <TabsList className="bg-muted/40 border-b border-gray-800">
         <TabsTrigger value="console">Console</TabsTrigger>
         <TabsTrigger value="testcases">Test Cases</TabsTrigger>

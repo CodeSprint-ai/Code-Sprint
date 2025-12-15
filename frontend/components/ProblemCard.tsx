@@ -80,7 +80,7 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
           {starred && <Star className="w-5 h-5 text-yellow-400" />}
         </CardHeader>
       </Link> */}
-      <Link href={`/problems/problem/${uuid}`}>
+      <Link href={`/submission/${uuid}`}>
         <CardHeader className="flex justify-between items-start">
           <div className="flex items-center space-x-2">
             <span className="text-sm font-bold">#{index + 1}</span>
