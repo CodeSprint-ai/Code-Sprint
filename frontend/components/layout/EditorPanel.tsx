@@ -61,7 +61,7 @@ export default function EditorPanel({ problem }: any) {
     console.log("Attempting to submit code...");
     setIsSubmitting(true);
     setSubmissionResult(null); // Clear previous results
- 
+
     // Data structure to send to your backend
     const submissionData = {
       problemUuid: problem.uuid,
@@ -73,14 +73,12 @@ export default function EditorPanel({ problem }: any) {
     // --- Placeholder API Call ---
     try {
       // Simulate API call delay
-        const resp = await createSubmission({
-      code,
-      language,
-      problemUuid: problem.uuid,
-      slug: problem.slug,
-    });
-
-     
+      const resp = await createSubmission({
+        code,
+        language,
+        problemUuid: problem.uuid,
+        slug: problem.slug,
+      });
 
       setSubmissionResult(resp);
       console.log("Submission finished:", resp);
@@ -111,13 +109,13 @@ export default function EditorPanel({ problem }: any) {
 
       {/* Code Editor */}
       {/* <div className=""> */}
-        <CodeEditor language={language} code={code} setCode={setCode} />
+      <CodeEditor language={language} code={code} setCode={setCode} />
       {/* </div> */}
 
       {/* Tabs (Pass results) */}
       <div className="h-50 border-t border-gray-800 overflow-hidden">
         <ResultTabs
-          result={submissionResult} // New prop
+          initialResult={submissionResult} // New prop
           isLoading={isSubmitting || isRunning} // New prop
         />
       </div>

@@ -21,6 +21,7 @@ interface UseSubmissionsReturn {
     CreateSubmissionInput,
     unknown
   >["mutateAsync"];
+  createSubmissionLoading: boolean;
 }
 
 export const useSubmission = (
@@ -83,5 +84,6 @@ export const useSubmission = (
     allSubmissions: allSubmissionsQuery,
     singleSubmission: singleSubmissionQuery,
     createSubmission: createSubmissionMutation.mutateAsync,
+    createSubmissionLoading: createSubmissionMutation.isPending,
   };
 };
