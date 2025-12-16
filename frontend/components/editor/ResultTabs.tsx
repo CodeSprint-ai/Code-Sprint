@@ -16,8 +16,8 @@ export default function ResultTabs({ initialResult, isLoading }: ResultTabsProps
   // --- Subscribe to real-time updates ---
   useSubmissionSocket((update: Submission) => {
     // update the local state whenever backend sends new submission data
-    console.log({update});
-    
+    console.log({ update });
+
     setResult(update);
   });
 
@@ -25,8 +25,11 @@ export default function ResultTabs({ initialResult, isLoading }: ResultTabsProps
     result?.status === "ACCEPTED"
       ? "text-green-500"
       : result?.status === "WRONG_ANSWER"
-      ? "text-red-500"
-      : "text-yellow-500";
+        ? "text-red-500"
+        : "text-yellow-500";
+
+  console.log({ initialResult });
+
 
   return (
     <Tabs value={tab} onValueChange={setTab} className=" bg-background">
@@ -56,7 +59,7 @@ export default function ResultTabs({ initialResult, isLoading }: ResultTabsProps
       </TabsContent>
 
       {/* --- Test Cases Tab --- */}
-      {/* <TabsContent className="flex-1 overflow-auto p-3 text-sm text-gray-300" value="testcases">
+      <TabsContent className="flex-1 overflow-auto p-3 text-sm text-gray-300" value="testcases">
         {result?.testResults ? (
           <ul className="list-disc pl-5">
             {result.testResults.map((tr, i) => (
@@ -71,7 +74,7 @@ export default function ResultTabs({ initialResult, isLoading }: ResultTabsProps
         ) : (
           <div>Test cases will be shown here upon submission completion.</div>
         )}
-      </TabsContent> */}
+      </TabsContent>
 
       {/* --- Results Tab --- */}
       <TabsContent className="flex-1 overflow-auto p-3 text-sm" value="results">

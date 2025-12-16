@@ -80,6 +80,10 @@ export default function EditorPanel({ problem }: any) {
         slug: problem.slug,
       });
 
+
+      console.log({ resp });
+
+
       setSubmissionResult(resp);
       console.log("Submission finished:", resp);
     } catch (error) {

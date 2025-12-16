@@ -21,7 +21,7 @@ export default function SubmissionPage({
 
  
   return (
-    <main className="flex flex-col flex-1 border-2 border-white">
+    <main className="flex flex-col flex-1">
       {/* Header */}
       <header className="border-b border-gray-800 px-4 py-3 font-semibold text-lg flex justify-between items-center">
         <span>{problem.title}</span>
