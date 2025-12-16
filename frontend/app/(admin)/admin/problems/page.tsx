@@ -1,12 +1,14 @@
-import ProblemsContainer from '@/containers/ProblemsContainer'
-import React from 'react'
+import ProblemsHeader from "@/components/ProblemsHeader";
+import ProblemsContainer from "@/containers/ProblemsContainer";
+import React from "react";
 
 const Problems = () => {
   return (
     <>
-    <ProblemsContainer />
+      <ProblemsHeader />
+      <ProblemsContainer />
     </>
-  )
-}
+  );
+};
 
-export default Problems
+export default Problems;

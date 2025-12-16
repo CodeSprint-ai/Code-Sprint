@@ -1,7 +1,9 @@
-import React from "react";
+import React from 'react'
 
 const Submission = () => {
-  return <div>Submission</div>;
-};
+  return (
+    <div>Submission</div>
+  )
+}
 
-export default Submission;
+export default Submission

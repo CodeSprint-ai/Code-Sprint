@@ -1,11 +1,11 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { SubmissionCommand } from './command/SubmissionCommand';
 import { SubmissionService } from './submission.service';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('submission')
 export class SubmissionController {
-  constructor(private readonly submissionService: SubmissionService) {}
+  constructor(private readonly submissionService: SubmissionService) { }
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
@@ -14,5 +14,20 @@ export class SubmissionController {
     const user = req.user;
     const submission = await this.submissionService.createSubmission(command, user);
     return { submissionId: submission.uuid, status: submission.status };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':uuid')
+  async getByUuid(@Param('uuid') uuid: string) {
+    const submission = await this.submissionService.getSubmissionsByUuid(uuid);
+    return submission;
+  }
+
+  // get submissions by problem UUID
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/problem/:uuid')
+  async getByProblemUuid(@Param('uuid') uuid: string) {
+    const submissions = await this.submissionService.getSubmissionsByProblemUuid(uuid);
+    return submissions;
   }
 }
