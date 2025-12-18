@@ -1,39 +1,59 @@
+// export interface TestResult {
+//   input: string;
+//   expected: string;
+//   got: string;
+//   verdict:
+//     | "ACCEPTED"
+//     | "WRONG_ANSWER"
+//     | "TIME_LIMIT_EXCEEDED"
+//     | "RUNTIME_ERROR"
+//     | "COMPILATION_ERROR"
+//     | "INTERNAL_ERROR";
+//   time: string;
+//   memory: number;
+//   token: string;
+// }
+
+export type SubmissionStatus =
+  | "PENDING"
+  | "QUEUED"
+  | "PROCESSING"
+  | "ACCEPTED"
+  | "WRONG_ANSWER"
+  | "TIME_LIMIT_EXCEEDED"
+  | "RUNTIME_ERROR"
+  | "COMPILATION_ERROR"
+  | "INTERNAL_ERROR";
+
 export interface TestResult {
-  input: string;
-  expected: string;
-  got: string;
-  verdict:
-    | "ACCEPTED"
-    | "WRONG_ANSWER"
-    | "TIME_LIMIT_EXCEEDED"
-    | "RUNTIME_ERROR"
-    | "COMPILATION_ERROR"
-    | "INTERNAL_ERROR";
-  time: string;
-  memory: number;
-  token: string;
+  id: string;
+  status: "PASSED" | "FAILED";
+  input?: string;
+  expectedOutput?: string;
+  actualOutput?: string;
+  executionTime?: number;
+  memoryUsage?: number;
 }
 
 export interface Submission {
-  id: string;
+  uuid: string;
   code: string;
   language: string;
-  status:
-    | "PENDING"
-    | "QUEUED"
-    | "PROCESSING"
-    | "ACCEPTED"
-    | "WRONG_ANSWER"
-    | "TIME_LIMIT_EXCEEDED"
-    | "RUNTIME_ERROR"
-    | "COMPILATION_ERROR"
-    | "INTERNAL_ERROR";
+  status: SubmissionStatus;
+
   output?: string;
+
+  executionTime?: number;
+  memoryUsage?: number;
+
   userId: string;
   problemId: string;
-  createdAt: string;
-  testResults: TestResult[];
+
+  createdAt: string; // ISO string from backend
+
+  testResults?: TestResult[]; // ✅ optional (important)
 }
+
 
 export interface SubmissionResponse {
   submission: Submission;

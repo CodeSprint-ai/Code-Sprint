@@ -2,7 +2,7 @@ import { RoleEnum } from "@/enum/role.enum";
 
 // src/types/auth.ts
 export interface User {
-  id: string;
+  userUuid: string;
   email: string;
   name: string;
   role: RoleEnum;

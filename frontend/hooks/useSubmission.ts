@@ -26,21 +26,23 @@ interface UseSubmissionsReturn {
 
 export const useSubmission = (
   problemUuid?: string,
-  submissionUuid?: string
+  submissionUuid?: string,
+  userUuid?: string
 ): UseSubmissionsReturn => {
   const queryClient = useQueryClient();
 
-  // 🟢 Get all submissions for a problem
+  // 🟢 Get all submissions for a user
   const allSubmissionsQuery = useQuery<SubmissionsResponse, Error>({
-    queryKey: ["submissions", problemUuid],
+    queryKey: ["submissions", userUuid],
     queryFn: async () => {
       const response = await api.get<SubmissionsResponse>(
-        `/submission/problem/${problemUuid}`
+        `/submission/problem/user/${userUuid}`
       );
       return response.data;
     },
-    enabled: !!problemUuid, // only run when problemSlug is provided
+    enabled: Boolean(userUuid),
   });
+
 
   // 🟢 Get single submission by ID
   const singleSubmissionQuery = useQuery<SubmissionResponse, Error>({
