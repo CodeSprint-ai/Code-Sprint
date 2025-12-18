@@ -30,4 +30,12 @@ export class SubmissionController {
     const submissions = await this.submissionService.getSubmissionsByProblemUuid(uuid);
     return submissions;
   }
+
+   // get submissions by problem UUID
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/problem/user/:uuid')
+  async getByUserUuid(@Param('uuid') uuid: string) {
+    const submissions = await this.submissionService.getSubmissionsByUserUuid(uuid);
+    return submissions;
+  }
 }

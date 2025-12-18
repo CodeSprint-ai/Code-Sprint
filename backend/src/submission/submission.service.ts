@@ -59,4 +59,13 @@ export class SubmissionService {
     });
     return submissions.map(SubmissionDto.toDto);
   }
+
+  // get submissions by problem UUID
+  async getSubmissionsByUserUuid(userUuid: string) : Promise<SubmissionDto[]> {
+    const submissions = await this.repo.find({
+      where: { user: { uuid: userUuid } },
+      order: { createdAt: 'DESC' },
+    });
+    return submissions.map(SubmissionDto.toDto);
+  }
 }
