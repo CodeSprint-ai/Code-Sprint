@@ -142,4 +142,10 @@ export class AuthController {
     );
     return ResponseWrapper.success(result, 'Password reset successfully');
   }
+
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    const result = await this.authService.logout(res);
+    return ResponseWrapper.success(result, 'Logged out successfully');
+  }
 }

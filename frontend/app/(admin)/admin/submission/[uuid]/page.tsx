@@ -19,23 +19,31 @@ export default function SubmissionPage({
 
   const problem = data.data;
 
- 
+
   return (
-    <main className="h-screen w-[1220px] flex flex-col bg-background text-foreground">
+    <main className="h-screen w-full flex flex-col bg-background text-foreground">
       {/* Header */}
       <header className="border-b border-gray-800 px-4 py-3 font-semibold text-lg flex justify-between items-center">
         <span>{problem.title}</span>
       </header>
 
-      {/* Split layout */}
-      <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
-        {/* Left panel */}
+      {/* <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
         <div className="lg:w-1/2 border-b lg:border-b-0 lg:border-r border-gray-800 overflow-y-auto p-6">
           <ProblemPanel problem={problem} />
         </div>
 
-        {/* Right panel */}
         <div className="lg:w-1/2 flex flex-col overflow-hidden p-4">
+          <EditorPanel problem={problem} />
+        </div>
+      </section> */}
+      <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
+        {/* Left panel */}
+        <div className="lg:w-1/2 border-b lg:border-b-0 lg:border-r border-gray-800 overflow-y-auto h-full">
+          <ProblemPanel problem={problem} />
+        </div>
+
+        {/* Right panel */}
+        <div className="lg:w-1/2 flex flex-col overflow-hidden h-full">
           <EditorPanel problem={problem} />
         </div>
       </section>

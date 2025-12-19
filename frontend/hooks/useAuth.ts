@@ -93,6 +93,7 @@ export const useAuth = (): UseAuthReturn => {
   const logoutMutation = useMutation<void, Error, void>({
     mutationFn: async (): Promise<void> => {
       await api.post("/auth/logout");
+      router.replace("/");
     },
     onSuccess: () => {
       clearAuth();

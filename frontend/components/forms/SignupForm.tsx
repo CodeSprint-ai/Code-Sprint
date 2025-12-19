@@ -17,10 +17,11 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
 import { signupSchema, SignupFormValues } from "@/validations/authForm";
+import { useRouter } from "next/navigation";
 
 const SignUpForm: React.FC = () => {
   const { signup, isLoading, error } = useAuth();
-
+  const router = useRouter();
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -36,6 +37,7 @@ const SignUpForm: React.FC = () => {
       toast.success("Account created 🎉", {
         description: "Check your email to verify your account",
       });
+      router.push("/auth/login");
     } catch (err: any) {
       toast.error("Sign up failed", {
         description: err?.message || "Something went wrong",

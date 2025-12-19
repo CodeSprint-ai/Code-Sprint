@@ -33,6 +33,16 @@ export interface TestResult {
   actualOutput?: string;
   executionTime?: number;
   memoryUsage?: number;
+  verdict:
+  | "ACCEPTED"
+  | "WRONG_ANSWER"
+  | "TIME_LIMIT_EXCEEDED"
+  | "RUNTIME_ERROR"
+  | "COMPILATION_ERROR"
+  | "INTERNAL_ERROR";
+  time: string;
+  memory: number;
+  token: string;
 }
 
 export interface Submission {

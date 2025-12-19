@@ -1,5 +1,6 @@
 "use client";
 
+import { SubmissionCard } from "@/components/SubmissionCard";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubmission } from "@/hooks/useSubmission";
 import { useAuthStore } from "@/store/authStore";
@@ -30,9 +31,9 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function SubmissionsPage() {
-  const userUuid = useAuthStore((state) => state.user?.userUuid);
+    const userUuid = useAuthStore((state) => state.user?.userUuid);
 
-  const { allSubmissions } = useSubmission(undefined, undefined, userUuid);
+    const { allSubmissions } = useSubmission(undefined, undefined, userUuid);
 
     if (allSubmissions.isLoading) {
         return (
@@ -50,7 +51,7 @@ export default function SubmissionsPage() {
         );
     }
 
-    const submissions:any = allSubmissions?.data ?? [];
+    const submissions: any = allSubmissions?.data ?? [];
 
     return (
         <div className="min-h-screen bg-black px-6 py-8">
@@ -61,48 +62,13 @@ export default function SubmissionsPage() {
             {submissions.length === 0 ? (
                 <p className="text-gray-500">No submissions found.</p>
             ) : (
-                <div className="space-y-4">
-                    {submissions.map((submission:any) => (
-                        <div
+                <div className="grid gap-4">
+                    {submissions.map((submission: any, index: number) => (
+                        <SubmissionCard
                             key={submission.uuid}
-                            className="rounded-lg border border-gray-800 bg-gray-900 p-4 hover:bg-gray-800 transition"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-gray-200 font-medium">
-                                        Language:{" "}
-                                        <span className="text-gray-400">
-                                            {submission.language}
-                                        </span>
-                                    </p>
-                                    <p className="text-gray-500 text-sm">
-                                        Problem ID: {submission.problemId}
-                                    </p>
-                                </div>
-
-                                <StatusBadge status={submission.status} />
-                            </div>
-
-                            <div className="mt-3 grid grid-cols-2 gap-4 text-sm text-gray-400">
-                                <div>
-                                    ⏱ Time:{" "}
-                                    {submission.executionTime
-                                        ? `${submission.executionTime} ms`
-                                        : "—"}
-                                </div>
-                                <div>
-                                    💾 Memory:{" "}
-                                    {submission.memoryUsage
-                                        ? `${submission.memoryUsage} KB`
-                                        : "—"}
-                                </div>
-                            </div>
-
-                            <p className="mt-3 text-xs text-gray-500">
-                                Submitted at:{" "}
-                                {new Date(submission.createdAt).toLocaleString()}
-                            </p>
-                        </div>
+                            submission={submission}
+                            index={index}
+                        />
                     ))}
                 </div>
             )}

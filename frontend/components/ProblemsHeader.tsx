@@ -13,13 +13,15 @@ import { Separator } from "@/components/ui/separator";
 import { Filter } from "lucide-react";
 import { useProblemStore } from "@/store/problemStore";
 import AddProblemPopupForm from "./forms/AddProblemPopupForm";
+import { useAuthStore } from "@/store/authStore";
 
 export default function ProblemsHeader() {
- const { isAddProblemPopupForm, setIsAddProblemPopupForm } = useProblemStore();
+  const { isAddProblemPopupForm, setIsAddProblemPopupForm } = useProblemStore();
+  const user = useAuthStore((state) => state.user);
 
-const handleAddProblemPopup = () =>{
-setIsAddProblemPopupForm(true)
-}
+  const handleAddProblemPopup = () => {
+    setIsAddProblemPopupForm(true)
+  }
 
   return (
     <div className="flex flex-col gap-2 p-6 border-b bg-background">
@@ -33,9 +35,12 @@ setIsAddProblemPopupForm(true)
             Challenge yourself with our curated set of coding problems
           </p>
         </div>
-        <Button variant="outline" onClick={handleAddProblemPopup} >
-          Add Problem
-        </Button>
+        { user?.role === "ADMIN" &&
+          <Button variant="outline" onClick={handleAddProblemPopup} >
+            Add Problem
+          </Button>
+        }
+
       </div>
 
       {/* Search + filters row */}
