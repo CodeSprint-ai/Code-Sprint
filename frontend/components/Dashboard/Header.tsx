@@ -35,9 +35,10 @@
 
 
 import React from "react";
-import {  LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/useAuth";
+// import Link from "next/link";
 
 const Header = () => {
   const { logout } = useAuth();
@@ -54,11 +55,8 @@ const Header = () => {
     >
       <div className="flex h-full items-center justify-between px-6">
         {/* Title */}
-        <div className="text-lg font-semibold tracking-wide">
-          <span className="bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
-            Code
-          </span>{" "}
-          <span className="text-white/90">Sprint</span>
+        <div className="text-2xl font-bold text-green-500 ">
+          CodeSprintAI
         </div>
 
         {/* Actions */}

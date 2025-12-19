@@ -13,24 +13,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/store/authStore";
 
 const DashboardContainer = () => {
-  // const { user } = useSelector((state: RootState) => state.auth);
-  // const [profile, setProfile] = useState<any>(null);
-  // const dispatch = useDispatch();
-  // const { setTheme } = useTheme();
-
-  // useEffect(() => {
-  //     api
-  //         .get("/user/me")
-  //         .then((res) => setProfile(res.data))
-  //         .catch(() => dispatch(logout()));
-  // }, [dispatch]);
+const user = useAuthStore((state) => state.user);
 
   return (
     <div className="text-lg">
       {/* profile?.name || user?.name */}
-      Welcome, <span className="font-semibold">{"Usman"}</span>
+      Welcome, <span className="font-semibold">{user?.name}</span>
     </div>
   );
 };

@@ -205,16 +205,16 @@ export default function Header() {
             <Button
               // variant="ghost"
 
-              className="text-white hover:text-black  bg-green-500 hover:bg-white transition-all"
+              className="text-white hover:text-green-500 bg-green-500 hover:bg-black transition-all"
             >
               Log In
             </Button>
           </Link>
-          <Button className="text-green-500   hover:text-black hover:bg-green-600 transition-all">
+          <Button className="text-white hover:text-green-500 bg-green-500 hover:bg-black transition-all">
             Request Demo
           </Button>
           <Link href="/auth/signup">
-            <Button className="text-green-500  hover:text-black hover:bg-green-600 transition-all">
+            <Button className="text-white hover:text-green-500 bg-green-500 hover:bg-black transition-all">
               Create a free account
             </Button>
           </Link>
