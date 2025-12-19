@@ -201,7 +201,7 @@ export default function Header() {
 
         {/* Actions */}
         <div className="flex items-center space-x-3 ">
-          <Link href="/auth/login">
+          <Link href="/auth/login?redirect=%2Fdashboard">
             <Button
               // variant="ghost"
 
