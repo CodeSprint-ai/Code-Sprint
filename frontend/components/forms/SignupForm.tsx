@@ -16,11 +16,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
-import { signupSchema, SignupFormValues } from "@/lib/validations/authForm";
+import { signupSchema, SignupFormValues } from "@/validations/authForm";
+import { useRouter } from "next/navigation";
 
 const SignUpForm: React.FC = () => {
   const { signup, isLoading, error } = useAuth();
-
+  const router = useRouter();
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -36,6 +37,7 @@ const SignUpForm: React.FC = () => {
       toast.success("Account created 🎉", {
         description: "Check your email to verify your account",
       });
+      router.push("/auth/login");
     } catch (err: any) {
       toast.error("Sign up failed", {
         description: err?.message || "Something went wrong",
@@ -44,7 +46,7 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto p-6 rounded-xl shadow-md border">
+    <div className="w-96 mx-auto p-6 rounded-xl shadow-md border">
       <h2 className="text-xl font-semibold mb-4 text-center">Sign Up</h2>
 
       <Form {...form}>

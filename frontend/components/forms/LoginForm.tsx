@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../../hooks/useAuth";
-import { loginSchema, LoginFormValues } from "@/lib/validations/authForm";
+import { loginSchema, LoginFormValues } from "@/validations/authForm";
 import { GoogleIcon } from "../icons/GoogleIcon";
 import { GitHubIcon } from "../icons/GithubIcon";
 import { useSearchParams } from "next/navigation";

@@ -1,65 +1,70 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+// submission.service.ts
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Submission } from './entities/Submission';
 import { Repository } from 'typeorm';
-import { SprintSession } from '../sprint/entities/SprintSession';
 import { Problem } from '../problem/entities/Problem';
-import { User } from '../user/entities/user.model';
-import { SubmissionDto } from './dto/SubmissionDto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 import { SubmissionCommand } from './command/SubmissionCommand';
-
+import { SubmissionStatus } from './enum/SubmissionStatus';
+import { SubmissionDto } from './dto/SubmissionDto';
 
 @Injectable()
 export class SubmissionService {
   constructor(
-    @InjectRepository(Submission)
-    private submissionRepo: Repository<Submission>,
-    @InjectRepository(SprintSession)
-    private sprintRepo: Repository<SprintSession>,
-    @InjectRepository(Problem)
-    private problemRepo: Repository<Problem>,
-    @InjectRepository(User)
-    private userRepo: Repository<User>,
+    @InjectRepository(Submission) private repo: Repository<Submission>,
+    @InjectRepository(Problem) private problemRepo: Repository<Problem>,
+    @InjectQueue('submissions') private submissionQueue: Queue
   ) {}
 
-  async createSubmission(cmd: SubmissionCommand): Promise<SubmissionDto> {
-    const user = await this.userRepo.findOne({ where: { uuid: cmd.userId } });
-    const problem = await this.problemRepo.findOne({
-      where: { uuid: cmd.problemId },
-    });
-    if (!user || !problem)
-      throw new NotFoundException('User or Problem not found');
+  async createSubmission(command: SubmissionCommand, user: any) {
+    const problem = command.problemUuid ? await this.problemRepo.findOne({ where: { uuid: command.problemUuid }, relations: ['testCases'] })
+      : await this.problemRepo.findOne({ where: { slug: command.slug }, relations: ['testCases'] });
 
-    let sprint: any = null;
-    if (cmd.sprintSessionId) {
-      sprint = await this.sprintRepo.findOne({
-        where: { uuid: cmd.sprintSessionId },
-      });
-      if (!sprint) throw new NotFoundException('Sprint not found');
-    }
+    if (!problem) throw new Error('Problem not found');
 
-    const submission = this.submissionRepo.create({
+    const submission = this.repo.create({
       user,
       problem,
-      code: cmd.code,
-      language: cmd.language,
-      sprintSession: sprint || null,
+      code: command.code,
+      language: command.language,
+      status: SubmissionStatus.PENDING
     });
+    await this.repo.save(submission);
 
-    await this.submissionRepo.save(submission);
-    return SubmissionDto.toDto(submission);
+    // enqueue
+    await this.submissionQueue.add('process', { submissionId: submission.uuid, userId: user.id }, { attempts: 3, backoff: 2000 });
+
+    // mark queued
+    submission.status = SubmissionStatus.QUEUED;
+    await this.repo.save(submission);
+
+    return submission;
   }
 
-  async listSubmissionsByProblem(
-    problemId: string,
-    userId?: string,
-  ): Promise<SubmissionDto[]> {
-    const submissions = await this.submissionRepo.find({
-      where: {
-        problem: { uuid: problemId },
-        ...(userId && { user: { uuid: userId } }),
-      },
-      relations: ['user', 'problem', 'sprintSession'],
+  async getSubmissionsByUuid(submissionUuid: string) : Promise<SubmissionDto> {
+    const submissions = await this.repo.findOne({
+      where: {uuid: submissionUuid },
+    });
+    if (!submissions) throw new Error('Submission not found');
+    return SubmissionDto.toDto(submissions) ;
+  }
+
+  // get submissions by problem UUID
+  async getSubmissionsByProblemUuid(problemUuid: string) : Promise<SubmissionDto[]> {
+    const submissions = await this.repo.find({
+      where: { problem: { uuid: problemUuid } },
+      order: { createdAt: 'DESC' },
+    });
+    return submissions.map(SubmissionDto.toDto);
+  }
+
+  // get submissions by problem UUID
+  async getSubmissionsByUserUuid(userUuid: string) : Promise<SubmissionDto[]> {
+    const submissions = await this.repo.find({
+      where: { user: { uuid: userUuid } },
+      order: { createdAt: 'DESC' },
     });
     return submissions.map(SubmissionDto.toDto);
   }

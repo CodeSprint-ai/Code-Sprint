@@ -18,17 +18,19 @@ import { ResetPasswordCommand } from './command/resetPassword.command';
 import { AuthGuard } from '@nestjs/passport';
 import { ResponseWrapper } from 'src/common/dtos/ResponseWrapper';
 import { Request, Response } from 'express';
+import { Public } from 'src/common/decorators/publicDecorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  @Public()
   @Post('register')
   async register(@Body() body: RegisterCommand) {
     const result = await this.authService.register(body);
     return ResponseWrapper.success(result, 'Verification email sent');
   }
 
+  @Public()
   @Post('login')
   async login(
     @Body() body: LoginCommand,
@@ -47,11 +49,14 @@ export class AuthController {
     return ResponseWrapper.success(result, 'Tokens refreshed');
   }
 
+  @Public()
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth() {
     return ResponseWrapper.success(null, 'Redirecting to Google...');
   }
+
+  @Public()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req, @Res() res: any) {
@@ -81,12 +86,14 @@ export class AuthController {
     );
   }
 
+  @Public()
   @Get('github')
   @UseGuards(AuthGuard('github'))
   async githubAuth() {
     return ResponseWrapper.success(null, 'Redirecting to GitHub...');
   }
 
+  @Public()
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
   async githubCallback(@Req() req, @Res() res: any) {
@@ -134,5 +141,11 @@ export class AuthController {
       command.newPassword,
     );
     return ResponseWrapper.success(result, 'Password reset successfully');
+  }
+
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    const result = await this.authService.logout(res);
+    return ResponseWrapper.success(result, 'Logged out successfully');
   }
 }

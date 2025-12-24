@@ -6,30 +6,30 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const textVariant = (direction: "left" | "right") => ({
-  hidden: { 
-    opacity: 0, 
-    x: direction === "left" ? -50 : 50 
+  hidden: {
+    opacity: 0,
+    x: direction === "left" ? -50 : 50
   },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
-    transition: { 
-      duration: 0.8, 
+    transition: {
+      duration: 0.8,
       ease: [0.25, 0.1, 0.25, 1] as const // Add 'as const' here
     },
   },
 });
 
 const videoVariant = (direction: "left" | "right") => ({
-  hidden: { 
-    opacity: 0, 
-    x: direction === "left" ? -50 : 50 
+  hidden: {
+    opacity: 0,
+    x: direction === "left" ? -50 : 50
   },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
-    transition: { 
-      duration: 0.8, 
+    transition: {
+      duration: 0.8,
       ease: [0.25, 0.1, 0.25, 1] as const // Add 'as const' here
     },
   },
@@ -46,7 +46,7 @@ export default function DeveloperFocused() {
     <section className="bg-black text-white py-24 px-6 relative">
       {/* Aurora top */}
       <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-emerald-400/30 to-transparent blur-3xl" />
-      
+
       {/* Heading */}
       <div className="max-w-5xl mx-auto text-center mb-20 relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-emerald-400">
@@ -196,7 +196,7 @@ export default function DeveloperFocused() {
             />
           </motion.div>
         </div>
-      
+
         {/* Fourth Block */}
         <div
           ref={ref4}
@@ -242,7 +242,7 @@ export default function DeveloperFocused() {
               Learn more <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </motion.div>
-        </div>        
+        </div>
       </div>
     </section>
   );

@@ -10,19 +10,18 @@ import { Problem } from '../../problem/entities/Problem';
 import { SprintSession } from '../../sprint/entities/SprintSession';
 import { SubmissionStatus } from '../enum/SubmissionStatus';
 
-
 @Entity('submissions')
 export class Submission {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false, eager: true })
   user: User;
 
-  @ManyToOne(() => Problem, { nullable: false })
+  @ManyToOne(() => Problem, { nullable: false, eager: true })
   problem: Problem;
 
-  @ManyToOne(() => SprintSession, { nullable: true })
+  @ManyToOne(() => SprintSession, { nullable: true, eager: true })
   sprintSession: SprintSession;
 
   @Column('text')
@@ -46,6 +45,16 @@ export class Submission {
 
   @Column({ type: 'jsonb', nullable: true })
   testResults: any; // [{input, expected, got, verdict, runtime}]
+
+  // additions to Submission entity
+  @Column({ type: 'text', nullable: true })
+  judgeTokens?: string; // JSON stringified array of tokens from Judge0
+
+  @Column({ type: 'text', nullable: true })
+  compileOutput?: string; // optional aggregate compile output
+
+  @Column({ nullable: true })
+  finishedAt?: Date;
 
   @CreateDateColumn()
   createdAt: Date;

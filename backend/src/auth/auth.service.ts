@@ -33,7 +33,7 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly logger: AppLogger,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   @Transactional()
   async register(
@@ -83,9 +83,12 @@ export class AuthService {
     this.logger.info(`Login attempt for: ${cmd.email}`, AuthService.name);
 
     const user = await this.userService.validateUser(cmd.email, cmd.password);
+    console.log({ user });
+
     const tokens = await this.jwtTokenService.generateTokens(
       user.uuid,
       user.email,
+      user.role
     );
 
     console.log({ tokens });
@@ -103,6 +106,22 @@ export class AuthService {
 
     // Only return access token + user
     return AuthTokenDto.toDto({ accessToken: tokens.accessToken }, user);
+  }
+  
+  async logout(res: Response): Promise<{ message: string }> {
+    this.logger.info(`Logout attempt`, AuthService.name);
+
+    // Clear refresh token cookie
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/', // must match login cookie path
+    });
+
+    this.logger.info(`Logout successful`, AuthService.name);
+
+    return { message: 'Logged out successfully' };
   }
 
   // async refreshTokens(cmd: RefreshTokenCommand): Promise<AuthTokenDto> {
@@ -157,16 +176,17 @@ export class AuthService {
       const tokens = await this.jwtTokenService.generateTokens(
         user.uuid,
         user.email,
+        user.role
       );
 
       // update cookie
-     res.cookie('refresh_token', tokens.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/', // or "/api/auth/refresh" if you want it scoped
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+      res.cookie('refresh_token', tokens.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/', // or "/api/auth/refresh" if you want it scoped
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
 
       return AuthTokenDto.toDto({ accessToken: tokens.accessToken }, user);
     } catch (e) {
@@ -193,6 +213,7 @@ export class AuthService {
     const tokens = await this.jwtTokenService.generateTokens(
       user.uuid,
       user.email,
+      user.role
     );
 
     if (tokens.refreshToken)

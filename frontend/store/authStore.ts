@@ -1,13 +1,34 @@
 // src/stores/authStore.ts
-import { create } from 'zustand';
-import { AuthStore, User } from '../types/auth';
+// import { create } from 'zustand';
+// import { AuthStore, User } from '../types/auth';
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
-  user: null,
-  token: null,
+// export const useAuthStore = create<AuthStore>((set, get) => ({
+//   user: null,
+//   token: null,
   
-  setAuth: (user: User, token: string) => set({ user, token }),
-  clearAuth: () => set({ user: null, token: null }),
-  setToken: (token: string) => set({ token }),
-  isAuthenticated: () => !!get().token,
-}));
+//   setAuth: (user: User, token: string) => set({ user, token }),
+//   clearAuth: () => set({ user: null, token: null }),
+//   setToken: (token: string) => set({ token }),
+//   isAuthenticated: () => !!get().token,
+// }));
+// src/store/authStore.ts
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { AuthStore, User } from "../types/auth";
+
+export const useAuthStore = create(
+  persist<AuthStore>(
+    (set, get) => ({
+      user: null,
+      token: null,
+
+      setAuth: (user: User, token: string) => set({ user, token }),
+      clearAuth: () => set({ user: null, token: null }),
+      setToken: (token: string) => set({ token }),
+      isAuthenticated: () => !!get().token,
+    }),
+    {
+      name: "auth-storage", // key in localStorage
+    }
+  )
+);

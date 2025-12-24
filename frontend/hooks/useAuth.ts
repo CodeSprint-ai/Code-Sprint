@@ -59,8 +59,14 @@ export const useAuth = (): UseAuthReturn => {
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
-      setAuth(data.user, data.accessToken);
-      queryClient.invalidateQueries();
+      console.log({
+        access_token: data.data.accessToken,
+        user: data.data.user,
+      });
+
+      setAuth(data.data.user, data.data.accessToken);
+      console.log("🔥 Zustand state after login:", useAuthStore.getState());
+      // queryClient.invalidateQueries();
       const redirect = searchParams.get("redirect") || "/dashboard";
       router.push(redirect);
     },
@@ -78,7 +84,7 @@ export const useAuth = (): UseAuthReturn => {
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
-      setAuth(data.user, data.accessToken);
+      setAuth(data.data.user, data.data.accessToken);
       queryClient.invalidateQueries();
     },
   });
@@ -87,6 +93,7 @@ export const useAuth = (): UseAuthReturn => {
   const logoutMutation = useMutation<void, Error, void>({
     mutationFn: async (): Promise<void> => {
       await api.post("/auth/logout");
+      router.replace("/");
     },
     onSuccess: () => {
       clearAuth();
@@ -97,14 +104,14 @@ export const useAuth = (): UseAuthReturn => {
   const initializeOAuth = async (): Promise<void> => {
     try {
       const { data } = await api.get<AuthResponse>("/auth/me");
-      setAuth(data.user, data.accessToken);
+      setAuth(data.data.user, data.data.accessToken);
     } catch {
       clearAuth();
     }
   };
 
   return {
-    login: loginMutation.mutateAsync, 
+    login: loginMutation.mutateAsync,
     signup: signupMutation.mutateAsync,
     logout: logoutMutation.mutateAsync,
     initializeOAuth,

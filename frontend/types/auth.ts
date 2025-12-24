@@ -1,14 +1,19 @@
+import { RoleEnum } from "@/enum/role.enum";
+
 // src/types/auth.ts
 export interface User {
-  id: string;
+  userUuid: string;
   email: string;
   name: string;
+  role: RoleEnum;
   // Add other user properties as needed
 }
 
 export interface AuthResponse {
-  accessToken: string;
-  user: User;
+  data: {   // i would remove it on mine
+    accessToken: string;
+    user: User;
+  };
 }
 
 export interface SignupCredentials {
@@ -16,7 +21,6 @@ export interface SignupCredentials {
   email: string;
   password: string;
 }
-
 
 export interface LoginCredentials {
   email: string;
