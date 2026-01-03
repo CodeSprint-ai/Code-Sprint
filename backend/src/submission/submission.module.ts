@@ -9,12 +9,14 @@ import { SprintModule } from '../sprint/sprint.module';
 import { BullModule } from '@nestjs/bull';
 import { SubmissionProcessor } from './processor/submissionProcessor';
 import { CommonModule } from 'src/common/common.module';
+import { JudgeModule } from '../judge/judge.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Submission, Problem]), // only entities needed here
     SprintModule,
     CommonModule,
+    JudgeModule,
     BullModule.registerQueue({
       name: 'submissions',   // 👈 name must match
     }),

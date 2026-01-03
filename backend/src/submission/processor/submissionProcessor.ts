@@ -5,7 +5,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Submission } from '../entities/Submission';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Judge0Service } from '../../common/services/judge.service';
+import { Judge0Service } from '../../judge/judge.service';
 import { SubmissionStatus } from '../enum/SubmissionStatus';
 import { SubmissionGateway } from 'src/common/utils/socket-gateway';
 
@@ -19,7 +19,7 @@ export class SubmissionProcessor {
     private submissionRepo: Repository<Submission>,
     private judge0: Judge0Service,
     private socket: SubmissionGateway,
-  ) {}
+  ) { }
 
   @Process('process')
   async handle(job: Job) {
@@ -82,7 +82,7 @@ export class SubmissionProcessor {
           stdin: encode(tc.input ?? '4 2 7 11 15\n9'),
           expected_output: encode(expectedOutput),
           cpu_time_limit: 5,
-          memory_limit:128000
+          memory_limit: 128000
         };
       });
 
