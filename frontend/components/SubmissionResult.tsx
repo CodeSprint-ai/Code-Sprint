@@ -1,50 +1,37 @@
 import React, { useEffect, useState } from "react";
-// import useSocket from "@/lib/socket-io";
 import { useSubmission } from "@/hooks/useSubmission";
+import {
+  Submission,
+  TestResult,
+  getStatusColor,
+  formatTestResultInput,
+  formatTestResultExpected,
+  formatTestResultGot,
+} from "@/types/submission";
 
 export default function SubmissionResult({
   problemUuid,
 }: {
   problemUuid: string;
 }) {
-  // const socket = useSocket();
-  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
 
-  // ✅ use your React Query hook
   const { allSubmissions } = useSubmission(problemUuid);
 
-  // update local state when new data comes
   useEffect(() => {
     if (allSubmissions.data) {
       const data = allSubmissions.data as any;
       if (Array.isArray(data)) {
-        // data is already an array of submissions
         setSubmissions(data);
       } else if (Array.isArray(data.submissions)) {
-        // data is a wrapper object { submissions: [...] }
         setSubmissions(data.submissions);
       } else {
-        // fallback: clear or set an empty array
         setSubmissions([]);
       }
     } else {
       setSubmissions([]);
     }
   }, [allSubmissions.data]);
-
-  // ✅ real-time update listener
-  // useEffect(() => {
-  //   const handleUpdate = (payload: any) => {
-  //     console.log("📩 Submission update received:", payload);
-  //     allSubmissions.refetch?.(); 
-  //   };
-
-  //   socket.on("submission.update", handleUpdate);
-
-  //   return () => {
-  //     socket.off("submission.update", handleUpdate);
-  //   };
-  // }, [socket, allSubmissions]);
 
   return (
     <div className="p-4 border rounded-lg">
@@ -57,39 +44,51 @@ export default function SubmissionResult({
           </div>
         )}
 
-        {submissions.map((s: any) => (
-          <div key={s.id || s.uuid} className="p-2 border rounded-md">
+        {submissions.map((s: Submission) => (
+          <div key={s.uuid} className="p-2 border rounded-md">
             <div className="flex justify-between items-center">
               <div className="text-sm">
                 {new Date(s.createdAt).toLocaleString()}
               </div>
-              <div
-                className={`text-sm font-medium ${
-                  s.status === "SUCCESS"
-                    ? "text-green-600"
-                    : s.status === "FAILED"
-                    ? "text-red-600"
-                    : s.status === "RUNNING"
-                    ? "text-yellow-600"
-                    : "text-gray-500"
-                }`}
-              >
+              <div className={`text-sm font-medium ${getStatusColor(s.status)}`}>
                 {s.status}
               </div>
             </div>
 
-            {s.testResults?.length > 0 && (
+            {s.executionTime !== undefined && (
+              <div className="text-xs text-muted-foreground mt-1">
+                Time: {s.executionTime.toFixed(3)}s | Memory: {s.memoryUsage?.toFixed(0) ?? "-"} KB
+              </div>
+            )}
+
+            {s.testResults && s.testResults.length > 0 && (
               <div className="mt-2 text-xs space-y-1">
-                {s.testResults.map((tr: any, idx: number) => (
-                  <div key={idx} className="flex justify-between">
-                    <div>
-                      Test {idx + 1}: {tr.verdict}
+                {s.testResults.map((tr: TestResult, idx: number) => (
+                  <div key={idx} className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          tr.verdict === "ACCEPTED" ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      />
+                      <span>
+                        Test {idx + 1}: {tr.isHidden ? "(Hidden)" : tr.verdict}
+                      </span>
                     </div>
-                    <div>
-                      {tr.time ?? "-"}s / {tr.memory ?? "-"} MB
+                    <div className="text-muted-foreground">
+                      {tr.time?.toFixed(3) ?? "-"}s / {tr.memory ?? "-"} KB
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {s.compileOutput && (
+              <div className="mt-2">
+                <div className="text-xs font-medium text-red-600">Compile Error:</div>
+                <pre className="text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded mt-1 overflow-x-auto">
+                  {s.compileOutput}
+                </pre>
               </div>
             )}
           </div>

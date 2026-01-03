@@ -33,7 +33,9 @@ import { SubmissionProcessor } from './submission/processor/submissionProcessor'
           rejectUnauthorized: false, // Required for Neon's SSL connection
         },
         autoLoadEntities: true,
-        synchronize: true, // Set to false in production. More on this below.
+        synchronize: false, // Disabled - using migrations instead
+        migrationsRun: true, // Auto-run migrations on startup
+        migrations: ['dist/migrations/*.js'],
       }),
       inject: [ConfigService],
     }),

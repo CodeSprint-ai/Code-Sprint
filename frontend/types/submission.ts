@@ -1,19 +1,3 @@
-// export interface TestResult {
-//   input: string;
-//   expected: string;
-//   got: string;
-//   verdict:
-//     | "ACCEPTED"
-//     | "WRONG_ANSWER"
-//     | "TIME_LIMIT_EXCEEDED"
-//     | "RUNTIME_ERROR"
-//     | "COMPILATION_ERROR"
-//     | "INTERNAL_ERROR";
-//   time: string;
-//   memory: number;
-//   token: string;
-// }
-
 export type SubmissionStatus =
   | "PENDING"
   | "QUEUED"
@@ -26,23 +10,22 @@ export type SubmissionStatus =
   | "INTERNAL_ERROR";
 
 export interface TestResult {
-  id: string;
-  status: "PASSED" | "FAILED";
-  input?: string;
-  expectedOutput?: string;
-  actualOutput?: string;
-  executionTime?: number;
-  memoryUsage?: number;
-  verdict:
-  | "ACCEPTED"
-  | "WRONG_ANSWER"
-  | "TIME_LIMIT_EXCEEDED"
-  | "RUNTIME_ERROR"
-  | "COMPILATION_ERROR"
-  | "INTERNAL_ERROR";
-  time: string;
+  /** JSON input object */
+  input: Record<string, unknown>;
+  /** Expected output (JSON) */
+  expected: unknown;
+  /** Actual output from execution */
+  got: unknown;
+  /** Verdict for this test case */
+  verdict: SubmissionStatus;
+  /** Execution time in seconds */
+  time: number;
+  /** Memory usage in KB */
   memory: number;
+  /** Judge0 token */
   token: string;
+  /** Whether this test case is hidden */
+  isHidden: boolean;
 }
 
 export interface Submission {
@@ -50,20 +33,14 @@ export interface Submission {
   code: string;
   language: string;
   status: SubmissionStatus;
-
-  output?: string;
-
   executionTime?: number;
   memoryUsage?: number;
-
-  userId: string;
-  problemId: string;
-
-  createdAt: string; // ISO string from backend
-
-  testResults?: TestResult[]; // ✅ optional (important)
+  testResults?: TestResult[];
+  judgeTokens?: string;
+  compileOutput?: string;
+  finishedAt?: string;
+  createdAt: string;
 }
-
 
 export interface SubmissionResponse {
   submission: Submission;
@@ -76,6 +53,73 @@ export interface SubmissionsResponse {
 export interface CreateSubmissionInput {
   code: string;
   language: string;
-  problemUuid: string;
-  slug: string;
+  problemUuid?: string;
+  slug?: string;
+}
+
+/**
+ * Helper to format test result input for display
+ */
+export function formatTestResultInput(result: TestResult): string {
+  if (result.isHidden) {
+    return "(Hidden)";
+  }
+  if (result.input && Object.keys(result.input).length > 0) {
+    return JSON.stringify(result.input, null, 2);
+  }
+  return "";
+}
+
+/**
+ * Helper to format test result expected output for display
+ */
+export function formatTestResultExpected(result: TestResult): string {
+  if (result.isHidden) {
+    return "(Hidden)";
+  }
+  if (result.expected !== null && result.expected !== undefined) {
+    return typeof result.expected === "string"
+      ? result.expected
+      : JSON.stringify(result.expected, null, 2);
+  }
+  return "";
+}
+
+/**
+ * Helper to format test result actual output for display
+ */
+export function formatTestResultGot(result: TestResult): string {
+  if (result.isHidden) {
+    return "(Hidden)";
+  }
+  if (result.got !== null && result.got !== undefined) {
+    return typeof result.got === "string"
+      ? result.got
+      : JSON.stringify(result.got, null, 2);
+  }
+  return "";
+}
+
+/**
+ * Get status color class
+ */
+export function getStatusColor(status: SubmissionStatus): string {
+  switch (status) {
+    case "ACCEPTED":
+      return "text-green-600";
+    case "WRONG_ANSWER":
+      return "text-red-600";
+    case "TIME_LIMIT_EXCEEDED":
+      return "text-orange-600";
+    case "RUNTIME_ERROR":
+    case "COMPILATION_ERROR":
+      return "text-red-600";
+    case "PROCESSING":
+    case "QUEUED":
+      return "text-yellow-600";
+    case "PENDING":
+      return "text-gray-500";
+    default:
+      return "text-gray-500";
+  }
 }

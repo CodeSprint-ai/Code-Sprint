@@ -1,17 +1,23 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { User } from 'src/user/entities/user.model';
+import { config } from 'dotenv';
+import { User } from './user/entities/user.model';
+import { Problem } from './problem/entities/Problem';
+import { TestCase } from './problem/entities/TestCase';
+import { Submission } from './submission/entities/Submission';
+import { SprintSession } from './sprint/entities/SprintSession';
+import { SprintProblem } from './sprint/entities/SprintProblem';
+
+// Load environment variables
+config();
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'localhost', // change if using Docker
-  port: 5432,
-  username: 'postgres', // your DB user
-  password: 'macerace120', // your DB password
-  database: 'codesprint', // your DB name
-  synchronize: true, // auto create schema (disable in production)
+  url: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL?.includes('neon') ? { rejectUnauthorized: false } : false,
+  synchronize: false,
   logging: true,
-  entities: [User],
-  migrations: [],
+  entities: [User, Problem, TestCase, Submission, SprintSession, SprintProblem],
+  migrations: ['src/migrations/*.ts'],
   subscribers: [],
 });

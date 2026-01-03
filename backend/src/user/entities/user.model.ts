@@ -11,45 +11,45 @@ import { UserLevel } from '../enum/UserLevel';
 
 @Entity({ name: 'users' })
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { name: 'uuid' })
   uuid: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ name: 'email', type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ name: 'name', type: 'varchar', length: 255, nullable: true })
   name?: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ name: 'password', type: 'varchar', length: 255, nullable: true })
   password?: string;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ name: 'is_verified', type: 'boolean', default: false })
   isVerified: boolean;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ name: 'email_verification_token', type: 'varchar', nullable: true })
   emailVerificationToken?: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ name: 'password_reset_token', type: 'varchar', nullable: true })
   passwordResetToken?: string | null;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ name: 'password_reset_expires', type: 'timestamptz', nullable: true })
   passwordResetExpires?: Date | null;
 
-  @Column({ type: 'enum', enum: ProviderEnum, default: ProviderEnum.LOCAL })
+  @Column({ name: 'provider', type: 'enum', enum: ProviderEnum, default: ProviderEnum.LOCAL })
   provider: ProviderEnum;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ name: 'refresh_token', type: 'varchar', nullable: true })
   refreshToken?: string | null;
 
-  @Column({ type: 'enum', enum: RoleEnum, default: RoleEnum.USER })
+  @Column({ name: 'role', type: 'enum', enum: RoleEnum, default: RoleEnum.USER })
   role: RoleEnum;
 
-  @Column({ type: 'enum', enum: UserLevel, default: UserLevel.BEGINNER })
+  @Column({ name: 'level', type: 'enum', enum: UserLevel, default: UserLevel.BEGINNER })
   level: UserLevel;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
