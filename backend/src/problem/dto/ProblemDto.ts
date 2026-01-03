@@ -80,7 +80,7 @@ export class ProblemDto {
       timeLimitSeconds: problem.timeLimitSeconds,
       memoryLimitMB: problem.memoryLimitMB,
       createdBy: problem.createdBy ? UserDto.toDto(problem.createdBy) : null,
-      testCases: problem.testCases.map((testCase) =>
+      testCases: problem.testCases?.map((testCase) =>
         TestCaseDto.toDto(testCase),
       ),
       createdAt: problem.createdAt,

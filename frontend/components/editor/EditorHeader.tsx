@@ -19,6 +19,10 @@ interface Props {
   onSubmit: () => void;
   isSubmitting: boolean;
   isRunning: boolean;
+  hideSubmit?: boolean; // Hide submit button in Sprint mode
+  // Sprint navigation
+  onNext?: () => void;
+  isLastQuestion?: boolean;
 }
 
 export default function EditorHeader({
@@ -28,6 +32,9 @@ export default function EditorHeader({
   onSubmit,
   isSubmitting,
   isRunning,
+  hideSubmit = false,
+  onNext,
+  isLastQuestion = false,
 }: Props) {
   const isDisabled = isSubmitting || isRunning;
 
@@ -54,9 +61,16 @@ export default function EditorHeader({
         {/* <Button variant="outline" onClick={onRun} disabled={isDisabled}>
           {isRunning ? "Running..." : "Run"}
         </Button> */}
-        <Button onClick={onSubmit} disabled={isDisabled}>
-          {isSubmitting ? "Submitting..." : "Submit"}
-        </Button>
+        {!hideSubmit && (
+          <Button onClick={onSubmit} disabled={isDisabled}>
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </Button>
+        )}
+        {hideSubmit && onNext && (
+          <Button onClick={onNext} disabled={isLastQuestion}>
+            {isLastQuestion ? "Last Question" : "Next Question →"}
+          </Button>
+        )}
       </div>
     </div>
   );

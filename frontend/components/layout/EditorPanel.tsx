@@ -7,7 +7,7 @@ import EditorHeader from "../editor/EditorHeader";
 import CodeEditor from "../editor/CodeEditor";
 import { useSubmission } from "@/hooks/useSubmission";
 
-export default function EditorPanel({ problem }: any) {
+export default function EditorPanel({ problem, hideSubmit = false, onNext, isLastQuestion = false }: any) {
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState("// Write your code here");
 
@@ -109,6 +109,9 @@ export default function EditorPanel({ problem }: any) {
         onSubmit={handleSubmitCode} // New prop
         isSubmitting={isSubmitting} // New prop
         isRunning={isRunning} // New prop
+        hideSubmit={hideSubmit} // Pass through
+        onNext={onNext}
+        isLastQuestion={isLastQuestion}
       />
 
       {/* Code Editor */}

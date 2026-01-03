@@ -58,7 +58,7 @@ export class Problem {
   @ManyToOne(() => User, { nullable: true })
   createdBy: User;
 
-  @OneToMany(() => TestCase, (testCase) => testCase.problem, { cascade: true })
+  @OneToMany(() => TestCase, (testCase) => testCase.problem, { cascade: true , eager: true })
   testCases: TestCase[];
 
   @CreateDateColumn()
