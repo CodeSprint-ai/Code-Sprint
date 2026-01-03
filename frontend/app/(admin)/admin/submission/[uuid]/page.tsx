@@ -23,9 +23,9 @@ export default function SubmissionPage({
   return (
     <main className="h-screen w-full flex flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="border-b border-gray-800 px-4 py-3 font-semibold text-lg flex justify-between items-center">
+      {/* <header className="border-b border-gray-800 px-4 py-3 font-semibold text-lg flex justify-between items-center">
         <span>{problem.title}</span>
-      </header>
+      </header> */}
 
       {/* <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
         <div className="lg:w-1/2 border-b lg:border-b-0 lg:border-r border-gray-800 overflow-y-auto p-6">

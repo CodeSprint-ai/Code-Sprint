@@ -4,13 +4,14 @@ import React from "react";
 import ProblemPanel from "@/components/layout/ProblemPanel";
 import EditorPanel from "@/components/layout/EditorPanel";
 import { useProblem } from "@/hooks/useProblems";
+import Split from "react-split";
 
 export default function SubmissionPage({
   params,
 }: {
   params: Promise<{ uuid: string }>;
 }) {
-  const { uuid } = React.use(params); // ✅ unwrap the params Promise
+  const { uuid } = React.use(params);
   const { singleProblem } = useProblem(uuid);
   const { data, isLoading } = singleProblem;
 
@@ -19,26 +20,30 @@ export default function SubmissionPage({
 
   const problem = data.data;
 
- 
   return (
-    <main className="flex flex-col flex-1">
-      {/* Header */}
-      <header className="border-b border-gray-800 px-4 py-3 font-semibold text-lg flex justify-between items-center">
-        <span>{problem.title}</span>
-      </header>
-
-      {/* Split layout */}
-      <section className="flex flex-1 flex-col  lg:flex-row overflow-hidden ">
-        {/* Left panel */}
-        <div className="w-auto lg:w-1/2 border-b lg:border-b-0 lg:border-r border-gray-800 overflow-y-auto p-6">
+    <main className="flex flex-col h-screen overflow-hidden">
+      {/* Outer horizontal split: Problem | Editor+Submission */}
+      <Split
+        direction="horizontal"
+        sizes={[40, 60]} // left 40%, right 60%
+        minSize={200}
+        gutterSize={6}
+        className="h-full flex"
+        cursor="col-resize"
+      >
+        {/* Left: Problem Panel */}
+        <div className="h-full overflow-y-auto p-6 border-r border-gray-800">
           <ProblemPanel problem={problem} />
         </div>
 
-        {/* Right panel */}
-        <div className="w-auto lg:w-1/2 flex flex-col overflow-hidden p-4">
+
+        {/* Top: Code Editor */}
+        <div className="h-full flex flex-col overflow-hidden">
           <EditorPanel problem={problem} />
         </div>
-      </section>
+
+
+      </Split>
     </main>
   );
 }

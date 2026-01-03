@@ -15,7 +15,7 @@ interface Props {
 
 export default function CodeEditor({ language, code, setCode }: Props) {
   return (
-    <div className="flex-auto ">
+    <div className="h-full w-full">
       <MonacoEditor
         language={language}
         value={code}
@@ -29,6 +29,7 @@ export default function CodeEditor({ language, code, setCode }: Props) {
           lineNumbers: "on",
           smoothScrolling: true,
         }}
+        height="100%"
       />
     </div>
   );

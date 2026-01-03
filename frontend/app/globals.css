@@ -120,3 +120,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Vertical gutter (between Problem and Editor+Submission) */
+.gutter.gutter-vertical {
+  cursor: col-resize;
+  background-color: #d1d5db; /* gray-300 */
+  transition: background-color 0.2s;
+}
+
+.gutter.gutter-vertical:hover {
+  background-color: #9ca3af; /* gray-400 */
+}
+
+/* Horizontal gutter (between Editor and Submission) */
+.gutter.gutter-horizontal {
+  cursor: row-resize;
+  background-color: #d1d5db;
+}
+
+.gutter.gutter-horizontal:hover {
+  background-color: #9ca3af;
+}

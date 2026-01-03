@@ -1,10 +1,14 @@
 // components/layout/EditorPanel.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
-import ResultTabs from "../editor/ResultTabs";
+import React, { useState, useEffect, useCallback } from "react";
+
+import Split from "react-split";
+
+
 import EditorHeader from "../editor/EditorHeader";
 import CodeEditor from "../editor/CodeEditor";
+import { SubmissionPanel } from "../submission";
 import { useSubmission } from "@/hooks/useSubmission";
 import { Problem, StarterCode } from "@/types/problems";
 
@@ -45,38 +49,38 @@ interface EditorPanelProps {
   isLastQuestion?: boolean;
 }
 
-export default function EditorPanel({ 
-  problem, 
-  hideSubmit = false, 
-  onNext, 
-  isLastQuestion = false 
+export default function EditorPanel({
+  problem,
+  hideSubmit = false,
+  onNext,
+  isLastQuestion = false,
 }: EditorPanelProps) {
   const [language, setLanguage] = useState("python");
-  
+
   // Get starter code based on selected language
-  const getStarterCode = (lang: string): string => {
+  const getStarterCode = useCallback((lang: string): string => {
     const langKey = languageMap[lang.toLowerCase()] || "python";
-    
+
     // Use problem's starter code if available
     if (problem?.starterCode && problem.starterCode[langKey]) {
       return problem.starterCode[langKey];
     }
-    
+
     // Fallback to default
     return defaultStarterCode[langKey];
-  };
+  }, [problem?.starterCode]);
 
   const [code, setCode] = useState(() => getStarterCode("python"));
 
   // Update code when language changes
   useEffect(() => {
     setCode(getStarterCode(language));
-  }, [language, problem?.starterCode]);
+  }, [language, getStarterCode]);
+
 
   // State for submission/run status
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [submissionResult, setSubmissionResult] = useState<any>(null);
 
   const { createSubmission } = useSubmission(problem?.uuid);
 
@@ -86,24 +90,12 @@ export default function EditorPanel({
   const handleRunCode = async () => {
     console.log("Attempting to run code...");
     setIsRunning(true);
-    setSubmissionResult(null);
 
     try {
+      // TODO: Implement run code endpoint
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      const mockResult = {
-        status: "Accepted",
-        message: "Code ran successfully against the example test case.",
-        output: "0 1",
-      };
-
-      setSubmissionResult(mockResult);
-      console.log("Run finished:", mockResult);
+      console.log("Run finished");
     } catch (error) {
-      setSubmissionResult({
-        status: "Error",
-        message: "Failed to connect to the runner service.",
-      });
       console.error("Run error:", error);
     } finally {
       setIsRunning(false);
@@ -116,7 +108,6 @@ export default function EditorPanel({
   const handleSubmitCode = async () => {
     console.log("Attempting to submit code...");
     setIsSubmitting(true);
-    setSubmissionResult(null);
 
     try {
       const resp = await createSubmission({
@@ -126,51 +117,62 @@ export default function EditorPanel({
         slug: problem.slug,
       });
 
-      console.log({ resp });
-      setSubmissionResult(resp);
-      console.log("Submission finished:", resp);
+      console.log("Submission created:", resp);
+      // The SubmissionPanel will handle real-time updates via socket
     } catch (error) {
-      setSubmissionResult({
-        status: "Error",
-        message: "Submission failed due to server error.",
-      });
       console.error("Submission error:", error);
     } finally {
-      setIsSubmitting(false);
+      // Keep submitting true until socket confirms completion
+      // The socket handler in SubmissionPanel will manage the UI state
+      setTimeout(() => setIsSubmitting(false), 1000);
     }
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Header */}
-      <EditorHeader
-        language={language}
-        setLanguage={setLanguage}
-        problem={problem}
-        code={code}
-        onRun={handleRunCode}
-        onSubmit={handleSubmitCode}
-        isSubmitting={isSubmitting}
-        isRunning={isRunning}
-        hideSubmit={hideSubmit}
-        onNext={onNext}
-        isLastQuestion={isLastQuestion}
-      />
-
-      {/* Code Editor */}
-      <CodeEditor 
-        language={monacoLanguageMap[language] || language} 
-        code={code} 
-        setCode={setCode} 
-      />
-
-      {/* Tabs */}
-      <div className="h-50 border-t border-gray-800 overflow-hidden">
-        <ResultTabs
-          initialResult={submissionResult}
-          isLoading={isSubmitting || isRunning}
+      <div className="flex-shrink-0">
+        <EditorHeader
+          language={language}
+          setLanguage={setLanguage}
+          problem={problem}
+          code={code}
+          onRun={handleRunCode}
+          onSubmit={handleSubmitCode}
+          isSubmitting={isSubmitting}
+          isRunning={isRunning}
+          hideSubmit={hideSubmit}
+          onNext={onNext}
+          isLastQuestion={isLastQuestion}
         />
       </div>
+
+      <Split
+        direction="vertical" // top/bottom
+        sizes={[70, 30]}
+        minSize={50}
+        gutterSize={6}       // thickness of the handle
+        className="h-full flex flex-col"
+      >
+        <div className="h-full">
+          <CodeEditor
+            language={monacoLanguageMap[language] || language}
+            code={code}
+            setCode={setCode}
+          />
+        </div>
+
+        <div className="h-full">
+          <SubmissionPanel
+            problemId={problem.uuid}
+            isSubmitting={isSubmitting}
+            isRunning={isRunning}
+          />
+        </div>
+      </Split>
+
+
+
     </div>
   );
 }
