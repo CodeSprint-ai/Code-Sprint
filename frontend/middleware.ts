@@ -22,15 +22,21 @@ export function middleware(request: NextRequest) {
 
   if (token) {
     try {
-      // ✅ Decode token and extract role
-      const decoded = jwt.decode(token) as { role?: RoleEnum };
-      role = decoded?.role ?? null;
+      // ✅ Decode token and extract role and expiration
+      const decoded = jwt.decode(token) as { exp?: number; role?: RoleEnum };
+
+      // Check if token is expired
+      if (decoded?.exp && decoded.exp * 1000 > Date.now()) {
+        role = decoded?.role ?? null;
+      } else {
+        console.warn("Token expired");
+      }
     } catch (err) {
       console.error("Invalid token", err);
     }
   }
 
-  const isAuthenticated = Boolean(token);
+  const isAuthenticated = Boolean(token && role);
 
   const isPublicRoute = authConfig.public.includes(pathname);
 

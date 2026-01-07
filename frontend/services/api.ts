@@ -99,7 +99,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         authStore.clearAuth();
-        window.location.href = "/auth/login";
+        window.location.href = "/";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

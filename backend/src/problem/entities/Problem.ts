@@ -11,6 +11,7 @@ import {
 import { User } from '../../user/entities/user.model';
 import { TestCase } from './TestCase';
 import { DifficultyEnum } from '../enum/DifficultyEnum';
+import { PatternEnum } from '../enum/PatternEnum';
 import { StarterCode, RunnerTemplate } from '../../judge/interfaces/starter-code.interface';
 
 /**
@@ -55,6 +56,15 @@ export class Problem {
     enum: DifficultyEnum,
   })
   difficulty: DifficultyEnum;
+
+  @Column({
+    name: 'patterns',
+    type: 'enum',
+    enum: PatternEnum,
+    array: true,
+    default: '{}',
+  })
+  patterns: PatternEnum[];
 
   @Column({ name: 'tags', type: 'text', array: true, default: '{}' })
   tags: string[];

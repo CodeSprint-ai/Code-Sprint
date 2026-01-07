@@ -11,6 +11,7 @@ import {
   Min,
 } from 'class-validator';
 import { DifficultyEnum } from '../enum/DifficultyEnum';
+import { PatternEnum } from '../enum/PatternEnum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateTestCaseCommand } from './CreateTestCaseCommand';
@@ -21,7 +22,7 @@ import { CreateTestCaseCommand } from './CreateTestCaseCommand';
 class StarterCodeDto {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Java starter code (Solution class)',
     example: `class Solution {
     public int[] twoSum(int[] nums, int target) {
@@ -34,7 +35,7 @@ class StarterCodeDto {
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Python starter code (Solution class)',
     example: `class Solution:
     def twoSum(self, nums, target):
@@ -45,7 +46,7 @@ class StarterCodeDto {
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'C++ starter code (Solution class)',
     example: `class Solution {
 public:
@@ -65,21 +66,21 @@ public:
 class RunnerTemplateDto {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Java runner template (imports, Main class, JSON parsing)',
   })
   java: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Python runner template (imports, JSON parsing, execution)',
   })
   python: string;
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'C++ runner template (includes, JSON parsing with nlohmann)',
   })
   cpp: string;
@@ -135,6 +136,15 @@ export class CreateProblemCommand {
     description: 'The difficulty of the problem',
   })
   difficulty: DifficultyEnum;
+
+  @IsOptional()
+  @IsEnum(PatternEnum, { each: true })
+  @ApiPropertyOptional({
+    enum: PatternEnum,
+    isArray: true,
+    description: 'The patterns of the problem',
+  })
+  patterns?: PatternEnum[];
 
   @IsOptional()
   @IsArray()

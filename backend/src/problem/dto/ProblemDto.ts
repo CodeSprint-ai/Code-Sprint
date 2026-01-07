@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DifficultyEnum } from '../enum/DifficultyEnum';
+import { PatternEnum } from '../enum/PatternEnum';
 import { UserDto } from '../../user/dto/user.dto';
 import { TestCaseDto } from './TestCaseDto';
 import { Problem } from '../entities/Problem';
@@ -47,13 +48,20 @@ export class ProblemDto {
   })
   difficulty: DifficultyEnum;
 
+  @ApiProperty({
+    enum: PatternEnum,
+    isArray: true,
+    description: 'The patterns of the problem',
+  })
+  patterns: PatternEnum[];
+
   @ApiProperty({ type: [String], description: 'Tags for the problem' })
   tags: string[];
 
   @ApiProperty({ type: [String], description: 'Companies that have asked this problem' })
   companies: string[];
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Starter code for each language (what user sees in editor)',
   })
   starterCode: StarterCode;
@@ -95,6 +103,7 @@ export class ProblemDto {
       sampleInput: problem.sampleInput,
       sampleOutput: problem.sampleOutput,
       difficulty: problem.difficulty,
+      patterns: problem.patterns ?? [],
       tags: problem.tags ?? [],
       companies: problem.companies ?? [],
       starterCode: problem.starterCode,
