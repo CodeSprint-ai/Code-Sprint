@@ -30,6 +30,9 @@ export interface TestResult {
 
 export interface Submission {
   uuid: string;
+  userId: string;
+  problemId: string;
+  sprintSessionId?: string;
   code: string;
   language: string;
   status: SubmissionStatus;
@@ -40,6 +43,9 @@ export interface Submission {
   compileOutput?: string;
   finishedAt?: string;
   createdAt: string;
+  // Extended fields from backend (when using paginated endpoint)
+  problemTitle?: string;
+  userName?: string;
 }
 
 export interface SubmissionResponse {
@@ -48,6 +54,26 @@ export interface SubmissionResponse {
 
 export interface SubmissionsResponse {
   submissions: Submission[];
+}
+
+export interface PaginatedSubmissionsResponse {
+  data: Submission[];
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+export interface GetSubmissionsParams {
+  page?: number;
+  pageSize?: number;
+  status?: SubmissionStatus;
+  search?: string;
+  userId?: string;
+  fromDate?: string;
+  toDate?: string;
 }
 
 export interface CreateSubmissionInput {

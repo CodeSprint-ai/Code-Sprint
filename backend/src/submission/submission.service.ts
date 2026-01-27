@@ -9,6 +9,7 @@ import { Queue } from 'bull';
 import { SubmissionCommand } from './command/SubmissionCommand';
 import { SubmissionStatus } from './enum/SubmissionStatus';
 import { SubmissionDto } from './dto/SubmissionDto';
+import { GetSubmissionsQueryDto } from './dto/GetSubmissionsQueryDto';
 
 @Injectable()
 export class SubmissionService {
@@ -67,5 +68,96 @@ export class SubmissionService {
       order: { createdAt: 'DESC' },
     });
     return submissions.map(SubmissionDto.toDto);
+  }
+
+  /**
+   * Get paginated submissions with filters
+   * Supports filtering by status, search (problem title or user name), date range, and userId
+   */
+  async getSubmissionsPaginated(
+    query: GetSubmissionsQueryDto,
+    requestingUser?: any
+  ): Promise<{
+    data: SubmissionDto[];
+    meta: {
+      total: number;
+      page: number;
+      pageSize: number;
+      totalPages: number;
+    };
+  }> {
+    const {
+      page = 1,
+      pageSize = 10,
+      status,
+      search,
+      userId,
+      fromDate,
+      toDate,
+    } = query;
+
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+
+    // Build query builder
+    const queryBuilder = this.repo
+      .createQueryBuilder('submission')
+      .leftJoinAndSelect('submission.user', 'user')
+      .leftJoinAndSelect('submission.problem', 'problem')
+      .orderBy('submission.createdAt', 'DESC');
+
+    // Apply userId filter - if not admin, only show own submissions
+    // If userId is provided in query, use it; otherwise, if user is not admin, filter by their own userId
+    if (userId) {
+      queryBuilder.andWhere('user.uuid = :userId', { userId });
+    } else if (requestingUser && requestingUser.role !== 'ADMIN') {
+      queryBuilder.andWhere('user.uuid = :requestingUserId', {
+        requestingUserId: requestingUser.uuid,
+      });
+    }
+
+    // Apply status filter
+    if (status) {
+      queryBuilder.andWhere('submission.status = :status', { status });
+    }
+
+    // Apply search filter (problem title or user name)
+    if (search) {
+      queryBuilder.andWhere(
+        '(problem.title ILIKE :search OR user.name ILIKE :search)',
+        { search: `%${search}%` }
+      );
+    }
+
+    // Apply date range filters
+    if (fromDate) {
+      queryBuilder.andWhere('submission.createdAt >= :fromDate', {
+        fromDate: new Date(fromDate),
+      });
+    }
+    if (toDate) {
+      queryBuilder.andWhere('submission.createdAt <= :toDate', {
+        toDate: new Date(toDate),
+      });
+    }
+
+    // Get total count before pagination
+    const total = await queryBuilder.getCount();
+
+    // Apply pagination
+    const submissions = await queryBuilder.skip(skip).take(take).getMany();
+
+    // Calculate total pages
+    const totalPages = Math.ceil(total / pageSize);
+
+    return {
+      data: submissions.map(SubmissionDto.toDto),
+      meta: {
+        total,
+        page,
+        pageSize,
+        totalPages,
+      },
+    };
   }
 }

@@ -11,6 +11,11 @@ export class SubmissionDto {
   executionTime?: number;
   memoryUsage?: number;
   createdAt: Date;
+  problemTitle?: string;
+  userName?: string;
+  testResults?: any;
+  compileOutput?: string;
+  finishedAt?: Date;
 
   static toDto(submission: Submission): SubmissionDto {
     return {
@@ -24,6 +29,11 @@ export class SubmissionDto {
       executionTime: submission.executionTime,
       memoryUsage: submission.memoryUsage,
       createdAt: submission.createdAt,
+      problemTitle: submission.problem?.title,
+      userName: submission.user?.name,
+      testResults: submission.testResults,
+      compileOutput: submission.compileOutput,
+      finishedAt: submission.finishedAt,
     };
   }
 }

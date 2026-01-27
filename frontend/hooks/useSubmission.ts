@@ -10,6 +10,8 @@ import {
   SubmissionResponse,
   SubmissionsResponse,
   CreateSubmissionInput,
+  PaginatedSubmissionsResponse,
+  GetSubmissionsParams,
 } from "@/types/submission";
 
 interface UseSubmissionsReturn {
@@ -22,6 +24,10 @@ interface UseSubmissionsReturn {
     unknown
   >["mutateAsync"];
   createSubmissionLoading: boolean;
+}
+
+interface UsePaginatedSubmissionsReturn {
+  paginatedSubmissions: UseQueryResult<PaginatedSubmissionsResponse, Error>;
 }
 
 export const useSubmission = (
@@ -87,5 +93,40 @@ export const useSubmission = (
     singleSubmission: singleSubmissionQuery,
     createSubmission: createSubmissionMutation.mutateAsync,
     createSubmissionLoading: createSubmissionMutation.isPending,
+  };
+};
+
+/**
+ * Hook for paginated submissions with filters
+ */
+export const usePaginatedSubmissions = (
+  params: GetSubmissionsParams
+): UsePaginatedSubmissionsReturn => {
+  const paginatedSubmissionsQuery = useQuery<
+    PaginatedSubmissionsResponse,
+    Error
+  >({
+    queryKey: ["submissions", "paginated", params],
+    queryFn: async () => {
+      const queryParams = new URLSearchParams();
+      if (params.page) queryParams.append("page", params.page.toString());
+      if (params.pageSize)
+        queryParams.append("pageSize", params.pageSize.toString());
+      if (params.status) queryParams.append("status", params.status);
+      if (params.search) queryParams.append("search", params.search);
+      if (params.userId) queryParams.append("userId", params.userId);
+      if (params.fromDate) queryParams.append("fromDate", params.fromDate);
+      if (params.toDate) queryParams.append("toDate", params.toDate);
+
+      const response = await api.get<PaginatedSubmissionsResponse>(
+        `/submission?${queryParams.toString()}`
+      );
+      return response.data;
+    },
+    enabled: true,
+  });
+
+  return {
+    paginatedSubmissions: paginatedSubmissionsQuery,
   };
 };
