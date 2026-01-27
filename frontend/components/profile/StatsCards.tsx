@@ -12,26 +12,35 @@ interface StatCardProps {
     icon: React.ReactNode;
     label: string;
     value: string | number;
-    color: string;
+    color: string; // Tailwind color class prefix e.g. "cyan", "emerald"
     subValue?: string;
 }
 
 function StatCard({ icon, label, value, color, subValue }: StatCardProps) {
-    return (
-        <div className="relative overflow-hidden rounded-xl bg-slate-900/50 border border-slate-700/50 p-5 hover:border-slate-600/50 transition-all group">
-            <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ background: `linear-gradient(135deg, ${color}10 0%, transparent 50%)` }} />
+    // Map color names to hex/classes logic manually for now to keep it simple with existing inline styles or switch to classes
+    // Utilizing inline styles for dynamic RGBA opacity
 
-            <div className="relative flex items-start justify-between">
+    return (
+        <div className="relative overflow-hidden rounded-xl bg-zinc-900/50 border border-zinc-800 p-5 hover:border-zinc-700 hover:-translate-y-1 transition-all duration-300 group backdrop-blur-sm">
+            {/* Hover Glow */}
+            <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{ background: `radial-gradient(circle at top right, ${color}15, transparent 70%)` }}
+            />
+
+            <div className="relative flex items-start justify-between z-10">
                 <div>
-                    <p className="text-slate-400 text-sm mb-1">{label}</p>
-                    <p className="text-3xl font-bold text-white">{value}</p>
+                    <p className="text-zinc-400 text-xs font-medium uppercase tracking-wider mb-1">{label}</p>
+                    <p className="text-3xl font-bold text-white tracking-tight">{value}</p>
                     {subValue && (
-                        <p className="text-xs text-slate-500 mt-1">{subValue}</p>
+                        <p className="text-xs text-zinc-500 mt-1 font-medium">{subValue}</p>
                     )}
                 </div>
-                <div className={`p-2 rounded-lg`} style={{ backgroundColor: `${color}20` }}>
-                    {icon}
+                <div
+                    className="p-2.5 rounded-lg border border-white/5 shadow-inner"
+                    style={{ backgroundColor: `${color}15`, color: color }}
+                >
+                    {React.cloneElement(icon as React.ReactElement<{ size?: number }>, { size: 20 })}
                 </div>
             </div>
         </div>
@@ -42,49 +51,49 @@ export function StatsCards({ stats }: StatsCardsProps) {
     return (
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             <StatCard
-                icon={<Code2 size={20} style={{ color: '#3B82F6' }} />}
+                icon={<Code2 />}
                 label="Total Solved"
                 value={stats.totalSolved}
-                color="#3B82F6"
+                color="#22d3ee" // Cyan-400
                 subValue={`${stats.easySolved}E / ${stats.mediumSolved}M / ${stats.hardSolved}H`}
             />
 
             <StatCard
-                icon={<CheckCircle size={20} style={{ color: '#22C55E' }} />}
+                icon={<CheckCircle />}
                 label="Success Rate"
                 value={`${stats.submissionSuccessRate}%`}
-                color="#22C55E"
+                color="#34d399" // Emerald-400
             />
 
             <StatCard
-                icon={<Flame size={20} style={{ color: '#F97316' }} />}
+                icon={<Flame />}
                 label="Current Streak"
                 value={stats.currentStreak}
-                color="#F97316"
+                color="#fbbf24" // Amber-400
                 subValue="days"
             />
 
             <StatCard
-                icon={<Trophy size={20} style={{ color: '#EAB308' }} />}
+                icon={<Trophy />}
                 label="Max Streak"
                 value={stats.maxStreak}
-                color="#EAB308"
+                color="#facc15" // Yellow-400
                 subValue="days"
             />
 
             <StatCard
-                icon={<Target size={20} style={{ color: '#8B5CF6' }} />}
+                icon={<Target />}
                 label="Rating"
                 value={stats.rating}
-                color="#8B5CF6"
+                color="#a78bfa" // Violet-400
             />
 
-            {stats.rank && (
+            {stats.rank !== undefined && (
                 <StatCard
-                    icon={<Zap size={20} style={{ color: '#EC4899' }} />}
+                    icon={<Zap />}
                     label="Global Rank"
                     value={`#${stats.rank}`}
-                    color="#EC4899"
+                    color="#f472b6" // Pink-400
                 />
             )}
         </div>

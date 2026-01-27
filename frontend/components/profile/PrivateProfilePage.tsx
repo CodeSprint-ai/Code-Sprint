@@ -16,7 +16,7 @@ import DifficultyChart from './DifficultyChart';
 import SubmissionHeatmap from './SubmissionHeatmap';
 import BadgesGrid from './BadgesGrid';
 import LanguageChart from './LanguageChart';
-import { Loader2, Settings, Bookmark, Award, Activity, User, Save } from 'lucide-react';
+import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2 } from 'lucide-react';
 import { PrivateProfile, SavedProblem, UserPreferences } from '@/types/profile';
 import { toast } from 'sonner';
 
@@ -123,58 +123,80 @@ export default function PrivateProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 py-8 px-4">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="h-full overflow-y-auto bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 py-8 px-4 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Profile Header */}
         <ProfileHeader profile={publicProfile} />
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-slate-700/50 pb-2 overflow-x-auto">
+        <div className="flex gap-2 border-b border-zinc-800 pb-2 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap ${activeTab === tab.id
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 whitespace-nowrap ${activeTab === tab.id
+                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.15)]'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
                 }`}
             >
-              <tab.icon size={18} />
+              <tab.icon size={18} className={activeTab === tab.id ? 'animate-pulse' : ''} />
               {tab.label}
             </button>
           ))}
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            <StatsCards stats={publicProfile.stats} />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <StatsCards stats={publicProfile.stats} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {stats && <DifficultyChart distribution={stats.difficultyDistribution} />}
-              {stats && <LanguageChart usage={stats.languageUsage} />}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="p-6 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 hover:border-zinc-700 transition-colors">
+                  <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-cyan-400" />
+                    Problem Difficulty
+                  </h3>
+                  {stats && <DifficultyChart distribution={stats.difficultyDistribution} />}
+                </div>
+                <div className="p-6 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 hover:border-zinc-700 transition-colors">
+                  <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                    <Code2 className="w-5 h-5 text-violet-400" />
+                    Language Usage
+                  </h3>
+                  {stats && <LanguageChart usage={stats.languageUsage} />}
+                </div>
+              </div>
+
+              {stats && (
+                <div className="p-6 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 overflow-hidden">
+                  <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-emerald-400" />
+                    Submission Activity
+                  </h3>
+                  <SubmissionHeatmap data={stats.submissionHeatmap} />
+                </div>
+              )}
             </div>
+          )}
 
-            {stats && <SubmissionHeatmap data={stats.submissionHeatmap} />}
-          </div>
-        )}
+          {activeTab === 'badges' && (
+            <BadgesGrid badges={badges} showAll />
+          )}
 
-        {activeTab === 'badges' && (
-          <BadgesGrid badges={badges} showAll />
-        )}
+          {activeTab === 'saved' && (
+            <SavedProblemsTab savedProblems={savedProblems} />
+          )}
 
-        {activeTab === 'saved' && (
-          <SavedProblemsTab savedProblems={savedProblems} />
-        )}
-
-        {activeTab === 'settings' && (
-          <SettingsTab
-            profile={profile}
-            onUpdateProfile={(data) => updateProfileMutation.mutate(data)}
-            onUpdateSettings={(data) => updateSettingsMutation.mutate(data)}
-            isUpdating={updateProfileMutation.isPending || updateSettingsMutation.isPending}
-          />
-        )}
+          {activeTab === 'settings' && (
+            <SettingsTab
+              profile={profile}
+              onUpdateProfile={(data) => updateProfileMutation.mutate(data)}
+              onUpdateSettings={(data) => updateSettingsMutation.mutate(data)}
+              isUpdating={updateProfileMutation.isPending || updateSettingsMutation.isPending}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -183,38 +205,40 @@ export default function PrivateProfilePage() {
 // Saved Problems Tab Component
 function SavedProblemsTab({ savedProblems }: { savedProblems: SavedProblem[] }) {
   const difficultyColors = {
-    EASY: 'text-green-400 bg-green-500/10',
-    MEDIUM: 'text-yellow-400 bg-yellow-500/10',
-    HARD: 'text-red-400 bg-red-500/10',
+    EASY: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+    MEDIUM: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+    HARD: 'text-red-400 bg-red-500/10 border-red-500/20',
   };
 
   if (savedProblems.length === 0) {
     return (
-      <div className="rounded-xl bg-slate-900/50 border border-slate-700/50 p-8 text-center">
-        <Bookmark size={48} className="mx-auto text-slate-600 mb-3" />
-        <p className="text-slate-400">No saved problems yet</p>
-        <p className="text-sm text-slate-500">Bookmark problems while solving to see them here!</p>
+      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-12 text-center backdrop-blur-sm">
+        <div className="w-16 h-16 rounded-full bg-zinc-800/50 flex items-center justify-center mx-auto mb-4">
+          <Bookmark size={32} className="text-zinc-500" />
+        </div>
+        <p className="text-zinc-300 font-medium mb-1">No saved problems yet</p>
+        <p className="text-sm text-zinc-500">Bookmark problems while solving to see them here!</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl bg-slate-900/50 border border-slate-700/50 overflow-hidden">
-      <div className="divide-y divide-slate-700/50">
+    <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 overflow-hidden backdrop-blur-sm">
+      <div className="divide-y divide-zinc-800">
         {savedProblems.map((problem) => (
           <a
             key={problem.uuid}
             href={`/problems/${problem.problemSlug}`}
-            className="flex items-center justify-between p-4 hover:bg-slate-800/50 transition-colors"
+            className="flex items-center justify-between p-4 hover:bg-zinc-800/50 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
-              <span className={`px-2 py-1 rounded text-xs font-medium ${difficultyColors[problem.difficulty]}`}>
+              <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${difficultyColors[problem.difficulty]}`}>
                 {problem.difficulty}
               </span>
-              <span className="text-white font-medium">{problem.problemTitle}</span>
+              <span className="text-zinc-200 font-medium group-hover:text-cyan-400 transition-colors">{problem.problemTitle}</span>
             </div>
             {problem.notes && (
-              <span className="text-sm text-slate-400 truncate max-w-xs">{problem.notes}</span>
+              <span className="text-sm text-zinc-500 truncate max-w-xs">{problem.notes}</span>
             )}
           </a>
         ))}
@@ -274,73 +298,76 @@ function SettingsTab({
     onUpdateSettings(preferences);
   };
 
+  const inputClasses = "w-full px-4 py-2.5 rounded-lg bg-zinc-950/50 border border-zinc-800 text-white placeholder-zinc-600 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 focus:outline-none transition-all";
+  const labelClasses = "block text-sm font-medium text-zinc-400 mb-1.5";
+
   return (
     <div className="space-y-6">
       {/* Profile Settings */}
-      <div className="rounded-xl bg-slate-900/50 border border-slate-700/50 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <User size={20} />
+      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+          <User size={20} className="text-cyan-400" />
           Profile Information
         </h3>
-        <form onSubmit={handleProfileSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleProfileSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Username</label>
+              <label className={labelClasses}>Username</label>
               <input
                 type="text"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={inputClasses}
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Name</label>
+              <label className={labelClasses}>Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={inputClasses}
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Bio</label>
+            <label className={labelClasses}>Bio</label>
             <textarea
               value={formData.bio}
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               rows={3}
-              className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none resize-none"
+              className={`${inputClasses} resize-none`}
             />
           </div>
 
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Country</label>
+            <label className={labelClasses}>Country</label>
             <input
               type="text"
               value={formData.country}
               onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+              className={inputClasses}
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm text-slate-400 mb-1">GitHub Username</label>
+              <label className={labelClasses}>GitHub Username</label>
               <input
                 type="text"
                 value={formData.github}
                 onChange={(e) => setFormData({ ...formData, github: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={inputClasses}
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">LinkedIn Username</label>
+              <label className={labelClasses}>LinkedIn Username</label>
               <input
                 type="text"
                 value={formData.linkedin}
                 onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={inputClasses}
               />
             </div>
           </div>
@@ -348,7 +375,7 @@ function SettingsTab({
           <button
             type="submit"
             disabled={isUpdating}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-cyan-900/20"
           >
             {isUpdating ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             Save Profile
@@ -357,19 +384,19 @@ function SettingsTab({
       </div>
 
       {/* Preferences */}
-      <div className="rounded-xl bg-slate-900/50 border border-slate-700/50 p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Settings size={20} />
+      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+          <Settings size={20} className="text-violet-400" />
           Preferences
         </h3>
-        <form onSubmit={handlePreferencesSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handlePreferencesSubmit} className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Theme</label>
+              <label className={labelClasses}>Theme</label>
               <select
                 value={preferences.theme}
                 onChange={(e) => setPreferences({ ...preferences, theme: e.target.value as any })}
-                className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={inputClasses}
               >
                 <option value="SYSTEM">System</option>
                 <option value="LIGHT">Light</option>
@@ -377,11 +404,11 @@ function SettingsTab({
               </select>
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-1">Default Language</label>
+              <label className={labelClasses}>Default Language</label>
               <select
                 value={preferences.defaultLanguage}
                 onChange={(e) => setPreferences({ ...preferences, defaultLanguage: e.target.value as any })}
-                className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-blue-500 focus:outline-none"
+                className={inputClasses}
               >
                 <option value="python">Python</option>
                 <option value="java">Java</option>
@@ -390,31 +417,37 @@ function SettingsTab({
             </div>
           </div>
 
-          <div className="space-y-3">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={preferences.emailNotifications}
-                onChange={(e) => setPreferences({ ...preferences, emailNotifications: e.target.checked })}
-                className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-white">Email notifications</span>
+          <div className="space-y-4 pt-2">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={preferences.emailNotifications}
+                  onChange={(e) => setPreferences({ ...preferences, emailNotifications: e.target.checked })}
+                  className="peer sr-only"
+                />
+                <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
+              </div>
+              <span className="text-zinc-300 group-hover:text-white transition-colors">Email notifications</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={preferences.marketingEmails}
-                onChange={(e) => setPreferences({ ...preferences, marketingEmails: e.target.checked })}
-                className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-white">Marketing emails</span>
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={preferences.marketingEmails}
+                  onChange={(e) => setPreferences({ ...preferences, marketingEmails: e.target.checked })}
+                  className="peer sr-only"
+                />
+                <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
+              </div>
+              <span className="text-zinc-300 group-hover:text-white transition-colors">Marketing emails</span>
             </label>
           </div>
 
           <button
             type="submit"
             disabled={isUpdating}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-violet-900/20"
           >
             {isUpdating ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             Save Preferences
