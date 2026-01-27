@@ -15,6 +15,7 @@ import {
 import { ProblemService } from './problem.service';
 import { ProblemDto } from './dto/ProblemDto';
 import { CreateProblemCommand } from './command/ProblemCommand';
+import { BulkCreateProblemCommand } from './command/BulkCreateProblemCommand';
 import { UpdateProblemCommand } from './command/UpdateProblemCommand';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -25,7 +26,7 @@ import { Roles } from 'src/common/decorators/roleDecorater';
 @ApiTags('problems')
 @Controller('problems')
 export class ProblemController {
-  constructor(private readonly problemService: ProblemService) {}
+  constructor(private readonly problemService: ProblemService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -48,13 +49,33 @@ export class ProblemController {
     );
   }
 
+  @Post('/bulk')
+  @HttpCode(HttpStatus.CREATED)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 201,
+    description: 'The problems have been successfully created.',
+    type: [ProblemDto],
+  })
+  async createBulk(
+    @Body() bulkCreateProblemCommand: BulkCreateProblemCommand,
+  ): Promise<ReturnType<typeof ResponseWrapper.success>> {
+    const createdProblems =
+      await this.problemService.createBulk(bulkCreateProblemCommand);
+    return ResponseWrapper.success(
+      createdProblems,
+      'Problems created successfully',
+    );
+  }
+
   @Get()
   @ApiResponse({
     status: 200,
     description: 'Returns a list of all problems.',
     type: [ProblemDto],
   })
-  
+
   async findAll(): Promise<ReturnType<typeof ResponseWrapper.success>> {
     const problems = await this.problemService.findAll();
     return ResponseWrapper.success(problems, 'Problems fetched successfully');

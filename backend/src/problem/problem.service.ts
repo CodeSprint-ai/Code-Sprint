@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Problem } from './entities/Problem';
 import { CreateProblemCommand } from './command/ProblemCommand';
+import { BulkCreateProblemCommand } from './command/BulkCreateProblemCommand';
 import { UpdateProblemCommand } from './command/UpdateProblemCommand';
 import slugify from 'slugify';
 import { User } from 'src/user/entities/user.model';
@@ -27,7 +28,7 @@ export class ProblemService {
     private testCaseRepository: Repository<TestCase>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   /**
    * Creates a new problem with its associated test cases.
@@ -54,6 +55,25 @@ export class ProblemService {
     });
     const savedProblem: Problem = await this.problemRepository.save(problem);
     return ProblemDto.toDto(savedProblem);
+  }
+
+  /**
+   * Creates multiple problems from a bulk command.
+   * @param command The bulk command containing an array of problem creation commands.
+   * @returns An array of created Problem DTOs.
+   */
+  async createBulk(
+    command: BulkCreateProblemCommand,
+  ): Promise<ProblemDto[]> {
+    const createdProblems: ProblemDto[] = [];
+    for (const problemCommand of command.problems) {
+      // Reusing the single create logic to ensure consistency (slug generation, user check, etc.)
+      // This is sequential, which is safer for slug generation if titles are same, though less performant than a bulk insert.
+      // Given the complexity of nested relations (testCases) and slug logic, sequential is preferred for now.
+      const createdProblem = await this.create(problemCommand);
+      createdProblems.push(createdProblem);
+    }
+    return createdProblems;
   }
 
   /**
