@@ -1,9 +1,7 @@
-import React from 'react'
+'use client';
 
-const Profile = () => {
-  return (
-    <div>page</div>
-  )
+import { PrivateProfilePage } from '@/components/profile';
+
+export default function ProfilePage() {
+  return <PrivateProfilePage />;
 }
-
-export default Profile

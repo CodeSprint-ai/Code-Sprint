@@ -1,0 +1,6 @@
+How to use?
+Request header
+Authorization: ApiKey Moin_uddin:32c10d2d6a76c435ac58e22505c1ea8219919940
+or
+Param query
+/?username=Moin_uddin&api_key=32c10d2d6a76c435ac58e22505c1ea8219919940

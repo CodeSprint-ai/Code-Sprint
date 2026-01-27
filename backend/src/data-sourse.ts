@@ -7,6 +7,12 @@ import { TestCase } from './problem/entities/TestCase';
 import { Submission } from './submission/entities/Submission';
 import { SprintSession } from './sprint/entities/SprintSession';
 import { SprintProblem } from './sprint/entities/SprintProblem';
+import { UserStats } from './profile/entities/UserStats';
+import { Badge } from './profile/entities/Badge';
+import { UserBadge } from './profile/entities/UserBadge';
+import { UserPreferences } from './profile/entities/UserPreferences';
+import { SavedProblem } from './profile/entities/SavedProblem';
+import { UserSession } from './profile/entities/UserSession';
 
 // Load environment variables
 config();
@@ -17,7 +23,21 @@ export const AppDataSource = new DataSource({
   ssl: process.env.DATABASE_URL?.includes('neon') ? { rejectUnauthorized: false } : false,
   synchronize: false,
   logging: true,
-  entities: [User, Problem, TestCase, Submission, SprintSession, SprintProblem],
+  entities: [
+    User,
+    Problem,
+    TestCase,
+    Submission,
+    SprintSession,
+    SprintProblem,
+    UserStats,
+    Badge,
+    UserBadge,
+    UserPreferences,
+    SavedProblem,
+    UserSession,
+  ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],
 });
+
