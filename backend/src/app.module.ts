@@ -13,6 +13,7 @@ import { SubmissionModule } from './submission/submission.module';
 import { SprintService } from './sprint/sprint.service';
 import { SprintModule } from './sprint/sprint.module';
 import { ProfileModule } from './profile/profile.module';
+import { ContestModule } from './contest/contest.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './auth/guard/role.guard';
@@ -51,6 +52,7 @@ import { SubmissionProcessor } from './submission/processor/submissionProcessor'
     SubmissionModule,
     SprintModule,
     ProfileModule,
+    ContestModule,
   ],
   controllers: [AppController],
   providers: [
