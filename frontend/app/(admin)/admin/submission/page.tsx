@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { usePaginatedSubmissions } from "@/hooks/useSubmission";
 import { useAuthStore } from "@/store/authStore";
 import { SubmissionStatus, GetSubmissionsParams, Submission } from "@/types/submission";
@@ -115,9 +115,13 @@ function SubmissionCardItem({
   );
 }
 
-export default function AdminSubmissionsPage() {
+export default function SubmissionsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  
+  // Determine base path based on current route
+  const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
 
   const [filters, setFilters] = useState<GetSubmissionsParams>({
     page: parseInt(searchParams.get("page") || "1", 10) || 1,
@@ -138,8 +142,8 @@ export default function AdminSubmissionsPage() {
     if (filters.search) params.set("search", filters.search);
     if (filters.fromDate) params.set("fromDate", filters.fromDate);
     if (filters.toDate) params.set("toDate", filters.toDate);
-    router.replace(`/admin/submission${params.toString() ? `?${params}` : ""}`, { scroll: false });
-  }, [filters, router]);
+    router.replace(`${basePath}${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [filters, router, basePath]);
 
   const handleFilterChange = (key: keyof GetSubmissionsParams, value: unknown) => {
     setFilters((prev) => ({
@@ -264,7 +268,7 @@ export default function AdminSubmissionsPage() {
                     <SubmissionCardItem
                       key={s.uuid}
                       submission={s}
-                      basePath="/admin/submission"
+                      basePath={basePath}
                     />
                   ))}
                 </div>

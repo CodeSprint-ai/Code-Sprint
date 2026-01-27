@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { usePaginatedSubmissions } from "@/hooks/useSubmission";
 import { useAuthStore } from "@/store/authStore";
 import { SubmissionStatus, GetSubmissionsParams, Submission } from "@/types/submission";
@@ -22,6 +22,7 @@ import {
   Filter,
   X,
   FileCode2,
+  User,
   Calendar,
   ArrowRight,
   LayoutGrid,
@@ -48,6 +49,20 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+// Card colors aligned with ProblemCard: bg-{color}-600/10 border border-{color}-800 (like lines 49–56)
+const cardStatusStyles: Record<string, string> = {
+  ACCEPTED: "bg-green-600/10 border border-green-800 hover:border-green-600 hover:shadow-lg",
+  WRONG_ANSWER: "bg-red-600/10 border border-red-800 hover:border-red-600 hover:shadow-lg",
+  TIME_LIMIT_EXCEEDED:
+    "bg-yellow-600/10 border border-yellow-800 hover:border-yellow-600 hover:shadow-lg",
+  COMPILATION_ERROR:
+    "bg-violet-600/10 border border-violet-800 hover:border-violet-600 hover:shadow-lg",
+  RUNTIME_ERROR: "bg-red-600/10 border border-red-800 hover:border-red-600 hover:shadow-lg",
+  PROCESSING: "bg-sky-600/10 border border-sky-800 hover:border-sky-600 hover:shadow-lg",
+  QUEUED: "bg-cyan-600/10 border border-cyan-800 hover:border-cyan-600 hover:shadow-lg",
+  PENDING: "bg-zinc-600/10 border border-zinc-800 hover:border-zinc-600 hover:shadow-lg",
+};
+
 function SubmissionCardItem({
   submission,
   basePath,
@@ -56,10 +71,13 @@ function SubmissionCardItem({
   basePath: string;
 }) {
   const viewHref = `${basePath}/${submission.uuid}`;
+  const cardStyle =
+    cardStatusStyles[submission.status] ??
+    "bg-zinc-600/10 border border-zinc-800 hover:border-zinc-600 hover:shadow-lg";
   return (
     <Link
       href={viewHref}
-      className="group block rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-5 transition hover:border-zinc-600 hover:bg-zinc-800/40"
+      className={`group block rounded-xl p-5 transition ${cardStyle}`}
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
@@ -67,6 +85,10 @@ function SubmissionCardItem({
             <h3 className="truncate font-semibold text-zinc-100 group-hover:text-white">
               {submission.problemTitle || "Untitled Problem"}
             </h3>
+            <div className="mt-1 flex items-center gap-2 text-sm text-zinc-400">
+              <User className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">{submission.userName || "—"}</span>
+            </div>
           </div>
           <StatusBadge status={submission.status} />
         </div>
@@ -96,7 +118,10 @@ function SubmissionCardItem({
 export default function SubmissionsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const user = useAuthStore((s) => s.user);
+  const pathname = usePathname();
+  
+  // Determine base path based on current route
+  const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
 
   const [filters, setFilters] = useState<GetSubmissionsParams>({
     page: parseInt(searchParams.get("page") || "1", 10) || 1,
@@ -105,7 +130,6 @@ export default function SubmissionsPage() {
     search: searchParams.get("search") || undefined,
     fromDate: searchParams.get("fromDate") || undefined,
     toDate: searchParams.get("toDate") || undefined,
-    userId: user?.userUuid,
   });
 
   const { paginatedSubmissions } = usePaginatedSubmissions(filters);
@@ -118,8 +142,8 @@ export default function SubmissionsPage() {
     if (filters.search) params.set("search", filters.search);
     if (filters.fromDate) params.set("fromDate", filters.fromDate);
     if (filters.toDate) params.set("toDate", filters.toDate);
-    router.replace(`/submission${params.toString() ? `?${params}` : ""}`, { scroll: false });
-  }, [filters, router]);
+    router.replace(`${basePath}${params.toString() ? `?${params}` : ""}`, { scroll: false });
+  }, [filters, router, basePath]);
 
   const handleFilterChange = (key: keyof GetSubmissionsParams, value: unknown) => {
     setFilters((prev) => ({
@@ -130,7 +154,7 @@ export default function SubmissionsPage() {
   };
 
   const clearFilters = () => {
-    setFilters({ page: 1, pageSize: 10, userId: user?.userUuid });
+    setFilters({ page: 1, pageSize: 10 });
   };
 
   const hasActiveFilters = Boolean(
@@ -141,18 +165,19 @@ export default function SubmissionsPage() {
   const showPagination = meta !== undefined;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-6xl flex-1 min-h-0 flex-col">
-        <div className="mb-6">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full">
+      <div className="flex w-full flex-1 min-h-0 flex-col">
+        <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
-            My Submissions
+            All Submissions
           </h1>
           <p className="mt-1 text-sm text-zinc-500">
-            View and filter your submissions.
+            View and filter submissions from all users.
           </p>
         </div>
 
-        <div className="mb-6 rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-4">
+        {/* Filters */}
+        <div className="mb-8 rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-4">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-zinc-400" />
@@ -174,7 +199,7 @@ export default function SubmissionsPage() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
               <Input
-                placeholder="Search by problem title..."
+                placeholder="Search by title or user..."
                 value={filters.search ?? ""}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
                 className="border-zinc-700 bg-zinc-800/50 pl-9 text-zinc-100 placeholder:text-zinc-500"
@@ -232,78 +257,75 @@ export default function SubmissionsPage() {
         {!paginatedSubmissions.isLoading && !paginatedSubmissions.isError && (
           <div className="flex min-h-0 flex-1 flex-col">
             {submissions.length === 0 ? (
-              <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-zinc-800/80 bg-zinc-900/30 py-16">
+              <div className="flex flex-1 flex-col items-center justify-center py-12">
                 <LayoutGrid className="mb-3 h-12 w-12 text-zinc-600" />
                 <p className="text-zinc-500">No submissions found.</p>
               </div>
             ) : (
-              <>
-                {/* Scrollable submissions list */}
-                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
-                    {submissions.map((s) => (
-                      <SubmissionCardItem
-                        key={s.uuid}
-                        submission={s}
-                        basePath="/submission"
-                      />
-                    ))}
-                  </div>
+              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+                  {submissions.map((s) => (
+                    <SubmissionCardItem
+                      key={s.uuid}
+                      submission={s}
+                      basePath={basePath}
+                    />
+                  ))}
                 </div>
+              </div>
+            )}
 
-                {/* Pagination: fixed at bottom */}
-                {showPagination && meta && (
-                  <div className="flex-shrink-0 mt-4 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-                    <p className="text-sm text-zinc-400">
-                      Showing{" "}
-                      <span className="font-medium text-zinc-300">
-                        {(meta.page - 1) * meta.pageSize + 1}
-                      </span>{" "}
-                      –{" "}
-                      <span className="font-medium text-zinc-300">
-                        {Math.min(meta.page * meta.pageSize, meta.total)}
-                      </span>{" "}
-                      of <span className="font-medium text-zinc-300">{meta.total}</span>{" "}
-                      submissions
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            page: Math.max(1, (prev.page ?? 1) - 1),
-                          }))
-                        }
-                        disabled={meta.page <= 1}
-                        className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        Previous
-                      </Button>
-                      <span className="min-w-[7rem] text-center text-sm text-zinc-400">
-                        Page {meta.page} of {Math.max(1, meta.totalPages)}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            page: Math.min(meta.totalPages, (prev.page ?? 1) + 1),
-                          }))
-                        }
-                        disabled={meta.page >= meta.totalPages}
-                        className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
-                      >
-                        Next
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </>
+            {/* Pagination: show for all statuses (empty or not) */}
+            {showPagination && meta && (
+              <div className="flex-shrink-0 mt-4 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+                <p className="text-sm text-zinc-400">
+                  Showing{" "}
+                  <span className="font-medium text-zinc-300">
+                    {meta.total === 0 ? 0 : (meta.page - 1) * meta.pageSize + 1}
+                  </span>{" "}
+                  –{" "}
+                  <span className="font-medium text-zinc-300">
+                    {Math.min(meta.page * meta.pageSize, meta.total)}
+                  </span>{" "}
+                  of <span className="font-medium text-zinc-300">{meta.total}</span>{" "}
+                  submissions
+                </p>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        page: Math.max(1, (prev.page ?? 1) - 1),
+                      }))
+                    }
+                    disabled={meta.page <= 1}
+                    className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+                  <span className="min-w-[7rem] text-center text-sm text-zinc-400">
+                    Page {meta.page} of {Math.max(1, meta.totalPages)}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        page: Math.min(meta.totalPages, (prev.page ?? 1) + 1),
+                      }))
+                    }
+                    disabled={meta.page >= meta.totalPages}
+                    className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         )}

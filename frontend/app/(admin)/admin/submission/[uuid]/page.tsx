@@ -2,10 +2,15 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSubmission } from "@/hooks/useSubmission";
+import { useProblem } from "@/hooks/useProblems";
+import ProblemPanel from "@/components/layout/ProblemPanel";
+import EditorPanel from "@/components/layout/EditorPanel";
 import type { Submission, TestResult } from "@/types/submission";
+import type { Problem } from "@/types/problems";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileCode2, Clock, Cpu, Calendar, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, FileCode2, Clock, Cpu, CheckCircle2, XCircle } from "lucide-react";
 
 function StatusBadge({ status }: { status: string }) {
   const cls =
@@ -30,42 +35,67 @@ export default function AdminSubmissionViewPage({
 }) {
   const { uuid } = React.use(params);
   const { singleSubmission } = useSubmission(undefined, uuid, undefined);
+  const { singleProblem } = useProblem(uuid);
 
-  const raw = singleSubmission.data as unknown;
-  const submission: Submission | null = raw
-    ? (raw as { submission?: Submission }).submission ?? (raw as Submission)
+  const rawSubmission = singleSubmission.data as unknown;
+  const submission: Submission | null = rawSubmission
+    ? (rawSubmission as { submission?: Submission }).submission ?? (rawSubmission as Submission)
     : null;
 
-  if (singleSubmission.isLoading) {
+  const rawProblem = singleProblem.data as unknown;
+  const problem: Problem | null = rawProblem
+    ? (rawProblem as { data?: Problem }).data ?? (rawProblem as Problem)
+    : null;
+
+  // If we have a submission, show submission view
+  if (submission) {
+    return <SubmissionView submission={submission} />;
+  }
+
+  // If we have a problem (even if submission is still loading), show problem solve page
+  // This handles the case when clicking on a problem card
+  if (problem) {
+    return <ProblemSolveView problem={problem} />;
+  }
+
+  // If both are loading, show loading
+  if (singleSubmission.isLoading || singleProblem.isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-950">
         <div className="flex flex-col items-center gap-3 text-zinc-500">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-sky-500" />
-          Loading submission...
+          Loading...
         </div>
       </div>
     );
   }
 
-  if (singleSubmission.isError || !submission) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-950 px-4">
-        <p className="text-red-400">Submission not found.</p>
-        <Link href="/admin/submission">
-          <Button variant="outline" className="border-zinc-700 bg-zinc-800/50 text-zinc-200">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Submissions
-          </Button>
-        </Link>
-      </div>
-    );
-  }
+  // If both failed, show error
+  const pathname = usePathname();
+  const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
+  
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-950 px-4">
+      <p className="text-red-400">Not found.</p>
+      <Link href={basePath}>
+        <Button variant="outline" className="border-zinc-700 bg-zinc-800/50 text-zinc-200">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Submissions
+        </Button>
+      </Link>
+    </div>
+  );
+}
 
+function SubmissionView({ submission }: { submission: Submission }) {
+  const pathname = usePathname();
+  const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
+  
   return (
     <div className="min-h-screen bg-zinc-950 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <Link
-          href="/admin/submission"
+          href={basePath}
           className="mb-6 inline-flex items-center text-sm text-zinc-400 hover:text-zinc-200"
         >
           <ArrowLeft className="mr-1 h-4 w-4" />
@@ -79,7 +109,7 @@ export default function AdminSubmissionViewPage({
                 {submission.problemTitle ?? "Submission"}
               </h1>
               <p className="mt-1 text-sm text-zinc-500">
-                {submission.userName ? `by ${submission.userName}` : ""} ·{" "}
+                {submission.userName ? `by ${submission.userName} · ` : ""}
                 {new Date(submission.createdAt).toLocaleString()}
               </p>
             </div>
@@ -152,5 +182,23 @@ export default function AdminSubmissionViewPage({
         </div>
       </div>
     </div>
+  );
+}
+
+function ProblemSolveView({ problem }: { problem: Problem }) {
+  return (
+    <main className="h-screen w-full flex flex-col bg-zinc-950 text-zinc-100">
+      <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
+        {/* Left panel - Problem Description */}
+        <div className="lg:w-1/2 border-b lg:border-b-0 lg:border-r border-zinc-800 overflow-y-auto h-full">
+          <ProblemPanel problem={problem} />
+        </div>
+
+        {/* Right panel - Editor */}
+        <div className="lg:w-1/2 flex flex-col overflow-hidden h-full">
+          <EditorPanel problem={problem} hideSubmit={false} />
+        </div>
+      </section>
+    </main>
   );
 }
