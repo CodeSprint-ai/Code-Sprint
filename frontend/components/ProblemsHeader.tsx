@@ -11,17 +11,15 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Filter } from "lucide-react";
-import { useProblemStore } from "@/store/problemStore";
-import AddProblemPopupForm from "./forms/AddProblemPopupForm";
 import { useAuthStore } from "@/store/authStore";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function ProblemsHeader() {
-  const { isAddProblemPopupForm, setIsAddProblemPopupForm } = useProblemStore();
   const user = useAuthStore((state) => state.user);
-
-  const handleAddProblemPopup = () => {
-    setIsAddProblemPopupForm(true)
-  }
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
+  const addProblemPath = isAdmin ? "/admin/problems/add" : "/problems/add";
 
   return (
     <div className="flex flex-col gap-2 p-6 border-b bg-background">
@@ -35,12 +33,13 @@ export default function ProblemsHeader() {
             Challenge yourself with our curated set of coding problems
           </p>
         </div>
-        { user?.role === "ADMIN" &&
-          <Button variant="outline" onClick={handleAddProblemPopup} >
-            Add Problem
-          </Button>
-        }
-
+        { user?.role === "ADMIN" && (
+          <Link href={addProblemPath}>
+            <Button variant="outline">
+              Add Problem
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Search + filters row */}
@@ -82,7 +81,6 @@ export default function ProblemsHeader() {
           <Filter className="h-4 w-4" />
         </Button>
       </div>
-      <AddProblemPopupForm />
     </div>
   );
 }

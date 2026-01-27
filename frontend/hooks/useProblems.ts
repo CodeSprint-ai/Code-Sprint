@@ -11,6 +11,8 @@ import {
   CreateProblemInput,
   ProblemResponse,
   ProblemsResponse,
+  PaginatedProblemsResponse,
+  GetProblemsParams,
 } from "@/types/problems";
 
 interface UseProblemsReturn {
@@ -27,6 +29,10 @@ interface UseProblemsReturn {
     CreateProblemInput, // input creds
     unknown
   >["mutateAsync"];
+}
+
+interface UsePaginatedProblemsReturn {
+  paginatedProblems: UseQueryResult<PaginatedProblemsResponse, Error>;
 }
 
 export const useProblem = (uuid?: string): UseProblemsReturn => {
@@ -77,5 +83,48 @@ export const useProblem = (uuid?: string): UseProblemsReturn => {
     allProblems: allProblemsQuery,
     singleProblem: singleProblemQuery,
     createProblem: createProblemMutation.mutateAsync,
+  };
+};
+
+/**
+ * Hook for paginated problems with filters
+ */
+export const usePaginatedProblems = (
+  params: GetProblemsParams
+): UsePaginatedProblemsReturn => {
+  const paginatedProblemsQuery = useQuery<
+    PaginatedProblemsResponse,
+    Error
+  >({
+    queryKey: ["problems", "paginated", params],
+    queryFn: async () => {
+      const queryParams = new URLSearchParams();
+      // Always include page and pageSize to ensure paginated response
+      queryParams.append("page", (params.page || 1).toString());
+      queryParams.append("pageSize", (params.pageSize || 10).toString());
+      if (params.difficulty) queryParams.append("difficulty", params.difficulty);
+      if (params.search) queryParams.append("search", params.search);
+      if (params.tag) queryParams.append("tag", params.tag);
+      if (params.fromDate) queryParams.append("fromDate", params.fromDate);
+      if (params.toDate) queryParams.append("toDate", params.toDate);
+
+      const response = await api.get<any>(
+        `/problems?${queryParams.toString()}`
+      );
+      const raw = response.data;
+      // Backend may return { data, meta } directly or wrapped in ResponseWrapper { data: { data, meta }, message, ... }
+      if (raw?.data?.data && raw?.data?.meta) {
+        return raw.data as PaginatedProblemsResponse;
+      }
+      if (raw?.data && raw?.meta) {
+        return raw as PaginatedProblemsResponse;
+      }
+      return raw as PaginatedProblemsResponse;
+    },
+    enabled: true,
+  });
+
+  return {
+    paginatedProblems: paginatedProblemsQuery,
   };
 };

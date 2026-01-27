@@ -50,9 +50,9 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
   starred = false, // favourite
 }) => {
   const pathname = usePathname();
-  // Determine base path based on current route
-  const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
-  const submissionUrl = `${basePath}/${uuid}`;
+  // Determine base path based on current route - link to problem detail page
+  const basePath = pathname?.startsWith("/admin") ? "/admin/problems" : "/problems";
+  const problemUrl = `${basePath}/${uuid}`;
 
   const difficultyColor = {
     [Difficulty.EASY]:
@@ -69,7 +69,7 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
   };
 
   return (
-    <Link href={submissionUrl} className="block">
+    <Link href={problemUrl} className="block">
       <Card
         className={`border rounded-lg p-4 px-0 dark:text-white dark:bg-black cursor-pointer ${difficulty === Difficulty.EASY &&
           "dark:bg-green-600/10 border border-green-800"

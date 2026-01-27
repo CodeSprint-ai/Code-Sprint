@@ -77,6 +77,26 @@ export interface ProblemsResponse {
   isSuccess: boolean;
 }
 
+export interface PaginatedProblemsResponse {
+  data: Problem[];
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+export interface GetProblemsParams {
+  page?: number;
+  pageSize?: number;
+  difficulty?: Difficulty;
+  search?: string;
+  tag?: string;
+  fromDate?: string;
+  toDate?: string;
+}
+
 export interface ProblemResponse {
   data: Problem;
   message: string;

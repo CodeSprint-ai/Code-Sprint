@@ -88,6 +88,100 @@ export class ProblemService {
   }
 
   /**
+   * Get paginated problems with filters
+   * Supports filtering by difficulty, search (title or tags), date range, and tag
+   */
+  async getProblemsPaginated(
+    query: {
+      page?: number;
+      pageSize?: number;
+      difficulty?: string;
+      search?: string;
+      tag?: string;
+      fromDate?: string;
+      toDate?: string;
+    }
+  ): Promise<{
+    data: ProblemDto[];
+    meta: {
+      total: number;
+      page: number;
+      pageSize: number;
+      totalPages: number;
+    };
+  }> {
+    const {
+      page = 1,
+      pageSize = 10,
+      difficulty,
+      search,
+      tag,
+      fromDate,
+      toDate,
+    } = query;
+
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+
+    // Build query builder
+    const queryBuilder = this.problemRepository
+      .createQueryBuilder('problem')
+      .leftJoinAndSelect('problem.createdBy', 'createdBy')
+      .leftJoinAndSelect('problem.testCases', 'testCases')
+      .orderBy('problem.createdAt', 'DESC');
+
+    // Apply difficulty filter
+    if (difficulty) {
+      queryBuilder.andWhere('problem.difficulty = :difficulty', { difficulty });
+    }
+
+    // Apply search filter (title or tags)
+    if (search) {
+      queryBuilder.andWhere(
+        '(problem.title ILIKE :search OR problem.description ILIKE :search)',
+        { search: `%${search}%` }
+      );
+    }
+
+    // Apply tag filter - check if any tag in the array contains the search term
+    if (tag) {
+      queryBuilder.andWhere('EXISTS (SELECT 1 FROM unnest(problem.tags) AS t WHERE t ILIKE :tag)', {
+        tag: `%${tag}%`,
+      });
+    }
+
+    // Apply date range filters
+    if (fromDate) {
+      queryBuilder.andWhere('problem.createdAt >= :fromDate', {
+        fromDate: new Date(fromDate),
+      });
+    }
+    if (toDate) {
+      queryBuilder.andWhere('problem.createdAt <= :toDate', {
+        toDate: new Date(toDate),
+      });
+    }
+
+    // Get total count before pagination
+    const total = await queryBuilder.getCount();
+
+    // Apply pagination
+    const problems = await queryBuilder.skip(skip).take(take).getMany();
+
+    const totalPages = Math.ceil(total / pageSize);
+
+    return {
+      data: problems.map((problem) => ProblemDto.toDto(problem)),
+      meta: {
+        total,
+        page,
+        pageSize,
+        totalPages,
+      },
+    };
+  }
+
+  /**
    * Finds a problem by its UUID.
    * @param uuid The UUID of the problem.
    * @returns The found Problem entity.

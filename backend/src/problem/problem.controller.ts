@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { ProblemDto } from './dto/ProblemDto';
 import { CreateProblemCommand } from './command/ProblemCommand';
 import { BulkCreateProblemCommand } from './command/BulkCreateProblemCommand';
 import { UpdateProblemCommand } from './command/UpdateProblemCommand';
+import { GetProblemsQueryDto } from './dto/GetProblemsQueryDto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -72,13 +74,21 @@ export class ProblemController {
   @Get()
   @ApiResponse({
     status: 200,
-    description: 'Returns a list of all problems.',
-    type: [ProblemDto],
+    description: 'Returns a paginated list of problems with filters.',
   })
-
-  async findAll(): Promise<ReturnType<typeof ResponseWrapper.success>> {
-    const problems = await this.problemService.findAll();
-    return ResponseWrapper.success(problems, 'Problems fetched successfully');
+  async findAll(
+    @Query() query: GetProblemsQueryDto,
+  ) {
+    // If no query parameters provided, return all problems (backward compatibility)
+    const hasQueryParams = Object.keys(query).length > 0;
+    
+    if (hasQueryParams) {
+      const result = await this.problemService.getProblemsPaginated(query);
+      return result;
+    } else {
+      const problems = await this.problemService.findAll();
+      return ResponseWrapper.success(problems, 'Problems fetched successfully');
+    }
   }
 
   // @Get(':slug')
