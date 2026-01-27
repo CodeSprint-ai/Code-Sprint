@@ -144,8 +144,8 @@ export default function AdminSubmissionsPage() {
   const showPagination = meta !== undefined;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-6xl flex-1 min-h-0 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full">
+      <div className="flex w-full flex-1 min-h-0 flex-col">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
             All Submissions
@@ -236,78 +236,75 @@ export default function AdminSubmissionsPage() {
         {!paginatedSubmissions.isLoading && !paginatedSubmissions.isError && (
           <div className="flex min-h-0 flex-1 flex-col">
             {submissions.length === 0 ? (
-              <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-zinc-800/80 bg-zinc-900/30 py-16">
+              <div className="flex flex-1 flex-col items-center justify-center py-12">
                 <LayoutGrid className="mb-3 h-12 w-12 text-zinc-600" />
                 <p className="text-zinc-500">No submissions found.</p>
               </div>
             ) : (
-              <>
-                {/* Scrollable submissions list */}
-                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
-                    {submissions.map((s) => (
-                      <SubmissionCardItem
-                        key={s.uuid}
-                        submission={s}
-                        basePath="/admin/submission"
-                      />
-                    ))}
-                  </div>
+              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+                  {submissions.map((s) => (
+                    <SubmissionCardItem
+                      key={s.uuid}
+                      submission={s}
+                      basePath="/admin/submission"
+                    />
+                  ))}
                 </div>
+              </div>
+            )}
 
-                {/* Pagination: fixed at bottom */}
-                {showPagination && meta && (
-                  <div className="flex-shrink-0 mt-4 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-                    <p className="text-sm text-zinc-400">
-                      Showing{" "}
-                      <span className="font-medium text-zinc-300">
-                        {(meta.page - 1) * meta.pageSize + 1}
-                      </span>{" "}
-                      –{" "}
-                      <span className="font-medium text-zinc-300">
-                        {Math.min(meta.page * meta.pageSize, meta.total)}
-                      </span>{" "}
-                      of <span className="font-medium text-zinc-300">{meta.total}</span>{" "}
-                      submissions
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            page: Math.max(1, (prev.page ?? 1) - 1),
-                          }))
-                        }
-                        disabled={meta.page <= 1}
-                        className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        Previous
-                      </Button>
-                      <span className="min-w-[7rem] text-center text-sm text-zinc-400">
-                        Page {meta.page} of {Math.max(1, meta.totalPages)}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            page: Math.min(meta.totalPages, (prev.page ?? 1) + 1),
-                          }))
-                        }
-                        disabled={meta.page >= meta.totalPages}
-                        className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
-                      >
-                        Next
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </>
+            {/* Pagination: show for all statuses (empty or not) */}
+            {showPagination && meta && (
+              <div className="flex-shrink-0 mt-4 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+                <p className="text-sm text-zinc-400">
+                  Showing{" "}
+                  <span className="font-medium text-zinc-300">
+                    {meta.total === 0 ? 0 : (meta.page - 1) * meta.pageSize + 1}
+                  </span>{" "}
+                  –{" "}
+                  <span className="font-medium text-zinc-300">
+                    {Math.min(meta.page * meta.pageSize, meta.total)}
+                  </span>{" "}
+                  of <span className="font-medium text-zinc-300">{meta.total}</span>{" "}
+                  submissions
+                </p>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        page: Math.max(1, (prev.page ?? 1) - 1),
+                      }))
+                    }
+                    disabled={meta.page <= 1}
+                    className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+                  <span className="min-w-[7rem] text-center text-sm text-zinc-400">
+                    Page {meta.page} of {Math.max(1, meta.totalPages)}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        page: Math.min(meta.totalPages, (prev.page ?? 1) + 1),
+                      }))
+                    }
+                    disabled={meta.page >= meta.totalPages}
+                    className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         )}
