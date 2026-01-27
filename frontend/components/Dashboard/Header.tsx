@@ -38,6 +38,7 @@ import React from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 // import Link from "next/link";
 
 const Header = () => {
@@ -55,8 +56,11 @@ const Header = () => {
     >
       <div className="flex h-full items-center justify-between px-6">
         {/* Title */}
-        <div className="text-2xl font-bold text-green-500 ">
-          CodeSprintAI
+        <div className="flex items-center gap-4">
+          <SidebarTrigger className="text-white hover:bg-white/10" />
+          <div className="text-2xl font-bold text-green-500 ">
+            CodeSprintAI
+          </div>
         </div>
 
         {/* Actions */}
