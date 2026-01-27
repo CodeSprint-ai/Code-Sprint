@@ -49,6 +49,20 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+// Card colors aligned with ProblemCard: bg-{color}-600/10 border border-{color}-800 (like lines 49–56)
+const cardStatusStyles: Record<string, string> = {
+  ACCEPTED: "bg-green-600/10 border border-green-800 hover:border-green-600 hover:shadow-lg",
+  WRONG_ANSWER: "bg-red-600/10 border border-red-800 hover:border-red-600 hover:shadow-lg",
+  TIME_LIMIT_EXCEEDED:
+    "bg-yellow-600/10 border border-yellow-800 hover:border-yellow-600 hover:shadow-lg",
+  COMPILATION_ERROR:
+    "bg-violet-600/10 border border-violet-800 hover:border-violet-600 hover:shadow-lg",
+  RUNTIME_ERROR: "bg-red-600/10 border border-red-800 hover:border-red-600 hover:shadow-lg",
+  PROCESSING: "bg-sky-600/10 border border-sky-800 hover:border-sky-600 hover:shadow-lg",
+  QUEUED: "bg-cyan-600/10 border border-cyan-800 hover:border-cyan-600 hover:shadow-lg",
+  PENDING: "bg-zinc-600/10 border border-zinc-800 hover:border-zinc-600 hover:shadow-lg",
+};
+
 function SubmissionCardItem({
   submission,
   basePath,
@@ -57,10 +71,13 @@ function SubmissionCardItem({
   basePath: string;
 }) {
   const viewHref = `${basePath}/${submission.uuid}`;
+  const cardStyle =
+    cardStatusStyles[submission.status] ??
+    "bg-zinc-600/10 border border-zinc-800 hover:border-zinc-600 hover:shadow-lg";
   return (
     <Link
       href={viewHref}
-      className="group block rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-5 transition hover:border-zinc-600 hover:bg-zinc-800/40"
+      className={`group block rounded-xl p-5 transition ${cardStyle}`}
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
