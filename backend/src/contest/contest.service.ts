@@ -60,12 +60,19 @@ export class ContestService {
 
         this.rateLimitState.maxRequests = rateLimit;
 
-        // CLIST API client with Basic Auth
+        // CLIST API client with ApiKey Authorization header
+        // CLIST uses: Authorization: ApiKey username:api_key
+        const authHeader = username && apiKey
+            ? { Authorization: `ApiKey ${username}:${apiKey}` }
+            : {};
+
         this.clistClient = axios.create({
             baseURL: 'https://clist.by/api/v4',
-            auth: username && apiKey ? { username, password: apiKey } : undefined,
-            timeout: 10000,
-            headers: { Accept: 'application/json' },
+            timeout: 15000,
+            headers: {
+                Accept: 'application/json',
+                ...authHeader,
+            },
         });
 
         // Kontests fallback client (longer timeout as it's slower)
