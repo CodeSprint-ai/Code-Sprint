@@ -13,8 +13,8 @@ export default function ProblemsLayout({
 }) {
   // useAuth();
   return (
-      <main>
-        {children}
-      </main>
+    <main className="flex flex-col flex-1 min-h-0">
+      {children}
+    </main>
   );
 }

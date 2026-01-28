@@ -40,6 +40,7 @@ export class AuthController {
     return ResponseWrapper.success(result, 'Login successful');
   }
 
+  @Public()
   @Post('refresh')
   async refresh(
     @Req() req: Request,

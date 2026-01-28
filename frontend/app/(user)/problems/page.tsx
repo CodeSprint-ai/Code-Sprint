@@ -47,7 +47,7 @@ export default function ProblemsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  
+
   // Determine base path based on current route
   const basePath = pathname?.startsWith("/admin") ? "/admin/problems" : "/problems";
 
@@ -98,8 +98,8 @@ export default function ProblemsPage() {
     : undefined);
 
   return (
-    <div className="flex flex-col min-h-full bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full overflow-y-auto">
-      <div className="flex w-full flex-col">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full">
+      <div className="flex w-full flex-1 min-h-0 flex-col">
         <div className="mb-8 flex-shrink-0">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
             All Problems
@@ -191,14 +191,14 @@ export default function ProblemsPage() {
         )}
 
         {!paginatedProblems.isLoading && !paginatedProblems.isError && (
-          <div className="flex flex-col">
+          <div className="flex min-h-0 flex-1 flex-col">
             {problems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12">
+              <div className="flex flex-1 flex-col items-center justify-center py-12">
                 <LayoutGrid className="mb-3 h-12 w-12 text-zinc-600" />
                 <p className="text-zinc-500">No problems found.</p>
               </div>
             ) : (
-              <div className="overflow-x-hidden pr-2">
+              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
                   {problems.map((problem, index) => (
                     <ProblemCard key={problem.uuid} {...problem} index={index} />

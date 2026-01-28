@@ -163,7 +163,16 @@ export class AuthService {
 
   async refreshTokens(req: Request, res: Response): Promise<AuthTokenDto> {
     const refreshToken = req.cookies['refresh_token'];
-    if (!refreshToken) throw new ForbiddenException('No refresh token found');
+    if (!refreshToken) {
+      // Clear any stale cookie just in case
+      res.clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
+      throw new ForbiddenException('No refresh token found');
+    }
 
     try {
       const payload = this.jwtService.verify(refreshToken, {
@@ -190,6 +199,13 @@ export class AuthService {
 
       return AuthTokenDto.toDto({ accessToken: tokens.accessToken }, user);
     } catch (e) {
+      // If refresh token is invalid or expired, clear the cookie
+      res.clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
       throw new ForbiddenException('Invalid or expired refresh token');
     }
   }
