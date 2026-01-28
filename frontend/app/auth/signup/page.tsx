@@ -1,13 +1,8 @@
 import SignUpForm from "@/components/forms/SignupForm";
-import AuthContainer from "@/containers/AuthContainer";
 import React from "react";
 
 const Signup = () => {
-  return (
-    <AuthContainer>
-      <SignUpForm />
-    </AuthContainer>
-  );
+  return <SignUpForm />;
 };
 
 export default Signup;
