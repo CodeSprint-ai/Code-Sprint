@@ -24,10 +24,14 @@ import {
   ArrowRight,
   LayoutGrid,
   Tag,
+  List,
 } from "lucide-react";
 import { ProblemCard } from "@/components/ProblemCard";
+import { ProblemsTable } from "@/components/ProblemsTable";
 import { useAuthStore } from "@/store/authStore";
 import { Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
+
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   const difficultyConfig: Record<Difficulty, string> = {
@@ -53,6 +57,9 @@ export default function ProblemsPage() {
 
   // Determine base path based on current route
   const basePath = pathname?.startsWith("/admin") ? "/admin/problems" : "/problems";
+
+  type ViewMode = 'cards' | 'table';
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
 
   const [filters, setFilters] = useState<GetProblemsParams>({
     page: parseInt(searchParams.get("page") || "1", 10) || 1,
@@ -111,14 +118,43 @@ export default function ProblemsPage() {
               View and filter problems from the collection.
             </p>
           </div>
-          {user?.role === "ADMIN" && (
-            <Link href="/admin/problems/add">
-              <Button className="bg-sky-600 hover:bg-sky-700 text-white">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Problem
-              </Button>
-            </Link>
-          )}
+          <div className="flex items-center gap-2">
+            {/* View toggle */}
+            <div className="flex items-center rounded-lg bg-zinc-800/50 border border-zinc-700 p-1">
+              <button
+                onClick={() => setViewMode('cards')}
+                className={cn(
+                  'p-2 rounded-md transition-colors',
+                  viewMode === 'cards'
+                    ? 'bg-zinc-700 text-white'
+                    : 'text-zinc-400 hover:text-white'
+                )}
+                title="Card view"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('table')}
+                className={cn(
+                  'p-2 rounded-md transition-colors',
+                  viewMode === 'table'
+                    ? 'bg-zinc-700 text-white'
+                    : 'text-zinc-400 hover:text-white'
+                )}
+                title="Table view"
+              >
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+            {user?.role === "ADMIN" && (
+              <Link href="/admin/problems/add">
+                <Button className="bg-sky-600 hover:bg-sky-700 text-white">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Problem
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Filters */}
@@ -210,13 +246,19 @@ export default function ProblemsPage() {
                 <p className="text-zinc-500">No problems found.</p>
               </div>
             ) : (
-              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
-                  {problems.map((problem, index) => (
-                    <ProblemCard key={problem.uuid} {...problem} index={index} />
-                  ))}
+              viewMode === 'cards' ? (
+                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+                    {problems.map((problem, index) => (
+                      <ProblemCard key={problem.uuid} {...problem} index={index} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2 pb-4">
+                  <ProblemsTable problems={problems} basePath={basePath} />
+                </div>
+              )
             )}
 
             {/* Pagination at bottom - always show when we have loaded */}

@@ -24,8 +24,11 @@ import {
   ArrowRight,
   LayoutGrid,
   Tag,
+  List,
 } from "lucide-react";
 import { ProblemCard } from "@/components/ProblemCard";
+import { ProblemsTable } from "@/components/ProblemsTable";
+import { cn } from "@/lib/utils";
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   const difficultyConfig: Record<Difficulty, string> = {
@@ -50,6 +53,9 @@ export default function ProblemsPage() {
 
   // Determine base path based on current route
   const basePath = pathname?.startsWith("/admin") ? "/admin/problems" : "/problems";
+
+  type ViewMode = 'cards' | 'table';
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
 
   const [filters, setFilters] = useState<GetProblemsParams>({
     page: parseInt(searchParams.get("page") || "1", 10) || 1,
@@ -100,13 +106,43 @@ export default function ProblemsPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full">
       <div className="flex w-full flex-1 min-h-0 flex-col">
-        <div className="mb-8 flex-shrink-0">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
-            All Problems
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500">
-            View and filter problems from the collection.
-          </p>
+        <div className="mb-8 flex-shrink-0 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
+              All Problems
+            </h1>
+            <p className="mt-1 text-sm text-zinc-500">
+              View and filter problems from the collection.
+            </p>
+          </div>
+
+          {/* View toggle */}
+          <div className="flex items-center rounded-lg bg-zinc-800/50 border border-zinc-700 p-1">
+            <button
+              onClick={() => setViewMode('cards')}
+              className={cn(
+                'p-2 rounded-md transition-colors',
+                viewMode === 'cards'
+                  ? 'bg-zinc-700 text-white'
+                  : 'text-zinc-400 hover:text-white'
+              )}
+              title="Card view"
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={cn(
+                'p-2 rounded-md transition-colors',
+                viewMode === 'table'
+                  ? 'bg-zinc-700 text-white'
+                  : 'text-zinc-400 hover:text-white'
+              )}
+              title="Table view"
+            >
+              <List className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -198,13 +234,19 @@ export default function ProblemsPage() {
                 <p className="text-zinc-500">No problems found.</p>
               </div>
             ) : (
-              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
-                  {problems.map((problem, index) => (
-                    <ProblemCard key={problem.uuid} {...problem} index={index} />
-                  ))}
+              viewMode === 'cards' ? (
+                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+                    {problems.map((problem, index) => (
+                      <ProblemCard key={problem.uuid} {...problem} index={index} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2 pb-4">
+                  <ProblemsTable problems={problems} basePath={basePath} />
+                </div>
+              )
             )}
 
             {/* Pagination at bottom - always show when we have loaded */}

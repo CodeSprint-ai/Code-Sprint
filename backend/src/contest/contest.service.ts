@@ -222,7 +222,9 @@ export class ContestService {
             success: true,
             data: filteredContests,
             meta: {
-                total: filteredContests.length,
+                // Use the actual total from CLIST API, not the filtered results length
+                // This ensures tab counts are correct even when limit is applied
+                total: response.data.meta.total_count,
                 cached: false,
                 source: 'clist',
             },
@@ -235,7 +237,8 @@ export class ContestService {
         const response = await this.kontestsClient.get<KontestsContest[]>('/all');
         const now = new Date();
 
-        let contests = response.data
+        // First filter by tab and apply search/platform filters to get the total count
+        let allMatchingContests = response.data
             .filter(c => {
                 const start = new Date(c.start_time);
                 const end = new Date(c.end_time);
@@ -251,13 +254,12 @@ export class ContestService {
                         return start > now;
                 }
             })
-            .map((c, index) => this.normalizeKontestsContest(c, index, now))
-            .slice(0, query.limit || 50);
+            .map((c, index) => this.normalizeKontestsContest(c, index, now));
 
         // Apply search filter
         if (query.search) {
             const searchLower = query.search.toLowerCase();
-            contests = contests.filter(
+            allMatchingContests = allMatchingContests.filter(
                 c => c.event.toLowerCase().includes(searchLower) ||
                     c.platform.name.toLowerCase().includes(searchLower)
             );
@@ -266,16 +268,23 @@ export class ContestService {
         // Apply platform filter
         if (query.platforms) {
             const platforms = query.platforms.split(',').map(p => p.trim().toLowerCase());
-            contests = contests.filter(c =>
+            allMatchingContests = allMatchingContests.filter(c =>
                 platforms.some(p => c.platform.name.toLowerCase().includes(p))
             );
         }
 
+        // Store the total count before limiting
+        const totalCount = allMatchingContests.length;
+
+        // Now apply the limit for the returned data
+        const limitedContests = allMatchingContests.slice(0, query.limit || 50);
+
         return {
             success: true,
-            data: contests,
+            data: limitedContests,
             meta: {
-                total: contests.length,
+                // Use the total count before limiting
+                total: totalCount,
                 cached: false,
                 source: 'kontests',
             },
