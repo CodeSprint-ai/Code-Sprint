@@ -2,7 +2,7 @@
 "use client";
 
 import Header from "@/components/Dashboard/Header";
-import DashboardMenu from "@/components/DashboardMenu";
+import DashboardMenu from "@/components/old-landing-page-component/DashboardMenu";
 import { Sidebar } from "@/components/Sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 // import useAuth from "@/hooks/useAuth";
@@ -21,7 +21,7 @@ export default function DashboardLayout({
           <Sidebar />
           <main className="flex flex-col flex-1 min-w-0 border overflow-hidden">
 
-            <SidebarTrigger />
+            {/* <SidebarTrigger /> */}
             {children}
           </main>
         </div>

@@ -1,28 +1,37 @@
 // app/page.jsx
 "use client";
-import DeveloperFocused from "@/components/DeveloperFocused";
-import CompanyFocused from "@/components/CompanyFocused";
-import Testimonials from "@/components/Testimonials";
-import AIIntegration from "@/components/AIIntegration";
-import Footer from "@/components/Footer";
-import Hero from "@/components/Hero";
-import Header from "@/components/Header";
+
+import CTA from "@/components/Landing-page/CTA";
+import Features from "@/components/Landing-page/Features";
+import Footer from "@/components/Landing-page/Footer";
+import Gamification from "@/components/Landing-page/Gamification";
+import Hero from "@/components/Landing-page/Hero";
+import LiveDemo from "@/components/Landing-page/LiveDemo";
+import Navbar from "@/components/Landing-page/Navbar";
+import Showcase from "@/components/Landing-page/Showcase";
+
+// import DeveloperFocused from "@/components/old-landing-page-component/DeveloperFocused";
+// import CompanyFocused from "@/components/old-landing-page-component/CompanyFocused";
+// import Testimonials from "@/components/old-landing-page-component/Testimonials";
+// import AIIntegration from "@/components/old-landing-page-component/AIIntegration";
+// import Footer from "@/components/old-landing-page-component/Footer";
+// import Hero from "@/components/old-landing-page-component/Hero";
+// import Header from "@/components/old-landing-page-component/Header";
 
 export default function Home() {
   return (
     <>
-      <div className="w-full overflow-hidden">
-        <div className="flex flex-col h-screen w-screen">
-          <Header />
+      <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-green/30 selection:text-brand-green">
+        <Navbar />
+        <main>
           <Hero />
-        </div>
-        {/* <div className="overflow-hidden w-full"> */}
-        <AIIntegration />
-        <DeveloperFocused />
-        <CompanyFocused />
-        <Testimonials />
+          <Features />
+          <Showcase />
+          <Gamification />
+          <LiveDemo />
+          <CTA />
+        </main>
         <Footer />
-        {/* </div> */}
       </div>
     </>
   );
@@ -44,3 +53,17 @@ export default function Home() {
 //         </div>
 //     );
 // }
+
+
+
+{/* <div className="w-full overflow-hidden">
+  <div className="flex flex-col h-screen w-screen">
+    <Header />
+    <Hero />
+  </div>
+  <AIIntegration />
+  <DeveloperFocused />
+  <CompanyFocused />
+  <Testimonials />
+  <Footer />
+</div> */}

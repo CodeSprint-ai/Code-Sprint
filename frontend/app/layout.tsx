@@ -1,6 +1,21 @@
 import "@/app/globals.css";
 import { Provider } from "./providers";
-import Header from "@/components/Header";
+import { Inter, Fira_Code } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const fira = Fira_Code({
+  subsets: ["latin"],
+  variable: "--font-fira",
+});
+
+export const metadata = {
+  title: "CodeSprintAI - Master the Code",
+  description: "Master the Code",
+};
 
 export default function RootLayout({
   children,
@@ -9,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-black text-white">
+      <body className={`${inter.variable} ${fira.variable}`}>
         <Provider>{children}</Provider>
       </body>
     </html>

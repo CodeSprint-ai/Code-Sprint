@@ -2,7 +2,7 @@
 "use client";
 
 import Header from "@/components/Dashboard/Header";
-import DashboardMenu from "@/components/DashboardMenu";
+import DashboardMenu from "@/components/old-landing-page-component/DashboardMenu";
 import { Sidebar } from "@/components/Sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 // import useAuth from "@/hooks/useAuth";
