@@ -3,11 +3,13 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Split from "react-split";
+import { useQuery } from "@tanstack/react-query";
 import EditorHeader from "../editor/EditorHeader";
 import CodeEditor from "../editor/CodeEditor";
 import { SubmissionPanel } from "../submission";
 import { useSubmission } from "@/hooks/useSubmission";
 import { Problem, StarterCode } from "@/types/problems";
+import { getMySettings } from "@/services/profileApi";
 
 // Default starter code if problem doesn't have any
 const defaultStarterCode: StarterCode = {
@@ -56,7 +58,25 @@ export default function EditorPanel({
   sprintMode = false,
   onFinishSprint,
 }: EditorPanelProps) {
-  const [language, setLanguage] = useState("python");
+  // Fetch user's preferred language from settings
+  const { data: userSettings } = useQuery({
+    queryKey: ['my-settings'],
+    queryFn: getMySettings,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
+
+  // Use user's preferred language or fallback to python
+  const defaultLang = userSettings?.defaultLanguage || "python";
+  const [language, setLanguage] = useState(defaultLang);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Update language when user settings are loaded (only once)
+  useEffect(() => {
+    if (userSettings?.defaultLanguage && !hasInitialized) {
+      setLanguage(userSettings.defaultLanguage);
+      setHasInitialized(true);
+    }
+  }, [userSettings?.defaultLanguage, hasInitialized]);
 
   // Get starter code based on selected language
   const getStarterCode = useCallback((lang: string): string => {
@@ -71,7 +91,7 @@ export default function EditorPanel({
     return defaultStarterCode[langKey];
   }, [problem?.starterCode]);
 
-  const [code, setCode] = useState(() => getStarterCode("python"));
+  const [code, setCode] = useState(() => getStarterCode(defaultLang));
 
   // Update code when language changes
   useEffect(() => {
