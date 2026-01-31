@@ -6,14 +6,14 @@ import {
   XCircle,
   Clock,
   Cpu,
-  Code2,
+  FileCode,
   Calendar,
   Hash,
   Loader2,
   AlertTriangle,
+  Code2,
 } from "lucide-react";
-import { RealTimeSubmission, getStatusColorClass, getStatusBgClass } from "@/types/realtime";
-import { cn } from "@/lib/utils";
+import { RealTimeSubmission, getStatusColorClass } from "@/types/realtime";
 
 interface ResultsTabProps {
   submission: RealTimeSubmission;
@@ -28,10 +28,10 @@ export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
     return (
       <div className="h-full flex items-center justify-center p-8">
         <div className="text-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-emerald-500" />
           <div>
-            <p className="font-medium">Processing your submission...</p>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="font-medium text-white">Processing your submission...</p>
+            <p className="text-sm text-zinc-500 mt-1">
               {phase === "compiling" && "Compiling your code..."}
               {phase === "running" && `Running test cases...`}
               {phase === "queued" && "Waiting in queue..."}
@@ -47,10 +47,10 @@ export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
   if (phase === "idle" && !status) {
     return (
       <div className="h-full flex items-center justify-center p-8">
-        <div className="text-center space-y-2 text-muted-foreground">
+        <div className="text-center space-y-2 text-zinc-500">
           <Code2 className="h-12 w-12 mx-auto opacity-50" />
-          <p>Submit your code to see results</p>
-          <p className="text-sm">Results will appear here after submission</p>
+          <p className="text-zinc-400">Submit your code to see results</p>
+          <p className="text-sm text-zinc-600">Results will appear here after submission</p>
         </div>
       </div>
     );
@@ -60,24 +60,24 @@ export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
   if (phase === "error" || status === "COMPILATION_ERROR") {
     return (
       <div className="h-full overflow-auto p-4 space-y-4">
-        <div className={cn("p-4 rounded-lg border", getStatusBgClass(status || "error"))}>
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-8 w-8 text-red-500" />
-            <div>
-              <h3 className={cn("text-lg font-bold", getStatusColorClass(status))}>
-                {status === "COMPILATION_ERROR" ? "Compilation Error" : "Error"}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {error || "Your code failed to compile"}
-              </p>
-            </div>
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-center gap-4">
+          <div className="p-2 bg-red-500/20 rounded-full">
+            <AlertTriangle className="w-6 h-6 text-red-500" />
+          </div>
+          <div>
+            <h3 className="text-red-500 font-bold text-lg tracking-tight">
+              {status === "COMPILATION_ERROR" ? "Compilation Error" : "Error"}
+            </h3>
+            <p className="text-red-400/60 text-xs font-mono">
+              {error || "Your code failed to compile"}
+            </p>
           </div>
         </div>
 
         {compileOutput && (
           <div className="space-y-2">
-            <h4 className="font-medium text-sm">Compiler Output:</h4>
-            <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap font-mono text-red-400">
+            <h4 className="font-medium text-sm text-zinc-300">Compiler Output:</h4>
+            <pre className="bg-black/40 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap font-mono text-red-400 border border-white/5">
               {compileOutput}
             </pre>
           </div>
@@ -91,93 +91,86 @@ export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
 
   return (
     <div className="h-full overflow-auto p-4 space-y-4">
-      {/* Main Status Card */}
-      <div className={cn("p-4 rounded-lg border", getStatusBgClass(status))}>
-        <div className="flex items-center gap-4">
+      {/* Status Banner */}
+      <div className={`rounded-lg p-4 flex items-center gap-4 ${isAccepted
+          ? "bg-emerald-500/10 border border-emerald-500/20"
+          : "bg-red-500/10 border border-red-500/20"
+        }`}>
+        <div className={`p-2 rounded-full ${isAccepted ? "bg-emerald-500/20" : "bg-red-500/20"}`}>
           {isAccepted ? (
-            <CheckCircle2 className="h-10 w-10 text-green-500" />
+            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
           ) : (
-            <XCircle className="h-10 w-10 text-red-500" />
+            <XCircle className="w-6 h-6 text-red-500" />
           )}
-          <div className="flex-1">
-            <h3 className={cn("text-xl font-bold", getStatusColorClass(status))}>
-              {status?.replace(/_/g, " ")}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {isAccepted
-                ? "Congratulations! All test cases passed."
-                : `${passedCount} / ${totalTestCases} test cases passed`}
-            </p>
-          </div>
+        </div>
+        <div>
+          <h3 className={`font-bold text-lg tracking-tight ${isAccepted ? "text-emerald-500" : "text-red-500"}`}>
+            {status?.replace(/_/g, " ")}
+          </h3>
+          <p className={`text-xs font-mono ${isAccepted ? "text-emerald-400/60" : "text-red-400/60"}`}>
+            {isAccepted
+              ? "Congratulations! All test cases passed."
+              : `${passedCount} / ${totalTestCases} test cases passed`}
+          </p>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {/* Execution Time */}
-        <div className="p-3 bg-muted/50 rounded-lg border border-border">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
-            <Clock className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-wide">Runtime</span>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+          <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <Clock className="w-3 h-3" /> Runtime
           </div>
-          <p className="text-lg font-semibold">
-            {executionTime ? `${(executionTime * 1000).toFixed(0)} ms` : "—"}
-          </p>
+          <div className="text-lg font-mono text-zinc-300 font-bold">
+            {executionTime ? `${(executionTime * 1000).toFixed(0)} ms` : "---"}
+          </div>
         </div>
-
-        {/* Memory Usage */}
-        <div className="p-3 bg-muted/50 rounded-lg border border-border">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
-            <Cpu className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-wide">Memory</span>
+        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+          <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <Cpu className="w-3 h-3" /> Memory
           </div>
-          <p className="text-lg font-semibold">
-            {memoryUsage ? `${(memoryUsage / 1024).toFixed(1)} MB` : "—"}
-          </p>
+          <div className="text-lg font-mono text-zinc-300 font-bold">
+            {memoryUsage ? `${(memoryUsage / 1024).toFixed(1)} MB` : "---"}
+          </div>
         </div>
-
-        {/* Test Cases */}
-        <div className="p-3 bg-muted/50 rounded-lg border border-border">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
-            <CheckCircle2 className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-wide">Passed</span>
+        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+          <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <CheckCircle2 className="w-3 h-3" /> Passed
           </div>
-          <p className="text-lg font-semibold">
-            <span className={isAccepted ? "text-green-500" : "text-red-500"}>
+          <div className="text-lg font-mono font-bold">
+            <span className={isAccepted ? "text-emerald-400" : "text-red-400"}>
               {passedCount}
             </span>
-            <span className="text-muted-foreground"> / {totalTestCases}</span>
-          </p>
-        </div>
-
-        {/* Language */}
-        <div className="p-3 bg-muted/50 rounded-lg border border-border">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
-            <Code2 className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-wide">Language</span>
+            <span className="text-zinc-600 text-sm"> / {totalTestCases}</span>
           </div>
-          <p className="text-lg font-semibold capitalize">
-            {language || "—"}
-          </p>
+        </div>
+        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+          <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <FileCode className="w-3 h-3" /> Language
+          </div>
+          <div className="text-lg font-mono text-zinc-300 font-bold capitalize">
+            {language || "---"}
+          </div>
         </div>
       </div>
 
       {/* Additional Info */}
-      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-        {id && (
-          <div className="flex items-center gap-1">
-            <Hash className="h-3.5 w-3.5" />
-            <span>ID: {id.slice(0, 8)}...</span>
-          </div>
-        )}
-        {completedAt && (
-          <div className="flex items-center gap-1">
-            <Calendar className="h-3.5 w-3.5" />
-            <span>{new Date(completedAt).toLocaleString()}</span>
-          </div>
-        )}
-      </div>
+      {(id || completedAt) && (
+        <div className="flex flex-wrap gap-4 text-xs text-zinc-500 pt-2">
+          {id && (
+            <div className="flex items-center gap-1">
+              <Hash className="h-3 w-3" />
+              <span>ID: {id.slice(0, 8)}...</span>
+            </div>
+          )}
+          {completedAt && (
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              <span>{new Date(completedAt).toLocaleString()}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
-

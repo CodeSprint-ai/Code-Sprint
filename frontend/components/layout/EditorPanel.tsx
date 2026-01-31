@@ -2,10 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-
 import Split from "react-split";
-
-
 import EditorHeader from "../editor/EditorHeader";
 import CodeEditor from "../editor/CodeEditor";
 import { SubmissionPanel } from "../submission";
@@ -77,7 +74,6 @@ export default function EditorPanel({
     setCode(getStarterCode(language));
   }, [language, getStarterCode]);
 
-
   // State for submission/run status
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
@@ -92,7 +88,6 @@ export default function EditorPanel({
     setIsRunning(true);
 
     try {
-      // TODO: Implement run code endpoint
       await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log("Run finished");
     } catch (error) {
@@ -118,43 +113,40 @@ export default function EditorPanel({
       });
 
       console.log("Submission created:", resp);
-      // The SubmissionPanel will handle real-time updates via socket
     } catch (error) {
       console.error("Submission error:", error);
     } finally {
-      // Keep submitting true until socket confirms completion
-      // The socket handler in SubmissionPanel will manage the UI state
       setTimeout(() => setIsSubmitting(false), 1000);
     }
   };
 
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div className="flex flex-col h-full min-h-0 overflow-hidden">
       {/* Header */}
-      <div className="flex-shrink-0">
-        <EditorHeader
-          language={language}
-          setLanguage={setLanguage}
-          problem={problem}
-          code={code}
-          onRun={handleRunCode}
-          onSubmit={handleSubmitCode}
-          isSubmitting={isSubmitting}
-          isRunning={isRunning}
-          hideSubmit={hideSubmit}
-          onNext={onNext}
-          isLastQuestion={isLastQuestion}
-        />
-      </div>
+      <EditorHeader
+        language={language}
+        setLanguage={setLanguage}
+        problem={problem}
+        code={code}
+        onRun={handleRunCode}
+        onSubmit={handleSubmitCode}
+        isSubmitting={isSubmitting}
+        isRunning={isRunning}
+        hideSubmit={hideSubmit}
+        onNext={onNext}
+        isLastQuestion={isLastQuestion}
+      />
 
+      {/* Resizable Editor and Results Split */}
       <Split
-        direction="vertical" // top/bottom
-        sizes={[70, 30]}
-        minSize={50}
-        gutterSize={6}       // thickness of the handle
-        className="h-full flex flex-col"
+        direction="vertical"
+        sizes={[65, 35]}
+        minSize={80}
+        gutterSize={8}
+        className="flex-1 flex flex-col h-full split-vertical"
       >
-        <div className="h-full">
+        {/* Code Editor */}
+        <div className="h-full overflow-hidden">
           <CodeEditor
             language={monacoLanguageMap[language] || language}
             code={code}
@@ -162,7 +154,8 @@ export default function EditorPanel({
           />
         </div>
 
-        <div className="h-full">
+        {/* Results Panel */}
+        <div className="h-full overflow-hidden">
           <SubmissionPanel
             problemId={problem.uuid}
             isSubmitting={isSubmitting}
@@ -170,9 +163,6 @@ export default function EditorPanel({
           />
         </div>
       </Split>
-
-
-
     </div>
   );
 }

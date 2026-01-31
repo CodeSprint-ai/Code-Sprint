@@ -150,27 +150,50 @@
   }
 }
 
-/* Vertical gutter (between Problem and Editor+Submission) */
-.gutter.gutter-vertical {
+/* Horizontal Split Gutter (between left and right panels) */
+.split-horizontal>.gutter {
   cursor: col-resize;
-  background-color: #d1d5db;
-  /* gray-300 */
+  background-color: transparent;
   transition: background-color 0.2s;
 }
 
-.gutter.gutter-vertical:hover {
-  background-color: #9ca3af;
-  /* gray-400 */
+.split-horizontal>.gutter:hover {
+  background-color: rgba(16, 185, 129, 0.3);
 }
 
-/* Horizontal gutter (between Editor and Submission) */
-.gutter.gutter-horizontal {
+/* Vertical Split Gutter (between Editor and Results) */
+.split-vertical>.gutter {
   cursor: row-resize;
-  background-color: #d1d5db;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s;
 }
 
-.gutter.gutter-horizontal:hover {
-  background-color: #9ca3af;
+.split-vertical>.gutter:hover {
+  background-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Common gutter styling */
+.gutter {
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+/* Custom scrollbar for problem panel */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.5);
 }
 
 

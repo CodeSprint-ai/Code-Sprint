@@ -1,6 +1,7 @@
 "use client";
 
 import React, { use } from "react";
+import Split from "react-split";
 import { useProblem } from "@/hooks/useProblems";
 import ProblemPanel from "@/components/layout/ProblemPanel";
 import EditorPanel from "@/components/layout/EditorPanel";
@@ -22,10 +23,10 @@ export default function ProblemPage({
 
     if (singleProblem.isLoading) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-zinc-950">
+            <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
                 <div className="flex flex-col items-center gap-3 text-zinc-500">
-                    <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                    Loading...
+                    <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+                    <span className="text-sm font-medium">Loading problem...</span>
                 </div>
             </div>
         );
@@ -33,10 +34,10 @@ export default function ProblemPage({
 
     if (singleProblem.isError || !singleProblem.data?.data) {
         return (
-            <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-950 px-4">
+            <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center gap-4 px-4">
                 <p className="text-red-400">Problem not found.</p>
                 <Link href={basePath}>
-                    <Button variant="outline" className="border-zinc-700 bg-zinc-800/50 text-zinc-200">
+                    <Button variant="outline" className="border-white/10 bg-white/5 text-zinc-200 hover:bg-white/10 hover:text-white">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Problems
                     </Button>
@@ -47,20 +48,25 @@ export default function ProblemPage({
 
     const problem = singleProblem.data.data;
 
-    // Use h-full to fit within the layout's main content area without overflowing
     return (
-        <main className="h-full w-full flex flex-col bg-zinc-950 text-zinc-100">
-            <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
-                {/* Left panel - Problem Description */}
-                <div className="lg:w-1/2 border-b lg:border-b-0 lg:border-r border-zinc-800 overflow-y-auto h-full">
-                    <ProblemPanel problem={problem} />
+        <div className="h-[calc(100vh-4rem)] w-full flex flex-col text-zinc-100 overflow-hidden p-4 gap-4">
+            <Split
+                sizes={[50, 50]}
+                minSize={300}
+                gutterSize={8}
+                direction="horizontal"
+                className="flex flex-1 h-full overflow-hidden split-horizontal"
+            >
+                {/* Left Panel - Problem Description */}
+                <div className="h-full overflow-hidden flex flex-col bg-[#09090b] rounded-xl border border-white/5">
+                    <ProblemPanel problem={problem} basePath={basePath} />
                 </div>
 
-                {/* Right panel - Editor */}
-                <div className="lg:w-1/2 flex flex-col overflow-hidden h-full">
+                {/* Right Panel - Editor & Results */}
+                <div className="h-full overflow-hidden flex flex-col bg-[#09090b] rounded-xl border border-white/5">
                     <EditorPanel problem={problem} hideSubmit={false} />
                 </div>
-            </section>
-        </main>
+            </Split>
+        </div>
     );
 }

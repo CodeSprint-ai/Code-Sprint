@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSubmissionSocket } from "@/hooks/useSubmissionSocket";
 import {
   RealTimeSubmission,
@@ -44,9 +43,7 @@ export default function SubmissionPanel({
     console.log("📡 Socket update received:", data);
 
     setSubmission((prev) => {
-      // Handle different event types
       if (data.status) {
-        // Completed submission update
         const phase: SubmissionPhase =
           data.status === "ACCEPTED" ||
             data.status === "WRONG_ANSWER" ||
@@ -92,7 +89,6 @@ export default function SubmissionPanel({
         };
       }
 
-      // Handle phase updates
       if (data.phase) {
         return {
           ...prev,
@@ -102,7 +98,6 @@ export default function SubmissionPanel({
         };
       }
 
-      // Handle test case result streaming
       if (data.testCaseResult) {
         const newResult: TestCaseResult = {
           index: data.testCaseIndex,
@@ -121,7 +116,6 @@ export default function SubmissionPanel({
         };
       }
 
-      // Handle error
       if (data.error) {
         return {
           ...prev,
@@ -140,8 +134,17 @@ export default function SubmissionPanel({
   const isActive = isSubmitting || isRunning || submission.phase === "running";
   const showProgress = submission.phase !== "idle" && submission.phase !== "completed";
 
+  // Tab styling
+  const tabClasses = (tab: string) => {
+    const isActiveTab = activeTab === tab;
+    return `h-full px-4 text-xs font-bold transition-colors flex items-center gap-2 ${isActiveTab
+        ? "text-white border-b-2 border-emerald-500 bg-white/5"
+        : "text-zinc-500 hover:text-white"
+      }`;
+  };
+
   return (
-    <div className="flex flex-col h-full bg-background border-t border-border overflow-scroll">
+    <div className="flex flex-col h-full bg-[#09090b] border-t border-white/5 overflow-hidden">
       {/* Progress Bar */}
       {showProgress && (
         <SubmissionProgress
@@ -151,67 +154,55 @@ export default function SubmissionPanel({
         />
       )}
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <TabsList className="w-full justify-start rounded-none border-b border-border bg-muted/30 px-2">
-          <TabsTrigger
-            value="results"
-            className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
-          >
-            Results
-            {submission.status && (
-              <span
-                className={`ml-2 w-2 h-2 rounded-full ${submission.status === "ACCEPTED" ? "bg-green-500" : "bg-red-500"
-                  }`}
-              />
-            )}
-          </TabsTrigger>
-          <TabsTrigger
-            value="testcases"
-            className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
-          >
-            Test Cases
-            {submission.testResults.length > 0 && (
-              <span className="ml-2 text-xs text-muted-foreground">
-                ({submission.passedCount}/{submission.testResults.length})
-              </span>
-            )}
-          </TabsTrigger>
-          <TabsTrigger
-            value="analysis"
-            className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
-          >
-            Analysis
-          </TabsTrigger>
-        </TabsList>
+      {/* Custom Tabs */}
+      <div className="h-10 border-b border-white/5 flex items-center px-2 bg-white/[0.02] shrink-0">
+        <button
+          onClick={() => setActiveTab("results")}
+          className={tabClasses("results")}
+        >
+          Results
+          {submission.status && (
+            <span className={`w-1.5 h-1.5 rounded-full ${submission.status === "ACCEPTED" ? "bg-emerald-500" : "bg-red-500"
+              }`} />
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab("testcases")}
+          className={tabClasses("testcases")}
+        >
+          Test Cases
+          {submission.testResults.length > 0 && (
+            <span className="text-[10px] bg-white/10 px-1.5 rounded-full">
+              {submission.passedCount}/{submission.testResults.length}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab("analysis")}
+          className={tabClasses("analysis")}
+        >
+          Analysis
+        </button>
+      </div>
 
-        <div className="flex-1 overflow-hidden">
-          <TabsContent value="results" className="h-full m-0 p-0">
-            <ResultsTab
-              submission={submission}
-              isLoading={isActive}
-            />
-          </TabsContent>
-
-          <TabsContent value="testcases" className="h-full m-0 p-0">
-            <TestCasesTab
-              testResults={submission.testResults}
-              filter={testCaseFilter}
-              onFilterChange={setTestCaseFilter}
-              isLoading={isActive}
-              currentTestCase={submission.currentTestCase}
-            />
-          </TabsContent>
-
-          <TabsContent value="analysis" className="h-full m-0 p-0">
-            <AnalysisTab
-              submission={submission}
-              isLoading={isActive}
-            />
-          </TabsContent>
-        </div>
-      </Tabs>
+      {/* Tab Content */}
+      <div className="flex-1 overflow-auto">
+        {activeTab === "results" && (
+          <ResultsTab submission={submission} isLoading={isActive} />
+        )}
+        {activeTab === "testcases" && (
+          <TestCasesTab
+            testResults={submission.testResults}
+            filter={testCaseFilter}
+            onFilterChange={setTestCaseFilter}
+            isLoading={isActive}
+            currentTestCase={submission.currentTestCase}
+          />
+        )}
+        {activeTab === "analysis" && (
+          <AnalysisTab submission={submission} isLoading={isActive} />
+        )}
+      </div>
     </div>
   );
 }
-

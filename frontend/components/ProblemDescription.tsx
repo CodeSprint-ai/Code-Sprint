@@ -11,45 +11,50 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
   ) || [];
 
   return (
-    <div className="space-y-3 text-sm">
+    <div className="space-y-8 text-sm">
+      {/* Examples */}
       {visibleTestCases.length > 0 && (
         <div>
-          <strong>Example:</strong>
+          <h3 className="text-white font-bold text-sm mb-3">Example:</h3>
           {visibleTestCases.map((testCase: TestCase, i: number) => (
-            <pre
+            <div
               key={testCase.uuid || i}
-              className="bg-gray-100 dark:bg-gray-800 rounded-md p-3 mt-2 text-xs overflow-x-auto"
+              className="bg-black/40 rounded-lg p-4 border border-white/5 font-mono text-xs space-y-2 mb-3"
             >
               <div>
-                <span className="text-muted-foreground">Input: </span>
-                {formatTestCaseInput(testCase)}
+                <span className="text-zinc-500">Input: </span>
+                <span className="text-zinc-300">{formatTestCaseInput(testCase)}</span>
               </div>
-              <div className="mt-1">
-                <span className="text-muted-foreground">Output: </span>
-                {formatTestCaseOutput(testCase)}
+              <div>
+                <span className="text-zinc-500">Output: </span>
+                <span className="text-zinc-300">{formatTestCaseOutput(testCase)}</span>
               </div>
-            </pre>
+            </div>
           ))}
         </div>
       )}
 
+      {/* Constraints */}
       {problem.constraints && (
         <div>
-          <strong>Constraints:</strong>
-          <pre className="bg-gray-100 dark:bg-gray-800 rounded-md p-3 mt-2 text-xs overflow-x-auto whitespace-pre-wrap">
-            {problem.constraints}
-          </pre>
+          <h3 className="text-white font-bold text-sm mb-3">Constraints:</h3>
+          <ul className="list-disc list-inside space-y-1 text-xs text-zinc-400 font-mono bg-black/40 p-4 rounded-lg border border-white/5">
+            {problem.constraints.split('\n').filter(Boolean).map((constraint, i) => (
+              <li key={i}>{constraint.replace(/^[-•*]\s*/, '')}</li>
+            ))}
+          </ul>
         </div>
       )}
 
+      {/* Companies */}
       {problem.companies && problem.companies.length > 0 && (
         <div>
-          <strong>Companies:</strong>
-          <div className="flex flex-wrap gap-2 mt-2">
+          <h3 className="text-white font-bold text-sm mb-3">Companies:</h3>
+          <div className="flex flex-wrap gap-2">
             {problem.companies.map((company, i) => (
               <span
                 key={i}
-                className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs"
+                className="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-zinc-400 text-xs transition-colors cursor-pointer border border-white/5 hover:border-white/20"
               >
                 {company}
               </span>
