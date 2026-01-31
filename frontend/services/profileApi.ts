@@ -61,6 +61,17 @@ export const updateMySettings = async (settings: Partial<UserPreferences>): Prom
     return data.data;
 };
 
+export const uploadProfileImage = async (file: File): Promise<{ avatarUrl: string; message: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const { data } = await api.post<ApiResponse<{ avatarUrl: string; message: string }>>('/profile/me/avatar', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return data.data;
+};
+
 export const getMyBadges = async (): Promise<Badge[]> => {
     const { data } = await api.get<ApiResponse<Badge[]>>('/profile/me/badges');
     return data.data;
@@ -93,6 +104,7 @@ export const profileApi = {
     getPublicBadges,
     getMyProfile,
     updateMyProfile,
+    uploadProfileImage,
     getMyStats,
     getMySettings,
     updateMySettings,

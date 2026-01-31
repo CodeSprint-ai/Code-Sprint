@@ -9,7 +9,13 @@ import {
     Req,
     HttpCode,
     HttpStatus,
+    UseInterceptors,
+    UploadedFile,
+    ParseFilePipe,
+    FileTypeValidator,
+    MaxFileSizeValidator,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ProfileService } from './profile.service';
 import { StatsService } from './stats.service';
@@ -46,6 +52,28 @@ export class ProfileController {
     async updateMyProfile(@Req() req: any, @Body() command: UpdateProfileCommand) {
         const user = await this.profileService.updateProfile(req.user.uuid, command);
         return { data: { message: 'Profile updated successfully', username: user.username } };
+    }
+
+    @Post('me/avatar')
+    @ApiBearerAuth()
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiOperation({ summary: 'Upload or update profile avatar' })
+    @ApiResponse({ status: 200, description: 'Avatar uploaded successfully' })
+    @ApiResponse({ status: 400, description: 'Invalid file type or size' })
+    async uploadAvatar(
+        @Req() req: any,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new FileTypeValidator({ fileType: /(jpg|jpeg|png|gif|webp)$/ }),
+                    new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }), // 5MB
+                ],
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
+        const result = await this.profileService.updateAvatar(req.user.uuid, file);
+        return { data: result };
     }
 
     @Get('me/stats')

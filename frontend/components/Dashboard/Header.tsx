@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/authStore";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
+import Image from "next/image";
 
 const Header = () => {
   const { logout } = useAuth();
@@ -77,14 +78,23 @@ const Header = () => {
           {/* User Avatar */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-green-500/50 to-zinc-800 p-[1px] shadow-[0_0_10px_rgba(34,197,94,0.3)]">
-              <div className="w-full h-full rounded-full overflow-hidden border-2 border-black bg-zinc-800 flex items-center justify-center">
-                {user?.name ? (
-                  <span className="text-sm font-bold text-white">
-                    {user.name.charAt(0).toUpperCase()}
-                  </span>
-                ) : (
-                  <span className="text-sm font-bold text-white">?</span>
-                )}
+              <div className="w-full h-full rounded-full overflow-hidden border-2 border-black bg-zinc-800 flex items-center justify-center relative">
+                {user?.avatarUrl ? (
+                  <Image
+                    src={user.avatarUrl}
+                    alt={user.name || 'Profile'}
+                    fill
+                    sizes="36px"
+                    className="object-cover"
+                    onError={(e) => {
+                      // Fallback to initials if image fails to load
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                ) : null}
+                <span className={`text-sm font-bold text-white ${user?.avatarUrl ? 'hidden' : ''}`}>
+                  {user?.name ? user.name.charAt(0).toUpperCase() : '?'}
+                </span>
               </div>
             </div>
           </div>

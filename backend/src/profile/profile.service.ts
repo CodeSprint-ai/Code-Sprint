@@ -17,6 +17,7 @@ import { PrivateProfileDto, PrivateStatsDto, PrivateUserPreferencesDto } from '.
 import { SavedProblemDto } from './dto/SavedProblemDto';
 import { StatsService } from './stats.service';
 import { AppLogger } from '../common/services/logger.service';
+import { CloudinaryService } from '../common/cloudinary';
 
 const CACHE_TTL_SECONDS = 3600; // 1 hour
 
@@ -39,6 +40,7 @@ export class ProfileService {
         private readonly cacheManager: Cache,
         private readonly statsService: StatsService,
         private readonly logger: AppLogger,
+        private readonly cloudinaryService: CloudinaryService,
     ) { }
 
     /**
@@ -128,6 +130,40 @@ export class ProfileService {
 
         this.logger.info(`Profile updated for user: ${userUuid}`, ProfileService.name);
         return updated;
+    }
+
+    /**
+     * Upload or update user avatar image
+     */
+    async updateAvatar(userUuid: string, file: Express.Multer.File): Promise<{ avatarUrl: string; message: string }> {
+        const user = await this.userRepo.findOne({ where: { uuid: userUuid } });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        // Delete old avatar from Cloudinary if exists
+        if (user.avatarUrl) {
+            const oldPublicId = this.cloudinaryService.extractPublicId(user.avatarUrl);
+            if (oldPublicId) {
+                await this.cloudinaryService.deleteImage(oldPublicId);
+            }
+        }
+
+        // Upload new avatar
+        const uploadResult = await this.cloudinaryService.uploadImage(file, 'code-sprint/avatars');
+
+        // Update user record
+        user.avatarUrl = uploadResult.secureUrl;
+        await this.userRepo.save(user);
+
+        // Invalidate cache
+        await this.invalidateProfileCache(user.username);
+
+        this.logger.info(`Avatar updated for user: ${userUuid}`, ProfileService.name);
+        return {
+            avatarUrl: uploadResult.secureUrl,
+            message: 'Avatar uploaded successfully',
+        };
     }
 
     /**

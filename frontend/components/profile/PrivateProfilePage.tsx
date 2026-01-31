@@ -19,6 +19,7 @@ import LanguageChart from './LanguageChart';
 import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2 } from 'lucide-react';
 import { PrivateProfile, SavedProblem, UserPreferences } from '@/types/profile';
 import { toast } from 'sonner';
+import ProfileImageUpload from './ProfileImageUpload';
 
 type TabId = 'overview' | 'badges' | 'saved' | 'settings';
 
@@ -303,6 +304,18 @@ function SettingsTab({
 
   return (
     <div className="space-y-6">
+      {/* Profile Image Upload */}
+      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+          <User size={20} className="text-emerald-400" />
+          Profile Picture
+        </h3>
+        <ProfileImageUpload
+          currentAvatarUrl={profile.avatarUrl}
+          userName={profile.name}
+        />
+      </div>
+
       {/* Profile Settings */}
       <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
         <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">

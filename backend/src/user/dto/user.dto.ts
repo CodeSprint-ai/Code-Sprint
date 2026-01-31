@@ -6,6 +6,7 @@ export class UserDto {
   email: string;
   name: string;
   role: RoleEnum;
+  avatarUrl?: string;
 
   public static toDto(user: User): UserDto {
     return {
@@ -13,6 +14,7 @@ export class UserDto {
       email: user.email,
       name: user.name || '',
       role: user.role,
+      avatarUrl: user.avatarUrl,
     };
   }
 }

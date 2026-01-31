@@ -6,6 +6,7 @@ export interface User {
   email: string;
   name: string;
   role: RoleEnum;
+  avatarUrl?: string;
   // Add other user properties as needed
 }
 
@@ -34,4 +35,5 @@ export interface AuthStore {
   clearAuth: () => void;
   setToken: (token: string) => void;
   isAuthenticated: () => boolean;
+  updateUser: (updates: Partial<User>) => void;
 }
