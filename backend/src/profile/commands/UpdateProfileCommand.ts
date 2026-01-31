@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MaxLength, IsUrl, IsObject, ValidateNested } from 'class-validator';
+import { IsString, IsOptional, MaxLength, IsObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -23,7 +23,8 @@ export class SocialLinksCommand {
 
     @ApiPropertyOptional()
     @IsOptional()
-    @IsUrl()
+    @IsString()
+    @MaxLength(255)
     website?: string;
 }
 
@@ -42,7 +43,8 @@ export class UpdateProfileCommand {
 
     @ApiPropertyOptional({ maxLength: 500 })
     @IsOptional()
-    @IsUrl()
+    @IsString()
+    @MaxLength(500)
     avatarUrl?: string;
 
     @ApiPropertyOptional({ maxLength: 500 })
