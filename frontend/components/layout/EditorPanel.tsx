@@ -44,6 +44,8 @@ interface EditorPanelProps {
   hideSubmit?: boolean;
   onNext?: () => void;
   isLastQuestion?: boolean;
+  sprintMode?: boolean;
+  onFinishSprint?: () => void;
 }
 
 export default function EditorPanel({
@@ -51,6 +53,8 @@ export default function EditorPanel({
   hideSubmit = false,
   onNext,
   isLastQuestion = false,
+  sprintMode = false,
+  onFinishSprint,
 }: EditorPanelProps) {
   const [language, setLanguage] = useState("python");
 
@@ -135,6 +139,8 @@ export default function EditorPanel({
         hideSubmit={hideSubmit}
         onNext={onNext}
         isLastQuestion={isLastQuestion}
+        sprintMode={sprintMode}
+        onFinishSprint={onFinishSprint}
       />
 
       {/* Resizable Editor and Results Split */}

@@ -24,6 +24,8 @@ interface Props {
   hideSubmit?: boolean;
   onNext?: () => void;
   isLastQuestion?: boolean;
+  sprintMode?: boolean;
+  onFinishSprint?: () => void;
 }
 
 // Language icon colors
@@ -43,6 +45,8 @@ export default function EditorHeader({
   hideSubmit = false,
   onNext,
   isLastQuestion = false,
+  sprintMode = false,
+  onFinishSprint,
 }: Props) {
   const isDisabled = isSubmitting || isRunning;
   const langColor = languageColors[language.toLowerCase()] || "text-blue-400";
@@ -94,6 +98,15 @@ export default function EditorHeader({
             className="px-4 py-1.5 h-auto bg-emerald-600 text-white hover:bg-emerald-500 text-xs font-bold rounded-lg transition-colors shadow-lg shadow-emerald-900/20"
           >
             {isLastQuestion ? "Last Question" : "Next Question →"}
+          </Button>
+        )}
+
+        {sprintMode && onFinishSprint && (
+          <Button
+            onClick={onFinishSprint}
+            className="px-4 py-1.5 h-auto bg-red-600 text-white hover:bg-red-500 text-xs font-bold rounded-lg transition-colors shadow-lg shadow-red-900/20"
+          >
+            Finish Sprint
           </Button>
         )}
       </div>
