@@ -20,18 +20,14 @@ import {
   Search,
   Filter,
   X,
-  Calendar,
-  ArrowRight,
   LayoutGrid,
-  Tag,
   List,
+  Plus,
 } from "lucide-react";
 import { ProblemCard } from "@/components/ProblemCard";
 import { ProblemsTable } from "@/components/ProblemsTable";
 import { useAuthStore } from "@/store/authStore";
-import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   const difficultyConfig: Record<Difficulty, string> = {
@@ -102,32 +98,30 @@ export default function ProblemsPage() {
   );
   const problems: Problem[] = paginatedProblems.data?.data ?? [];
   const meta = paginatedProblems.data?.meta;
-  const displayMeta = meta ?? (problems.length >= 0 && !paginatedProblems.isLoading && !paginatedProblems.isError
-    ? { total: problems.length, page: filters.page ?? 1, pageSize: filters.pageSize ?? 10, totalPages: Math.max(1, Math.ceil(problems.length / (filters.pageSize ?? 10))) }
-    : undefined);
+  const showPagination = meta !== undefined;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
       <div className="flex w-full flex-1 min-h-0 flex-col">
-        <div className="mb-8 flex-shrink-0 flex items-start justify-between">
+        <div className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
+            <h1 className="text-3xl font-black text-white tracking-tight">
               All Problems
             </h1>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-zinc-400">
               View and filter problems from the collection.
             </p>
           </div>
           <div className="flex items-center gap-2">
             {/* View toggle */}
-            <div className="flex items-center rounded-lg bg-zinc-800/50 border border-zinc-700 p-1">
+            <div className="flex bg-[#09090b] p-1 rounded-xl border border-white/5 shrink-0">
               <button
                 onClick={() => setViewMode('cards')}
                 className={cn(
-                  'p-2 rounded-md transition-colors',
+                  'p-2 rounded-lg transition-colors',
                   viewMode === 'cards'
-                    ? 'bg-zinc-700 text-white'
-                    : 'text-zinc-400 hover:text-white'
+                    ? 'bg-white/5 text-white shadow-sm border border-white/5'
+                    : 'text-zinc-500 hover:text-white'
                 )}
                 title="Card view"
               >
@@ -136,10 +130,10 @@ export default function ProblemsPage() {
               <button
                 onClick={() => setViewMode('table')}
                 className={cn(
-                  'p-2 rounded-md transition-colors',
+                  'p-2 rounded-lg transition-colors',
                   viewMode === 'table'
-                    ? 'bg-zinc-700 text-white'
-                    : 'text-zinc-400 hover:text-white'
+                    ? 'bg-white/5 text-white shadow-sm border border-white/5'
+                    : 'text-zinc-500 hover:text-white'
                 )}
                 title="Table view"
               >
@@ -148,7 +142,7 @@ export default function ProblemsPage() {
             </div>
             {user?.role === "ADMIN" && (
               <Link href="/admin/problems/add">
-                <Button className="bg-sky-600 hover:bg-sky-700 text-white">
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
                   <Plus className="mr-2 h-4 w-4" />
                   Add Problem
                 </Button>
@@ -158,8 +152,8 @@ export default function ProblemsPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-8 flex-shrink-0 rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-4">
-          <div className="mb-4 flex items-center justify-between">
+        <div className="mb-8 p-1 rounded-2xl border border-white/5 bg-[#09090b]">
+          <div className="p-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-zinc-400" />
               <span className="text-sm font-medium text-zinc-300">Filters</span>
@@ -169,21 +163,21 @@ export default function ProblemsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={clearFilters}
-                className="text-zinc-400 hover:text-zinc-200"
+                className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10"
               >
                 <X className="mr-1 h-3.5 w-3.5" />
                 Clear
               </Button>
             )}
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+          <div className="grid gap-2 p-2 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500 group-focus-within:text-emerald-500 transition-colors" />
               <Input
                 placeholder="Search by title or description..."
                 value={filters.search ?? ""}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
-                className="border-zinc-700 bg-zinc-800/50 pl-9 text-zinc-100 placeholder:text-zinc-500"
+                className="border-white/5 bg-black/40 pl-10 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl py-3"
               />
             </div>
             <Select
@@ -226,7 +220,7 @@ export default function ProblemsPage() {
         {paginatedProblems.isLoading && (
           <div className="flex items-center justify-center py-20">
             <div className="flex flex-col items-center gap-3 text-zinc-500">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-sky-500" />
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-emerald-500" />
               <span>Loading problems...</span>
             </div>
           </div>
@@ -261,19 +255,19 @@ export default function ProblemsPage() {
               )
             )}
 
-            {/* Pagination at bottom - always show when we have loaded */}
-            {displayMeta && (
-              <div className="mt-4 flex-shrink-0 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+            {/* Pagination: show for all statuses (empty or not) */}
+            {showPagination && meta && (
+              <div className="flex-shrink-0 mt-4 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
                 <p className="text-sm text-zinc-400">
                   Showing{" "}
                   <span className="font-medium text-zinc-300">
-                    {displayMeta.total === 0 ? 0 : (displayMeta.page - 1) * displayMeta.pageSize + 1}
+                    {meta.total === 0 ? 0 : (meta.page - 1) * meta.pageSize + 1}
                   </span>{" "}
                   –{" "}
                   <span className="font-medium text-zinc-300">
-                    {Math.min(displayMeta.page * displayMeta.pageSize, displayMeta.total)}
+                    {Math.min(meta.page * meta.pageSize, meta.total)}
                   </span>{" "}
-                  of <span className="font-medium text-zinc-300">{displayMeta.total}</span>{" "}
+                  of <span className="font-medium text-zinc-300">{meta.total}</span>{" "}
                   problems
                 </p>
                 <div className="flex items-center gap-3">
@@ -286,14 +280,14 @@ export default function ProblemsPage() {
                         page: Math.max(1, (prev.page ?? 1) - 1),
                       }))
                     }
-                    disabled={displayMeta.page <= 1}
+                    disabled={meta.page <= 1}
                     className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
                   >
                     <ChevronLeft className="h-4 w-4" />
                     Previous
                   </Button>
                   <span className="min-w-[7rem] text-center text-sm text-zinc-400">
-                    Page {displayMeta.page} of {Math.max(1, displayMeta.totalPages)}
+                    Page {meta.page} of {Math.max(1, meta.totalPages)}
                   </span>
                   <Button
                     variant="outline"
@@ -301,10 +295,10 @@ export default function ProblemsPage() {
                     onClick={() =>
                       setFilters((prev) => ({
                         ...prev,
-                        page: Math.min(displayMeta.totalPages, (prev.page ?? 1) + 1),
+                        page: Math.min(meta.totalPages, (prev.page ?? 1) + 1),
                       }))
                     }
-                    disabled={displayMeta.page >= displayMeta.totalPages}
+                    disabled={meta.page >= meta.totalPages}
                     className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
                   >
                     Next

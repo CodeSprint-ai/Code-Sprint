@@ -209,7 +209,7 @@ export default function SubmissionsPage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
-      <div className="flex w-full flex-1 min-h-0 flex-col max-w-7xl mx-auto">
+      <div className="flex w-full flex-1 min-h-0 flex-col">
         <div className="mb-8 flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-black text-white tracking-tight">

@@ -64,7 +64,7 @@ export default function ContestPage() {
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
       <div className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-black text-white tracking-tight">
@@ -122,7 +122,7 @@ export default function ContestPage() {
         </div>
       </div>
 
-      <div className="flex-1 px-6 py-6 overflow-y-auto max-w-7xl mx-auto w-full">
+      <div className="flex-1 px-6 py-6 overflow-y-auto w-full">
         {/* Tabs */}
         <div className="mb-4">
           <ContestTabs

@@ -51,8 +51,8 @@ const userRoutes: RouteItem[] = [
 const adminRoutes: RouteItem[] = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
   { title: "Sprint Mode", url: "/admin/sprint", icon: Zap },
-  { title: "Submissions", url: "/admin/submission", icon: FileCode },
   { title: "Problems", url: "/admin/problems", icon: ListTodo },
+  { title: "Submissions", url: "/admin/submission", icon: FileCode },
   { title: "Contest", url: "/admin/contest", icon: Trophy },
   { title: "Profile", url: "/admin/profile", icon: User },
 ];
@@ -88,7 +88,7 @@ export function Sidebar() {
       className="bg-black/80 backdrop-blur-xl border-r border-white/5 shadow-[5px_0_30px_-5px_rgba(0,0,0,0.8)]"
     >
       {/* Brand Header */}
-      <SidebarHeader className="h-24 flex items-center px-4 relative overflow-hidden">
+      <SidebarHeader className="h-24 flex items-center px-4 pt-4 relative overflow-hidden">
         {/* Glow behind logo */}
         <div className="absolute top-1/2 left-6 w-10 h-10 bg-green-500/40 blur-[30px] rounded-full pointer-events-none" />
 

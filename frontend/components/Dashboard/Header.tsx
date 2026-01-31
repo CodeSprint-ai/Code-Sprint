@@ -26,19 +26,27 @@ const Header = () => {
         shadow-[0_4px_30px_rgba(0,0,0,0.5)]
       "
     >
-      {/* Left: Brand */}
+      {/* Left: Sidebar Toggle */}
       <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
+        <button
           onClick={toggleSidebar}
-          className="text-zinc-400 hover:text-green-400 hover:bg-white/5 transition-all duration-300"
+          className="
+            relative flex items-center justify-center
+            w-10 h-10
+            rounded-xl
+            bg-white/5
+            border border-white/10
+            text-zinc-400
+            hover:text-green-400
+            hover:bg-green-500/10
+            hover:border-green-500/30
+            hover:shadow-[0_0_15px_rgba(34,197,94,0.3)]
+            transition-all duration-300
+            group
+          "
         >
-          <Menu className="w-6 h-6" />
-        </Button>
-        <div className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300 drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">
-          CodeSprintAI
-        </div>
+          <Menu className="w-5 h-5 transition-transform group-hover:scale-110" />
+        </button>
       </div>
 
       {/* Right: Stats & Actions */}
@@ -82,7 +90,7 @@ const Header = () => {
           </div>
 
           {/* Logout Button */}
-          <Button
+          {/* <Button
             onClick={async () => await logout()}
             className="
               bg-white/10
@@ -98,7 +106,7 @@ const Header = () => {
           >
             <LogOut size={16} />
             <span className="hidden sm:inline">Logout</span>
-          </Button>
+          </Button> */}
         </div>
       </div>
     </header>
