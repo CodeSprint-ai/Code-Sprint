@@ -52,7 +52,7 @@ export default function EditorHeader({
       <div className="flex items-center gap-2">
         <div className="relative">
           <Select value={language} onValueChange={setLanguage} disabled={isDisabled}>
-            <SelectTrigger className="flex items-center gap-2 text-xs font-bold text-zinc-300 hover:text-white bg-white/5 px-3 py-1.5 h-auto rounded-lg border border-white/5 hover:border-white/20 transition-all w-[130px]">
+            <SelectTrigger className="flex items-center gap-2 text-xs font-bold text-zinc-300 hover:text-white bg-white/5 px-3 py-1.5 h-auto rounded-lg border border-white/5 hover:border-white/20 transition-all w-[140px]">
               <FileCode className={`w-3.5 h-3.5 ${langColor}`} />
               <SelectValue placeholder="Language" />
               <ChevronDown className="w-3 h-3 text-zinc-500 ml-auto" />

@@ -101,8 +101,8 @@ export default function ProblemsPage() {
   const showPagination = meta !== undefined;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
-      <div className="flex w-full flex-1 min-h-0 flex-col">
+    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
+      <div className="flex w-full flex-1 min-h-0 flex-col overflow-hidden">
         <div className="mb-8 flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-black text-white tracking-tight">
@@ -255,7 +255,7 @@ export default function ProblemsPage() {
               )
             )}
 
-            {/* Pagination: show for all statuses (empty or not) */}
+            {/* Pagination: sticky at bottom */}
             {showPagination && meta && (
               <div className="flex-shrink-0 mt-4 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
                 <p className="text-sm text-zinc-400">
