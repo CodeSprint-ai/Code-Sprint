@@ -26,44 +26,51 @@ export function LanguageChart({ usage }: LanguageChartProps) {
 
     if (languages.length === 0) {
         return (
-            <div className="rounded-xl bg-slate-900/50 border border-slate-700/50 p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Language Usage</h3>
-                <p className="text-slate-400 text-center py-8">No submissions yet</p>
+            <div className="bg-[#111] rounded-xl p-6 border border-white/5">
+                <h4 className="text-xs font-bold text-white mb-6">Language Usage</h4>
+                <p className="text-zinc-500 text-center py-8">No submissions yet</p>
             </div>
         );
     }
 
+    // Get dominant language color for glow
+    const dominantColor = languageColors[languages[0]?.[0]?.toLowerCase()] || '#2563eb';
+
     return (
-        <div className="rounded-xl bg-slate-900/50 border border-slate-700/50 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Language Usage</h3>
+        <div className="bg-[#111] rounded-xl p-6 border border-white/5">
+            <h4 className="text-xs font-bold text-white mb-6">Language Usage</h4>
 
             {/* Bar composition */}
-            <div className="h-4 rounded-full overflow-hidden flex mb-6">
-                {languages.map(([lang, percentage]) => (
-                    <div
-                        key={lang}
-                        style={{
-                            width: `${percentage}%`,
-                            backgroundColor: languageColors[lang.toLowerCase()] || '#6366F1',
-                        }}
-                        className="first:rounded-l-full last:rounded-r-full transition-all hover:opacity-80"
-                        title={`${lang}: ${percentage}%`}
-                    />
-                ))}
+            <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden flex mb-4">
+                {languages.map(([lang, percentage]) => {
+                    const color = languageColors[lang.toLowerCase()] || '#6366F1';
+                    return (
+                        <div
+                            key={lang}
+                            style={{
+                                width: `${percentage}%`,
+                                backgroundColor: color,
+                                boxShadow: `0 0 10px ${color}`,
+                            }}
+                            className="h-full first:rounded-l-full last:rounded-r-full transition-all"
+                            title={`${lang}: ${percentage}%`}
+                        />
+                    );
+                })}
             </div>
 
             {/* Legend */}
-            <div className="space-y-3">
+            <div className="space-y-2">
                 {languages.map(([lang, percentage]) => (
-                    <div key={lang} className="flex items-center justify-between">
+                    <div key={lang} className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
-                            <div
-                                className="w-3 h-3 rounded-full"
+                            <span
+                                className="w-2 h-2 rounded-full"
                                 style={{ backgroundColor: languageColors[lang.toLowerCase()] || '#6366F1' }}
                             />
-                            <span className="text-sm text-white capitalize">{lang}</span>
+                            <span className="text-zinc-300 font-medium capitalize">{lang}</span>
                         </div>
-                        <span className="text-sm text-slate-400">{percentage}%</span>
+                        <span className="text-zinc-500 font-mono">{percentage}%</span>
                     </div>
                 ))}
             </div>

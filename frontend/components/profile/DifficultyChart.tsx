@@ -11,35 +11,32 @@ function ProgressBar({
     label,
     solved,
     total,
-    color,
-    bgColor
+    colorClass,
+    glowColor,
 }: {
     label: string;
     solved: number;
     total: number;
-    color: string;
-    bgColor: string;
+    colorClass: string;
+    glowColor: string;
 }) {
     const percentage = total > 0 ? (solved / total) * 100 : 0;
 
     return (
         <div className="space-y-2">
-            <div className="flex justify-between items-center">
-                <span className={`text-sm font-medium ${color}`}>{label}</span>
-                <span className="text-sm text-slate-400">
-                    <span className="text-white font-semibold">{solved}</span> / {total}
+            <div className="flex justify-between text-xs">
+                <span className={`font-bold ${colorClass}`}>{label}</span>
+                <span className="font-mono text-zinc-400">
+                    <span className="text-white">{solved}</span> / {total}
                 </span>
             </div>
-            <div className={`h-3 rounded-full ${bgColor} overflow-hidden`}>
+            <div className="h-2 w-full bg-zinc-900 rounded-full overflow-hidden">
                 <div
-                    className={`h-full rounded-full transition-all duration-500 ease-out`}
+                    className="h-full rounded-full transition-all duration-500"
                     style={{
                         width: `${percentage}%`,
-                        background: color.includes('green')
-                            ? 'linear-gradient(90deg, #22C55E, #34D399)'
-                            : color.includes('yellow')
-                                ? 'linear-gradient(90deg, #EAB308, #FBBF24)'
-                                : 'linear-gradient(90deg, #EF4444, #F87171)'
+                        backgroundColor: glowColor,
+                        boxShadow: percentage > 0 ? `0 0 10px ${glowColor}` : 'none',
                     }}
                 />
             </div>
@@ -52,102 +49,41 @@ export function DifficultyChart({ distribution }: DifficultyChartProps) {
     const totalProblems = distribution.easy.total + distribution.medium.total + distribution.hard.total;
 
     return (
-        <div className="rounded-xl bg-slate-900/50 border border-slate-700/50 p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-white">Solved Problems</h3>
-                <div className="text-right">
-                    <span className="text-2xl font-bold text-white">{totalSolved}</span>
-                    <span className="text-slate-400 text-sm ml-1">/ {totalProblems}</span>
+        <div className="space-y-6 relative z-10">
+            <div className="flex justify-between items-end mb-2">
+                <div className="text-sm font-medium text-white">Solved Problems</div>
+                <div className="text-sm font-mono font-bold text-zinc-400">
+                    <span className="text-white text-lg">{totalSolved}</span>{' '}
+                    <span className="text-zinc-600">/</span> {totalProblems}
                 </div>
             </div>
 
-            <div className="space-y-4">
-                <ProgressBar
-                    label="Easy"
-                    solved={distribution.easy.solved}
-                    total={distribution.easy.total}
-                    color="text-green-400"
-                    bgColor="bg-green-500/10"
-                />
+            {/* Easy */}
+            <ProgressBar
+                label="Easy"
+                solved={distribution.easy.solved}
+                total={distribution.easy.total}
+                colorClass="text-emerald-500"
+                glowColor="#10b981"
+            />
 
-                <ProgressBar
-                    label="Medium"
-                    solved={distribution.medium.solved}
-                    total={distribution.medium.total}
-                    color="text-yellow-400"
-                    bgColor="bg-yellow-500/10"
-                />
+            {/* Medium */}
+            <ProgressBar
+                label="Medium"
+                solved={distribution.medium.solved}
+                total={distribution.medium.total}
+                colorClass="text-yellow-500"
+                glowColor="#eab308"
+            />
 
-                <ProgressBar
-                    label="Hard"
-                    solved={distribution.hard.solved}
-                    total={distribution.hard.total}
-                    color="text-red-400"
-                    bgColor="bg-red-500/10"
-                />
-            </div>
-
-            {/* Donut chart visualization */}
-            <div className="mt-6 flex justify-center">
-                <div className="relative w-40 h-40">
-                    <svg viewBox="0 0 100 100" className="transform -rotate-90">
-                        {/* Background circle */}
-                        <circle
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            fill="none"
-                            stroke="rgba(100, 116, 139, 0.2)"
-                            strokeWidth="12"
-                        />
-
-                        {/* Easy segment */}
-                        <circle
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            fill="none"
-                            stroke="#22C55E"
-                            strokeWidth="12"
-                            strokeDasharray={`${(distribution.easy.solved / (totalSolved || 1)) * 251.2} 251.2`}
-                            strokeDashoffset="0"
-                            className="transition-all duration-500"
-                        />
-
-                        {/* Medium segment */}
-                        <circle
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            fill="none"
-                            stroke="#EAB308"
-                            strokeWidth="12"
-                            strokeDasharray={`${(distribution.medium.solved / (totalSolved || 1)) * 251.2} 251.2`}
-                            strokeDashoffset={`${-(distribution.easy.solved / (totalSolved || 1)) * 251.2}`}
-                            className="transition-all duration-500"
-                        />
-
-                        {/* Hard segment */}
-                        <circle
-                            cx="50"
-                            cy="50"
-                            r="40"
-                            fill="none"
-                            stroke="#EF4444"
-                            strokeWidth="12"
-                            strokeDasharray={`${(distribution.hard.solved / (totalSolved || 1)) * 251.2} 251.2`}
-                            strokeDashoffset={`${-((distribution.easy.solved + distribution.medium.solved) / (totalSolved || 1)) * 251.2}`}
-                            className="transition-all duration-500"
-                        />
-                    </svg>
-
-                    {/* Center text */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-2xl font-bold text-white">{totalSolved}</span>
-                        <span className="text-xs text-slate-400">solved</span>
-                    </div>
-                </div>
-            </div>
+            {/* Hard */}
+            <ProgressBar
+                label="Hard"
+                solved={distribution.hard.solved}
+                total={distribution.hard.total}
+                colorClass="text-red-500"
+                glowColor="#ef4444"
+            />
         </div>
     );
 }

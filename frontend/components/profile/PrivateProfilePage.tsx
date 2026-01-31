@@ -123,8 +123,8 @@ export default function PrivateProfilePage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 py-8 px-4 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="h-full overflow-y-auto py-8 px-4 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+      <div className="max-w-7xl mx-auto space-y-8 animate-fade-in pb-10">
         {/* Profile Header */}
         <ProfileHeader profile={publicProfile} />
 
@@ -152,28 +152,28 @@ export default function PrivateProfilePage() {
               <StatsCards stats={publicProfile.stats} />
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="p-6 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 hover:border-zinc-700 transition-colors">
-                  <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-cyan-400" />
-                    Problem Difficulty
-                  </h3>
+                <div className="bg-[#09090b] border border-white/5 rounded-xl p-6 relative overflow-hidden">
+                  <div className="flex items-center gap-2 mb-8 relative z-10">
+                    <Activity className="w-4 h-4 text-emerald-400" />
+                    <h3 className="font-bold text-white text-sm">Problem Difficulty</h3>
+                  </div>
                   {stats && <DifficultyChart distribution={stats.difficultyDistribution} />}
                 </div>
-                <div className="p-6 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 hover:border-zinc-700 transition-colors">
-                  <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-                    <Code2 className="w-5 h-5 text-violet-400" />
-                    Language Usage
-                  </h3>
+                <div className="bg-[#09090b] border border-white/5 rounded-xl p-6">
+                  <div className="flex items-center gap-2 mb-8">
+                    <Code2 className="w-4 h-4 text-purple-400" />
+                    <h3 className="font-bold text-white text-sm">Language Usage</h3>
+                  </div>
                   {stats && <LanguageChart usage={stats.languageUsage} />}
                 </div>
               </div>
 
               {stats && (
-                <div className="p-6 rounded-xl bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 overflow-hidden">
-                  <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-emerald-400" />
-                    Submission Activity
-                  </h3>
+                <div className="bg-[#09090b] border border-white/5 rounded-xl p-6 overflow-hidden">
+                  <div className="flex items-center gap-2 mb-8">
+                    <Activity className="w-4 h-4 text-emerald-400" />
+                    <h3 className="font-bold text-white text-sm">Submission Activity</h3>
+                  </div>
                   <SubmissionHeatmap data={stats.submissionHeatmap} />
                 </div>
               )}
