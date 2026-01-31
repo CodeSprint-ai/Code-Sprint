@@ -9,6 +9,7 @@ import {
   getMySavedProblems,
   updateMyProfile,
   updateMySettings,
+  recalculateMyStats,
 } from '@/services/profileApi';
 import ProfileHeader from './ProfileHeader';
 import StatsCards from './StatsCards';
@@ -16,7 +17,7 @@ import DifficultyChart from './DifficultyChart';
 import SubmissionHeatmap from './SubmissionHeatmap';
 import BadgesGrid from './BadgesGrid';
 import LanguageChart from './LanguageChart';
-import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2 } from 'lucide-react';
+import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap } from 'lucide-react';
 import { PrivateProfile, SavedProblem, UserPreferences } from '@/types/profile';
 import { toast } from 'sonner';
 import ProfileImageUpload from './ProfileImageUpload';
@@ -67,6 +68,18 @@ export default function PrivateProfilePage() {
     },
     onError: () => {
       toast.error('Failed to update settings');
+    },
+  });
+
+  const recalculateStatsMutation = useMutation({
+    mutationFn: recalculateMyStats,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['my-profile'] });
+      queryClient.invalidateQueries({ queryKey: ['my-stats'] });
+      toast.success(`Stats synced! You've solved ${data.totalSolved} problems. Current streak: ${data.currentStreak} days.`);
+    },
+    onError: () => {
+      toast.error('Failed to recalculate stats');
     },
   });
 
@@ -194,7 +207,9 @@ export default function PrivateProfilePage() {
               profile={profile}
               onUpdateProfile={(data) => updateProfileMutation.mutate(data)}
               onUpdateSettings={(data) => updateSettingsMutation.mutate(data)}
+              onRecalculateStats={() => recalculateStatsMutation.mutate()}
               isUpdating={updateProfileMutation.isPending || updateSettingsMutation.isPending}
+              isRecalculating={recalculateStatsMutation.isPending}
             />
           )}
         </div>
@@ -229,7 +244,7 @@ function SavedProblemsTab({ savedProblems }: { savedProblems: SavedProblem[] }) 
         {savedProblems.map((problem) => (
           <a
             key={problem.uuid}
-            href={`/problems/${problem.problemSlug}`}
+            href={`/problems/${problem.problemUuid}`}
             className="flex items-center justify-between p-4 hover:bg-zinc-800/50 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
@@ -253,12 +268,16 @@ function SettingsTab({
   profile,
   onUpdateProfile,
   onUpdateSettings,
+  onRecalculateStats,
   isUpdating,
+  isRecalculating,
 }: {
   profile: PrivateProfile;
   onUpdateProfile: (data: any) => void;
   onUpdateSettings: (data: Partial<UserPreferences>) => void;
+  onRecalculateStats: () => void;
   isUpdating: boolean;
+  isRecalculating: boolean;
 }) {
   const [formData, setFormData] = useState({
     username: profile.username || '',
@@ -394,6 +413,25 @@ function SettingsTab({
             Save Profile
           </button>
         </form>
+      </div>
+
+      {/* Sync Stats */}
+      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <Zap size={20} className="text-amber-400" />
+          Sync Statistics
+        </h3>
+        <p className="text-sm text-zinc-400 mb-4">
+          Recalculate your stats from your submission history. Use this if your solved count or streak seems incorrect.
+        </p>
+        <button
+          onClick={onRecalculateStats}
+          disabled={isRecalculating}
+          className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-amber-900/20"
+        >
+          {isRecalculating ? <Loader2 size={18} className="animate-spin" /> : <RefreshCw size={18} />}
+          {isRecalculating ? 'Syncing...' : 'Sync My Stats'}
+        </button>
       </div>
 
       {/* Preferences */}

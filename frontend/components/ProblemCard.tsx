@@ -1,11 +1,94 @@
 // components/ProblemCard.tsx
 "use client";
 
-import { ArrowUpRight, Star, Clock, Code } from "lucide-react";
+import { ArrowUpRight, Star, Clock, Code, Bookmark, Loader2 } from "lucide-react";
 import { Difficulty, ProblemCardProps } from "@/types/problems";
 import { formatDifficulty } from "@/lib/helperFunctions";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getMySavedProblems, saveProblem, removeSavedProblem } from "@/services/profileApi";
+import { toast } from "sonner";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+function BookmarkButton({
+  problemUuid,
+  savedProblemUuid,
+  isSaved
+}: {
+  problemUuid: string;
+  savedProblemUuid?: string;
+  isSaved: boolean;
+}) {
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const saveMutation = useMutation({
+    mutationFn: (uuid: string) => saveProblem(uuid),
+    onMutate: () => setIsLoading(true),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-saved-problems'] });
+      toast.success('Problem saved');
+    },
+    onError: (error: any) => {
+      if (error?.response?.status === 409) {
+        toast.info('Problem already saved');
+      } else {
+        toast.error('Failed to save problem');
+      }
+    },
+    onSettled: () => setIsLoading(false),
+  });
+
+  const removeMutation = useMutation({
+    mutationFn: (uuid: string) => removeSavedProblem(uuid),
+    onMutate: () => setIsLoading(true),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-saved-problems'] });
+      toast.success('Problem removed from saved');
+    },
+    onError: () => {
+      toast.error('Failed to remove problem');
+    },
+    onSettled: () => setIsLoading(false),
+  });
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isLoading) return;
+
+    if (isSaved && savedProblemUuid) {
+      removeMutation.mutate(savedProblemUuid);
+    } else {
+      saveMutation.mutate(problemUuid);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleToggle}
+      disabled={isLoading}
+      className={cn(
+        "p-1.5 rounded hover:bg-white/10 transition-colors z-10",
+        isSaved
+          ? "text-emerald-400 hover:text-emerald-300"
+          : "text-zinc-500 hover:text-white"
+      )}
+      title={isSaved ? "Remove from saved" : "Save problem"}
+    >
+      {isLoading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Bookmark
+          className={cn("w-4 h-4", isSaved && "fill-current")}
+        />
+      )}
+    </button>
+  );
+}
 
 export const ProblemCard: React.FC<ProblemCardProps> = ({
   index,
@@ -20,6 +103,17 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
   const pathname = usePathname();
   const basePath = pathname?.startsWith("/admin") ? "/admin/problems" : "/problems";
   const problemUrl = `${basePath}/${uuid}`;
+
+  // Fetch saved problems to check if this one is saved
+  const { data: savedProblems = [] } = useQuery({
+    queryKey: ['my-saved-problems'],
+    queryFn: getMySavedProblems,
+    staleTime: 1000 * 60 * 2, // Cache for 2 minutes
+  });
+
+  // Find if current problem is saved
+  const savedProblem = savedProblems.find(sp => sp.problemUuid === uuid);
+  const isSaved = !!savedProblem;
 
   const difficultyConfig = {
     [Difficulty.EASY]: {
@@ -56,8 +150,15 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
             <span className="font-bold text-emerald-500">#{index + 1}</span>
             {starred && <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />}
           </div>
-          <div className="text-zinc-600 group-hover:text-emerald-400 transition-colors">
-            {type && icon[type]}
+          <div className="flex items-center gap-1">
+            <BookmarkButton
+              problemUuid={uuid}
+              savedProblemUuid={savedProblem?.uuid}
+              isSaved={isSaved}
+            />
+            <div className="text-zinc-600 group-hover:text-emerald-400 transition-colors p-1.5">
+              {type && icon[type]}
+            </div>
           </div>
         </div>
 

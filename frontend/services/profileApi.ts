@@ -51,6 +51,21 @@ export const getMyStats = async (): Promise<UserStats> => {
     return data.data;
 };
 
+export const recalculateMyStats = async (): Promise<{
+    message: string;
+    totalSolved: number;
+    currentStreak: number;
+    maxStreak: number;
+}> => {
+    const { data } = await api.post<ApiResponse<{
+        message: string;
+        totalSolved: number;
+        currentStreak: number;
+        maxStreak: number;
+    }>>('/profile/me/stats/recalculate');
+    return data.data;
+};
+
 export const getMySettings = async (): Promise<UserPreferences> => {
     const { data } = await api.get<ApiResponse<UserPreferences>>('/profile/me/settings');
     return data.data;
@@ -106,6 +121,7 @@ export const profileApi = {
     updateMyProfile,
     uploadProfileImage,
     getMyStats,
+    recalculateMyStats,
     getMySettings,
     updateMySettings,
     getMyBadges,
@@ -114,5 +130,6 @@ export const profileApi = {
     updateSavedProblem,
     removeSavedProblem,
 };
+
 
 export default profileApi;

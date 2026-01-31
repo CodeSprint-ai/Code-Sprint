@@ -4,6 +4,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
 import { StatsService } from './stats.service';
+import { UserStatsService } from './user-stats.service';
 import { BadgeService } from './badge.service';
 import { User } from '../user/entities/user.model';
 import { Submission } from '../submission/entities/Submission';
@@ -36,7 +37,8 @@ import { CommonModule } from '../common/common.module';
         CommonModule,
     ],
     controllers: [ProfileController],
-    providers: [ProfileService, StatsService, BadgeService],
-    exports: [ProfileService, StatsService, BadgeService],
+    providers: [ProfileService, StatsService, UserStatsService, BadgeService],
+    exports: [ProfileService, StatsService, UserStatsService, BadgeService],
 })
 export class ProfileModule { }
+

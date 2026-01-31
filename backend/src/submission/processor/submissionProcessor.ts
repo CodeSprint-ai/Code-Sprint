@@ -21,6 +21,7 @@ import { Judge0Service } from '../../judge/judge.service';
 import { RunnerFactory } from '../../judge/runners/runner.factory';
 import { LanguageId, normalizeLanguage, Language } from '../../judge/enums/language.enum';
 import { SubmissionGateway } from '../../common/utils/socket-gateway';
+import { UserStatsService } from '../../profile/user-stats.service';
 
 interface TestResult {
   input: Record<string, unknown>;
@@ -44,6 +45,7 @@ export class SubmissionProcessor {
     private readonly judge0: Judge0Service,
     private readonly runnerFactory: RunnerFactory,
     private readonly socket: SubmissionGateway,
+    private readonly userStatsService: UserStatsService,
   ) { }
 
   @Process('process')
@@ -168,6 +170,15 @@ export class SubmissionProcessor {
     submission.finishedAt = new Date();
 
     await this.submissionRepo.save(submission);
+
+    // Update user stats if submission was accepted
+    if (submission.status === SubmissionStatus.ACCEPTED) {
+      await this.userStatsService.updateStatsOnAcceptedSubmission(
+        submission.user.uuid,
+        submission.problem.uuid,
+      );
+    }
+
     this.emitUpdate(submission, {
       status: submission.status,
       testResults: this.filterHiddenResults(testResults),

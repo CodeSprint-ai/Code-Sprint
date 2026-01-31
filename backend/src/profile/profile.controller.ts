@@ -19,6 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ProfileService } from './profile.service';
 import { StatsService } from './stats.service';
+import { UserStatsService } from './user-stats.service';
 import { BadgeService } from './badge.service';
 import { UpdateProfileCommand } from './commands/UpdateProfileCommand';
 import { UpdatePreferencesCommand } from './commands/UpdatePreferencesCommand';
@@ -31,6 +32,7 @@ export class ProfileController {
     constructor(
         private readonly profileService: ProfileService,
         private readonly statsService: StatsService,
+        private readonly userStatsService: UserStatsService,
         private readonly badgeService: BadgeService,
     ) { }
 
@@ -83,6 +85,23 @@ export class ProfileController {
     async getMyStats(@Req() req: any) {
         const stats = await this.statsService.getCompleteStats(req.user.uuid);
         return { data: stats };
+    }
+
+    @Post('me/stats/recalculate')
+    @ApiBearerAuth()
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Recalculate user stats from submission history' })
+    @ApiResponse({ status: 200, description: 'Stats recalculated successfully' })
+    async recalculateMyStats(@Req() req: any) {
+        const stats = await this.userStatsService.recalculateStats(req.user.uuid);
+        return {
+            data: {
+                message: 'Stats recalculated successfully',
+                totalSolved: stats.totalSolved,
+                currentStreak: stats.currentStreak,
+                maxStreak: stats.maxStreak,
+            },
+        };
     }
 
     @Get('me/settings')

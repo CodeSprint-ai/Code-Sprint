@@ -10,6 +10,7 @@ import { BullModule } from '@nestjs/bull';
 import { SubmissionProcessor } from './processor/submissionProcessor';
 import { CommonModule } from 'src/common/common.module';
 import { JudgeModule } from '../judge/judge.module';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { JudgeModule } from '../judge/judge.module';
     SprintModule,
     CommonModule,
     JudgeModule,
+    ProfileModule,
     BullModule.registerQueue({
       name: 'submissions',   // 👈 name must match
     }),
@@ -25,3 +27,4 @@ import { JudgeModule } from '../judge/judge.module';
   providers: [SubmissionService, SubmissionProcessor],
 })
 export class SubmissionModule { }
+
