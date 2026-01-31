@@ -108,23 +108,23 @@ export default function ProblemsPage() {
       <div className="flex w-full flex-1 min-h-0 flex-col">
         <div className="mb-8 flex-shrink-0 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
+            <h1 className="text-3xl font-black text-white tracking-tight">
               All Problems
             </h1>
-            <p className="mt-1 text-sm text-zinc-500">
-              View and filter problems from the collection.
+            <p className="mt-1 text-sm text-zinc-400">
+              Browse and solve algorithm challenges.
             </p>
           </div>
 
           {/* View toggle */}
-          <div className="flex items-center rounded-lg bg-zinc-800/50 border border-zinc-700 p-1">
+          <div className="flex bg-[#09090b] p-1 rounded-xl border border-white/5 shrink-0">
             <button
               onClick={() => setViewMode('cards')}
               className={cn(
-                'p-2 rounded-md transition-colors',
+                'p-2 rounded-lg transition-colors',
                 viewMode === 'cards'
-                  ? 'bg-zinc-700 text-white'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-white/5 text-white shadow-sm border border-white/5'
+                  : 'text-zinc-500 hover:text-white'
               )}
               title="Card view"
             >
@@ -133,10 +133,10 @@ export default function ProblemsPage() {
             <button
               onClick={() => setViewMode('table')}
               className={cn(
-                'p-2 rounded-md transition-colors',
+                'p-2 rounded-lg transition-colors',
                 viewMode === 'table'
-                  ? 'bg-zinc-700 text-white'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-white/5 text-white shadow-sm border border-white/5'
+                  : 'text-zinc-500 hover:text-white'
               )}
               title="Table view"
             >
@@ -146,7 +146,7 @@ export default function ProblemsPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-8 flex-shrink-0 rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-4">
+        <div className="mb-8 flex-shrink-0 p-1 rounded-2xl border border-white/5 bg-[#09090b]">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-zinc-400" />
@@ -157,21 +157,21 @@ export default function ProblemsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={clearFilters}
-                className="text-zinc-400 hover:text-zinc-200"
+                className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10"
               >
                 <X className="mr-1 h-3.5 w-3.5" />
                 Clear
               </Button>
             )}
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+          <div className="grid gap-2 p-2 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500 group-focus-within:text-emerald-500 transition-colors" />
               <Input
-                placeholder="Search by title or description..."
+                placeholder="Search by title..."
                 value={filters.search ?? ""}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
-                className="border-zinc-700 bg-zinc-800/50 pl-9 text-zinc-100 placeholder:text-zinc-500"
+                className="border-white/5 bg-black/40 pl-10 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl py-3"
               />
             </div>
             <Select

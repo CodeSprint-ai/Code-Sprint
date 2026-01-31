@@ -92,7 +92,7 @@ export default function AddProblemPage() {
         testCases: values.testCases.map((tc) => {
           const inputText = (tc as any).inputText || "";
           const expectedOutputText = (tc as any).expectedOutputText || "";
-          
+
           return {
             input: parseTestCaseInput(inputText) || {},
             inputText: inputText,
@@ -124,7 +124,7 @@ export default function AddProblemPage() {
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
       <div className="flex w-full flex-1 min-h-0 flex-col max-w-5xl mx-auto">
         <div className="mb-6">
           <Link

@@ -107,7 +107,7 @@ export default function ProblemsPage() {
     : undefined);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
       <div className="flex w-full flex-1 min-h-0 flex-col">
         <div className="mb-8 flex-shrink-0 flex items-start justify-between">
           <div>

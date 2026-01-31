@@ -61,9 +61,9 @@ export default function ContestPage() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto bg-zinc-950">
+    <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm sticky top-0 z-10">
+      <div className="border-b border-white/5 bg-black/40 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-6 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>

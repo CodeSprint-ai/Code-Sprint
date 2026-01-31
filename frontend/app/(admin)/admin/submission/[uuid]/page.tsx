@@ -61,7 +61,7 @@ export default function AdminSubmissionViewPage({
   // If both are loading, show loading
   if (singleSubmission.isLoading || singleProblem.isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-zinc-500">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-sky-500" />
           Loading...
@@ -73,9 +73,9 @@ export default function AdminSubmissionViewPage({
   // If both failed, show error
   const pathname = usePathname();
   const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
-  
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-950 px-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4">
       <p className="text-red-400">Not found.</p>
       <Link href={basePath}>
         <Button variant="outline" className="border-zinc-700 bg-zinc-800/50 text-zinc-200">
@@ -90,9 +90,9 @@ export default function AdminSubmissionViewPage({
 function SubmissionView({ submission }: { submission: Submission }) {
   const pathname = usePathname();
   const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
-  
+
   return (
-    <div className="min-h-screen bg-zinc-950 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <Link
           href={basePath}
@@ -187,7 +187,7 @@ function SubmissionView({ submission }: { submission: Submission }) {
 
 function ProblemSolveView({ problem }: { problem: Problem }) {
   return (
-    <main className="h-screen w-full flex flex-col bg-zinc-950 text-zinc-100">
+    <main className="h-screen w-full flex flex-col text-zinc-100">
       <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
         {/* Left panel - Problem Description */}
         <div className="lg:w-1/2 border-b lg:border-b-0 lg:border-r border-zinc-800 overflow-y-auto h-full">

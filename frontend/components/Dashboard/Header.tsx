@@ -1,85 +1,105 @@
-// import React from "react";
-
-// import { Moon, Sun } from "lucide-react";
-// import { useTheme } from "next-themes";
-// import ThemeSwitcher from "../ThemeSwitcher";
-// import { Button } from "../ui/button";
-// import { useAuth } from "@/hooks/useAuth";
-
-// const Header = () => {
-//   const { logout } = useAuth();
-
-//   return (
-//     <div className=" flex justify-center items-center w-screen  h-20 ">
-//       <div className="flex justify-between w-full mx-5    ">
-//         <div className="flex items-center">Code Sprint</div>
-//         <div className="flex items-center space-x-4">
-//           {/* <ThemeSwitcher /> */}
-//           <Button
-//             // variant="destructive"
-//             onClick={async () => {
-//               await logout();
-//             }}
-//           >
-//             Logout
-//           </Button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Header;
-
-
-
+"use client";
 
 import React from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, Bell, Zap } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-// import Link from "next/link";
+import { useAuthStore } from "@/store/authStore";
+import { useSidebar } from "@/components/ui/sidebar";
+import { Menu } from "lucide-react";
 
 const Header = () => {
   const { logout } = useAuth();
+  const { user } = useAuthStore();
+  const { toggleSidebar } = useSidebar();
 
   return (
     <header
       className="
+        sticky top-0 z-10
         w-full
-        h-16
-        bg-gradient-to-r from-black/80 via-black/70 to-emerald-900/60
-        backdrop-blur-lg
-        border-b border-white/10
+        h-20
+        px-8
+        flex items-center justify-between
+        border-b border-white/5
+        bg-black/60 backdrop-blur-md
+        shadow-[0_4px_30px_rgba(0,0,0,0.5)]
       "
     >
-      <div className="flex h-full items-center justify-between px-6">
-        {/* Title */}
-        <div className="flex items-center gap-4">
-          <SidebarTrigger className="text-white hover:bg-white/10" />
-          <div className="text-2xl font-bold text-green-500 ">
-            CodeSprintAI
+      {/* Left: Brand */}
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+          className="text-zinc-400 hover:text-green-400 hover:bg-white/5 transition-all duration-300"
+        >
+          <Menu className="w-6 h-6" />
+        </Button>
+        <div className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300 drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">
+          CodeSprintAI
+        </div>
+      </div>
+
+      {/* Right: Stats & Actions */}
+      <div className="flex items-center gap-8">
+        {/* Stats (hidden on mobile) */}
+        <div className="hidden md:flex items-center gap-6">
+          {/* Day Streak */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:border-green-500/30 transition-colors cursor-default">
+            <Zap className="w-4 h-4 text-green-500 fill-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
+            <div>
+              <div className="text-xs font-bold text-white leading-none">12</div>
+              <div className="text-[10px] text-zinc-500 font-medium">Day Streak</div>
+            </div>
           </div>
         </div>
 
-        {/* Actions */}
-        <Button
-          onClick={async () => await logout()}
-          className="
-            bg-white/10
-            text-white
-            border border-white/20
-            hover:bg-red-500/20
-            hover:border-red-500/30
-            transition-all
-            duration-300
-            flex items-center gap-2
-          "
-        >
-          <LogOut size={16} />
-          Logout
-        </Button>
+        {/* Divider */}
+        <div className="h-6 w-px bg-white/10" />
+
+        {/* User Actions */}
+        <div className="flex items-center gap-4">
+          {/* Notification Bell */}
+          <button className="relative text-zinc-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full border-2 border-black shadow-[0_0_8px_#22c55e]" />
+          </button>
+
+          {/* User Avatar */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-green-500/50 to-zinc-800 p-[1px] shadow-[0_0_10px_rgba(34,197,94,0.3)]">
+              <div className="w-full h-full rounded-full overflow-hidden border-2 border-black bg-zinc-800 flex items-center justify-center">
+                {user?.name ? (
+                  <span className="text-sm font-bold text-white">
+                    {user.name.charAt(0).toUpperCase()}
+                  </span>
+                ) : (
+                  <span className="text-sm font-bold text-white">?</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Logout Button */}
+          <Button
+            onClick={async () => await logout()}
+            className="
+              bg-white/10
+              text-white
+              border border-white/20
+              hover:bg-red-500/20
+              hover:border-red-500/30
+              transition-all
+              duration-300
+              flex items-center gap-2
+              text-xs font-bold
+            "
+          >
+            <LogOut size={16} />
+            <span className="hidden sm:inline">Logout</span>
+          </Button>
+        </div>
       </div>
     </header>
   );

@@ -1,58 +1,58 @@
 "use client";
+
 import React from "react";
-// import { ProblemCard } from "@/components/ProblemCard";
 import { useAuthStore } from "@/store/authStore";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SprintDashboardContainer from "@/components/Sprint/SprintDashboardContainer";
+import { DashboardHero } from "@/components/Dashboard/DashboardHero";
+import {
+  RankPanel,
+  RecentActivity,
+  LearningPath,
+  WeeklyVelocityCard,
+  MasteryCard,
+  ChallengeCard,
+} from "@/components/Dashboard/DashboardWidgets";
 
 const DashboardContainer = () => {
   const user = useAuthStore((state) => state.user);
 
   return (
-    <div className="p-6">
-      <div className="text-xl mb-6">
-        Welcome, <span className="font-semibold">{user?.name}</span>
-      </div>
+    <div className="max-w-7xl mx-auto p-8 space-y-8 animate-fade-in pb-10">
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="sprint">Sprint Mode</TabsTrigger>
-        </TabsList>
+      <DashboardHero />
 
-        <TabsContent value="overview" className="space-y-4">
-          <div className="p-4 border rounded-md bg-zinc-900/50 border-zinc-800">
-            <h2 className="text-lg font-semibold mb-2">Overview</h2>
-            <p className="text-gray-400">Dashboard overview content goes here...</p>
-            {/* Add existing overview widgets here if any */}
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column (Charts & Stats) */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Weekly Velocity Card */}
+          <WeeklyVelocityCard />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Mastery Card */}
+            <MasteryCard />
+
+            {/* Challenge Card */}
+            <ChallengeCard />
           </div>
-        </TabsContent>
+        </div>
 
-        <TabsContent value="sprint">
-          <SprintDashboardContainer />
-        </TabsContent>
-      </Tabs>
+        {/* Right Column */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Rank Panel */}
+          <RankPanel />
+
+          {/* Recent Activity */}
+          <RecentActivity />
+
+          {/* Learning Path */}
+          <LearningPath />
+        </div>
+      </div>
+      {/* <SprintDashboardContainer /> */}
     </div>
   );
 };
 
 export default DashboardContainer;
 
-// <div className="p-6">
-//   {/* Header */}
-//   <div className="flex justify-between items-center mb-6">
-//     <h1 className="text-2xl font-bold">Dashboard</h1>
-//     <Button
-//       variant="destructive"
-//       // onClick={() => dispatch(logout())}
-//     >
-//       Logout
-//     </Button>
-//   </div>
-
-//   {/* Welcome Section */}
-//   <div className="text-lg">
-//     {/* profile?.name || user?.name */}
-//     Welcome, <span className="font-semibold">{"Usman"}</span>
-//   </div>
-// </div>

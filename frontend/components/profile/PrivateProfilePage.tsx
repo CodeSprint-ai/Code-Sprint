@@ -129,17 +129,17 @@ export default function PrivateProfilePage() {
         <ProfileHeader profile={publicProfile} />
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-zinc-800 pb-2 overflow-x-auto">
+        <div className="flex items-center gap-8 border-b border-white/5 px-2 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 whitespace-nowrap ${activeTab === tab.id
-                ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.15)]'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
+              className={`flex items-center gap-2 pb-4 text-sm font-bold px-4 transition-all whitespace-nowrap ${activeTab === tab.id
+                ? 'text-emerald-400 border-b-2 border-emerald-500'
+                : 'text-zinc-500 hover:text-white'
                 }`}
             >
-              <tab.icon size={18} className={activeTab === tab.id ? 'animate-pulse' : ''} />
+              <tab.icon size={16} />
               {tab.label}
             </button>
           ))}

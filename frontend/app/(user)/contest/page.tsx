@@ -61,30 +61,30 @@ export default function ContestPage() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto bg-zinc-950">
+    <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="px-6 py-4">
+      <div className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white">
+              <h1 className="text-3xl font-black text-white tracking-tight">
                 Programming Contests
               </h1>
-              <p className="text-zinc-400 text-sm mt-0.5">
+              <p className="text-zinc-400 text-sm mt-1">
                 Discover and track coding competitions worldwide
               </p>
             </div>
 
             <div className="flex items-center gap-2">
               {/* View toggle */}
-              <div className="flex items-center rounded-lg bg-zinc-800/50 border border-zinc-700 p-1">
+              <div className="flex bg-[#09090b] p-1 rounded-xl border border-white/5">
                 <button
                   onClick={() => setViewMode('cards')}
                   className={cn(
-                    'p-2 rounded-md transition-colors',
+                    'p-2 rounded-lg transition-colors',
                     viewMode === 'cards'
-                      ? 'bg-zinc-700 text-white'
-                      : 'text-zinc-400 hover:text-white'
+                      ? 'bg-white/5 text-white shadow-sm border border-white/5'
+                      : 'text-zinc-500 hover:text-white'
                   )}
                   title="Card view"
                 >
@@ -93,10 +93,10 @@ export default function ContestPage() {
                 <button
                   onClick={() => setViewMode('table')}
                   className={cn(
-                    'p-2 rounded-md transition-colors',
+                    'p-2 rounded-lg transition-colors',
                     viewMode === 'table'
-                      ? 'bg-zinc-700 text-white'
-                      : 'text-zinc-400 hover:text-white'
+                      ? 'bg-white/5 text-white shadow-sm border border-white/5'
+                      : 'text-zinc-500 hover:text-white'
                   )}
                   title="Table view"
                 >
@@ -122,7 +122,7 @@ export default function ContestPage() {
         </div>
       </div>
 
-      <div className="flex-1 px-6 py-4 overflow-y-auto">
+      <div className="flex-1 px-6 py-6 overflow-y-auto max-w-7xl mx-auto w-full">
         {/* Tabs */}
         <div className="mb-4">
           <ContestTabs

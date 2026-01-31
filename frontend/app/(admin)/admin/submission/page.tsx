@@ -75,45 +75,79 @@ function SubmissionCardItem({
   basePath: string;
 }) {
   const viewHref = `${basePath}/${submission.uuid}`;
-  const cardStyle =
-    cardStatusStyles[submission.status] ??
-    "bg-zinc-600/10 border border-zinc-800 hover:border-zinc-600 hover:shadow-lg";
+  const isAccepted = submission.status === "ACCEPTED";
+
+  // Language color mapping
+  const languageColors: Record<string, string> = {
+    python: "bg-blue-500",
+    javascript: "bg-yellow-500",
+    typescript: "bg-blue-400",
+    java: "bg-orange-500",
+    cpp: "bg-purple-500",
+    c: "bg-gray-500",
+  };
+  const langColor = languageColors[submission.language?.toLowerCase()] ?? "bg-zinc-500";
+
   return (
     <Link
       href={viewHref}
-      className={`group block rounded-xl p-5 transition ${cardStyle}`}
+      className="bg-[#09090b] border border-white/5 rounded-xl p-6 relative group hover:border-emerald-500/20 transition-all duration-300 hover:shadow-lg block"
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <h3 className="truncate font-semibold text-zinc-100 group-hover:text-white">
-              {submission.problemTitle || "Untitled Problem"}
-            </h3>
-            <div className="mt-1 flex items-center gap-2 text-sm text-zinc-400">
-              <User className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">{submission.userName || "—"}</span>
+      {/* Header with title and status badge */}
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h3 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors tracking-tight">
+            {submission.problemTitle || "Untitled Problem"}
+          </h3>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="w-5 h-5 rounded-full bg-white/5 flex items-center justify-center">
+              <User className="w-3 h-3 text-zinc-400" />
             </div>
+            <span className="text-xs text-zinc-400 font-medium">
+              {submission.userName || "—"}
+            </span>
           </div>
-          <StatusBadge status={submission.status} />
         </div>
-        <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500">
-          <span className="flex items-center gap-1">
-            <FileCode2 className="h-3.5 w-3.5" />
+
+        {/* Status Badge - Passed/Failed style */}
+        {isAccepted ? (
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span className="text-[10px] font-bold uppercase tracking-wide">Passed</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            <span className="text-[10px] font-bold uppercase tracking-wide">Failed</span>
+          </div>
+        )}
+      </div>
+
+      {/* Info section with labels */}
+      <div className="space-y-3 py-4 border-t border-white/5 border-b mb-4">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-zinc-500">Language</span>
+          <span className="text-zinc-300 font-mono flex items-center gap-1.5">
+            <span className={`w-2 h-2 rounded-full ${langColor}`}></span>
             {submission.language}
           </span>
-          <span className="flex items-center gap-1">
-            <Calendar className="h-3.5 w-3.5" />
-            {new Date(submission.createdAt).toLocaleDateString(undefined, {
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-zinc-500">Date</span>
+          <span className="text-zinc-300 font-mono">
+            {new Date(submission.createdAt).toLocaleDateString("en-US", {
               day: "numeric",
               month: "short",
               year: "numeric",
             })}
           </span>
         </div>
-        <div className="flex items-center text-sm text-sky-400 group-hover:text-sky-300">
-          View details
-          <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
-        </div>
+      </div>
+
+      {/* View Analysis button */}
+      <div className="w-full py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-bold text-zinc-300 hover:text-white transition-all flex items-center justify-center gap-2 group/btn">
+        View Analysis
+        <ArrowRight className="w-3.5 h-3.5 text-zinc-500 group-hover/btn:text-white transition-colors" />
       </div>
     </Link>
   );
@@ -172,7 +206,7 @@ export default function SubmissionsPage() {
   const showPagination = meta !== undefined;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-zinc-950 px-4 py-6 sm:px-6 lg:px-8 w-full">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
       <div className="flex w-full flex-1 min-h-0 flex-col">
         <div className="mb-8 flex items-start justify-between">
           <div>
