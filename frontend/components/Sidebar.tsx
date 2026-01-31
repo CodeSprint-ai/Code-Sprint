@@ -85,8 +85,16 @@ export function Sidebar() {
   return (
     <ShadSidebar
       collapsible="icon"
-      className="bg-black/80 backdrop-blur-xl border-r border-white/5 shadow-[5px_0_30px_-5px_rgba(0,0,0,0.8)]"
+      className="bg-black/80 backdrop-blur-xl border-r border-white/5 shadow-[5px_0_30px_-5px_rgba(0,0,0,0.8)] relative overflow-hidden"
     >
+      {/* Green gradient overlay to blend with main content */}
+      <div
+        className="absolute top-0 left-0 right-0 h-40 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at 100% -30%, rgba(34, 197, 94, 0.15), transparent 70%)'
+        }}
+      />
+
       {/* Brand Header */}
       <SidebarHeader className="h-24 flex items-center px-4 pt-4 relative overflow-hidden">
         {/* Glow behind logo */}

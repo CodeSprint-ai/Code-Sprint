@@ -17,7 +17,7 @@ export default function DashboardLayout({
         style={{
           backgroundColor: '#020202',
           backgroundImage: `
-            radial-gradient(circle at 50% -20%, rgba(34, 197, 94, 0.25), transparent 40%),
+            radial-gradient(circle at 70% -20%, rgba(34, 197, 94, 0.20), transparent 50%),
             linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px),
             linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px)
           `,
