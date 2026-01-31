@@ -67,7 +67,7 @@ export default function EditorPanel({
 
   // Use user's preferred language or fallback to python
   const defaultLang = userSettings?.defaultLanguage || "python";
-  const [language, setLanguage] = useState(defaultLang);
+  const [language, setLanguage] = useState<string>(defaultLang);
   const [hasInitialized, setHasInitialized] = useState(false);
 
   // Update language when user settings are loaded (only once)
