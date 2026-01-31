@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LogOut, Bell, Zap, User, Mail, Shield } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -17,11 +17,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { getDashboardStats } from "@/services/dashboardApi";
 
 const Header = () => {
   const { logout } = useAuth();
   const { user } = useAuthStore();
   const { toggleSidebar } = useSidebar();
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    const fetchStreak = async () => {
+      if (user) {
+        const stats = await getDashboardStats();
+        setStreak(stats.currentStreak);
+      }
+    };
+    fetchStreak();
+  }, [user]);
 
   return (
     <header
@@ -67,7 +79,7 @@ const Header = () => {
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5 hover:border-green-500/30 transition-colors cursor-default">
             <Zap className="w-4 h-4 text-green-500 fill-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
             <div>
-              <div className="text-xs font-bold text-white leading-none">12</div>
+              <div className="text-xs font-bold text-white leading-none">{streak}</div>
               <div className="text-[10px] text-zinc-500 font-medium">Day Streak</div>
             </div>
           </div>
