@@ -69,13 +69,13 @@ export function StatsCards({ stats }: StatsCardsProps) {
             bgClass: 'bg-yellow-500/10',
             subValue: 'days',
         },
-        {
-            icon: <Target />,
-            label: 'Rating',
-            value: stats.rating,
-            colorClass: 'text-purple-400',
-            bgClass: 'bg-purple-500/10',
-        },
+        // {
+        //     icon: <Target />,
+        //     label: 'Rating',
+        //     value: stats.rating,
+        //     colorClass: 'text-purple-400',
+        //     bgClass: 'bg-purple-500/10',
+        // },
     ];
 
     // Add rank if available
@@ -90,7 +90,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
     }
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {statItems.map((stat, i) => (
                 <StatCard
                     key={i}

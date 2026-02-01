@@ -37,16 +37,25 @@ export const useSubmission = (
 ): UseSubmissionsReturn => {
   const queryClient = useQueryClient();
 
-  // 🟢 Get all submissions for a user
-  const allSubmissionsQuery = useQuery<SubmissionsResponse, Error>({
-    queryKey: ["submissions", userUuid],
+  // 🟢 Get all submissions (either for a user, or for a problem)
+  const allSubmissionsQuery = useQuery<any, Error>({
+    queryKey: ["submissions", { userUuid, problemUuid }],
     queryFn: async () => {
-      const response = await api.get<SubmissionsResponse>(
-        `/submission/problem/user/${userUuid}`
-      );
+      let endpoint = "";
+      if (userUuid && userUuid !== "undefined") {
+        endpoint = `/submission/problem/user/${userUuid}`;
+      } else if (problemUuid && problemUuid !== "undefined") {
+        endpoint = `/submission/problem/${problemUuid}`;
+      } else {
+        // Return empty array instead of throwing if no ID is provided, 
+        // this avoids unnecessary error states in components using only part of the hook
+        return [];
+      }
+
+      const response = await api.get(endpoint);
       return response.data;
     },
-    enabled: Boolean(userUuid),
+    enabled: (Boolean(userUuid) && userUuid !== "undefined") || (Boolean(problemUuid) && problemUuid !== "undefined"),
   });
 
 
@@ -80,8 +89,10 @@ export const useSubmission = (
     onSuccess: async (data) => {
       console.log("✅ Submission created:", data);
 
-      // Refresh submissions list
-      await allSubmissionsQuery.refetch();
+      // Refresh submissions list if either ID is valid
+      if ((userUuid && userUuid !== "undefined") || (problemUuid && problemUuid !== "undefined")) {
+        await allSubmissionsQuery.refetch();
+      }
 
       // Or optionally invalidate cache if you prefer
       // queryClient.invalidateQueries({ queryKey: ["submissions", problemSlug] });

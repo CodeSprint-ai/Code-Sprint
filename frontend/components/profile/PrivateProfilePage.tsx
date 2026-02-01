@@ -13,6 +13,7 @@ import {
   getSessions,
   revokeSession,
   revokeAllSessions,
+  changePassword,
 } from '@/services/profileApi';
 import ProfileHeader from './ProfileHeader';
 import StatsCards from './StatsCards';
@@ -20,7 +21,7 @@ import DifficultyChart from './DifficultyChart';
 import SubmissionHeatmap from './SubmissionHeatmap';
 import BadgesGrid from './BadgesGrid';
 import LanguageChart from './LanguageChart';
-import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap, Shield, Smartphone, Globe, Monitor, Trash2 } from 'lucide-react';
+import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap, Shield, Smartphone, Globe, Monitor, Trash2, Lock } from 'lucide-react';
 import { PrivateProfile, SavedProblem, UserPreferences, Session } from '@/types/profile';
 import { toast } from 'sonner';
 import ProfileImageUpload from './ProfileImageUpload';
@@ -89,6 +90,16 @@ export default function PrivateProfilePage() {
     },
     onError: () => {
       toast.error('Failed to recalculate stats');
+    },
+  });
+
+  const changePasswordMutation = useMutation({
+    mutationFn: changePassword,
+    onSuccess: () => {
+      toast.success('Password changed successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to change password');
     },
   });
 
@@ -250,8 +261,10 @@ export default function PrivateProfilePage() {
               onUpdateProfile={(data) => updateProfileMutation.mutate(data)}
               onUpdateSettings={(data) => updateSettingsMutation.mutate(data)}
               onRecalculateStats={() => recalculateStatsMutation.mutate()}
+              onChangePassword={(data) => changePasswordMutation.mutate(data)}
               isUpdating={updateProfileMutation.isPending || updateSettingsMutation.isPending}
               isRecalculating={recalculateStatsMutation.isPending}
+              isChangingPassword={changePasswordMutation.isPending}
             />
           )}
         </div>
@@ -416,20 +429,25 @@ function SessionsTab({
 }
 
 // Settings Tab Component
+// Settings Tab Component
 function SettingsTab({
   profile,
   onUpdateProfile,
   onUpdateSettings,
   onRecalculateStats,
+  onChangePassword,
   isUpdating,
   isRecalculating,
+  isChangingPassword,
 }: {
   profile: PrivateProfile;
   onUpdateProfile: (data: any) => void;
   onUpdateSettings: (data: Partial<UserPreferences>) => void;
   onRecalculateStats: () => void;
+  onChangePassword: (data: any) => void;
   isUpdating: boolean;
   isRecalculating: boolean;
+  isChangingPassword: boolean;
 }) {
   const [formData, setFormData] = useState({
     username: profile.username || '',
@@ -440,6 +458,12 @@ function SettingsTab({
     linkedin: profile.socialLinks?.linkedin || '',
     twitter: profile.socialLinks?.twitter || '',
     website: profile.socialLinks?.website || '',
+  });
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
   });
 
   const [preferences, setPreferences] = useState({
@@ -468,6 +492,23 @@ function SettingsTab({
   const handlePreferencesSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onUpdateSettings(preferences);
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error('New passwords do not match');
+      return;
+    }
+    onChangePassword({
+      currentPassword: passwordData.currentPassword,
+      newPassword: passwordData.newPassword
+    });
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
   };
 
   const inputClasses = "w-full px-4 py-2.5 rounded-lg bg-zinc-950/50 border border-zinc-800 text-white placeholder-zinc-600 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 focus:outline-none transition-all";
@@ -563,6 +604,59 @@ function SettingsTab({
           >
             {isUpdating ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             Save Profile
+          </button>
+        </form>
+      </div>
+
+      {/* Change Password */}
+      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+          <Lock size={20} className="text-red-400" />
+          Change Password
+        </h3>
+        <form onSubmit={handlePasswordSubmit} className="space-y-5">
+          <div>
+            <label className={labelClasses}>Current Password</label>
+            <input
+              type="password"
+              required
+              value={passwordData.currentPassword}
+              onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+              className={inputClasses}
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className={labelClasses}>New Password</label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={passwordData.newPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                className={inputClasses}
+              />
+            </div>
+            <div>
+              <label className={labelClasses}>Confirm New Password</label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={passwordData.confirmPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                className={inputClasses}
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isChangingPassword}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-red-900/20"
+          >
+            {isChangingPassword ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            Update Password
           </button>
         </form>
       </div>

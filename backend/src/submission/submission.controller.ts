@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { SubmissionCommand } from './command/SubmissionCommand';
 import { SubmissionService } from './submission.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -20,7 +20,7 @@ export class SubmissionController {
   // get submissions by problem UUID - must come before @Get() to avoid route conflicts
   @UseGuards(AuthGuard('jwt'))
   @Get('/problem/:uuid')
-  async getByProblemUuid(@Param('uuid') uuid: string) {
+  async getByProblemUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
     const submissions = await this.submissionService.getSubmissionsByProblemUuid(uuid);
     return submissions;
   }
@@ -28,7 +28,7 @@ export class SubmissionController {
   // get submissions by user UUID - must come before @Get() to avoid route conflicts
   @UseGuards(AuthGuard('jwt'))
   @Get('/problem/user/:uuid')
-  async getByUserUuid(@Param('uuid') uuid: string) {
+  async getByUserUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
     const submissions = await this.submissionService.getSubmissionsByUserUuid(uuid);
     return submissions;
   }

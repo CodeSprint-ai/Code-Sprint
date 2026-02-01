@@ -129,6 +129,11 @@ export const revokeAllSessions = async (): Promise<{ sessionsRevoked: number }> 
     return data.data;
 };
 
+export const changePassword = async (data: any): Promise<{ message: string }> => {
+    const { data: response } = await api.post<ApiResponse<{ message: string }>>('/auth/change-password', data);
+    return response.data;
+};
+
 // Export all as a namespace for convenience
 export const profileApi = {
     getPublicProfile,
@@ -149,6 +154,7 @@ export const profileApi = {
     getSessions,
     revokeSession,
     revokeAllSessions,
+    changePassword,
 };
 
 
