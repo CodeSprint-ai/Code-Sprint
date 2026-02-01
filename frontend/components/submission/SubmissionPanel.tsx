@@ -120,7 +120,9 @@ export default function SubmissionPanel({
         return {
           ...prev,
           phase: "error",
+          status: "INTERNAL_ERROR",
           error: data.error,
+          language: data.language || prev.language,
           compileOutput: data.compileOutput,
         };
       }
@@ -138,8 +140,8 @@ export default function SubmissionPanel({
   const tabClasses = (tab: string) => {
     const isActiveTab = activeTab === tab;
     return `h-full px-4 text-xs font-bold transition-colors flex items-center gap-2 ${isActiveTab
-        ? "text-white border-b-2 border-emerald-500 bg-white/5"
-        : "text-zinc-500 hover:text-white"
+      ? "text-white border-b-2 border-emerald-500 bg-white/5"
+      : "text-zinc-500 hover:text-white"
       }`;
   };
 

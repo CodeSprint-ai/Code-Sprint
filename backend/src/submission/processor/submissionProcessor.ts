@@ -68,12 +68,15 @@ export class SubmissionProcessor {
 
     try {
       await this.executeSubmission(submission);
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error('Submission processing failed', err);
       submission.status = SubmissionStatus.INTERNAL_ERROR;
       submission.finishedAt = new Date();
       await this.submissionRepo.save(submission);
-      this.emitUpdate(submission, { status: submission.status });
+      this.emitUpdate(submission, {
+        status: submission.status,
+        error: err.message || 'An internal error occurred during processing'
+      });
     }
   }
 
@@ -182,6 +185,8 @@ export class SubmissionProcessor {
     this.emitUpdate(submission, {
       status: submission.status,
       testResults: this.filterHiddenResults(testResults),
+      executionTime: submission.executionTime,
+      memoryUsage: submission.memoryUsage,
     });
   }
 
@@ -310,10 +315,17 @@ export class SubmissionProcessor {
 
   private emitUpdate(
     submission: Submission,
-    data: { status: SubmissionStatus; testResults?: TestResult[] },
+    data: {
+      status: SubmissionStatus;
+      testResults?: TestResult[];
+      executionTime?: number;
+      memoryUsage?: number;
+      error?: string;
+    },
   ): void {
     this.socket.sendSubmissionUpdate(submission.user.uuid, {
       id: submission.uuid,
+      language: submission.language,
       ...data,
     });
   }

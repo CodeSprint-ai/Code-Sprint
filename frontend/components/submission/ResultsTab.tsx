@@ -56,25 +56,33 @@ export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
     );
   }
 
-  // Show error state
-  if (phase === "error" || status === "COMPILATION_ERROR") {
+  // Show error state (Compilation or Internal)
+  if (phase === "error" || status === "COMPILATION_ERROR" || status === "INTERNAL_ERROR") {
+    const isCompilationError = status === "COMPILATION_ERROR";
+    const isInternalError = status === "INTERNAL_ERROR" || phase === "error";
+
     return (
       <div className="h-full overflow-auto p-4 space-y-4">
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-center gap-4">
           <div className="p-2 bg-red-500/20 rounded-full">
             <AlertTriangle className="w-6 h-6 text-red-500" />
           </div>
-          <div>
+          <div className="flex-1">
             <h3 className="text-red-500 font-bold text-lg tracking-tight">
-              {status === "COMPILATION_ERROR" ? "Compilation Error" : "Error"}
+              {isCompilationError ? "Compilation Error" : isInternalError ? "Internal System Error" : "Error"}
             </h3>
-            <p className="text-red-400/60 text-xs font-mono">
-              {error || "Your code failed to compile"}
+            <p className="text-red-400 text-sm mt-1">
+              {error || (isCompilationError ? "Your code failed to compile" : "An unexpected error occurred during processing")}
             </p>
+            {isInternalError && !error && (
+              <p className="text-red-400/60 text-xs mt-1 italic">
+                This might be due to system capacity or connection issues. Please try again in a moment.
+              </p>
+            )}
           </div>
         </div>
 
-        {compileOutput && (
+        {compileOutput && isCompilationError && (
           <div className="space-y-2">
             <h4 className="font-medium text-sm text-zinc-300">Compiler Output:</h4>
             <pre className="bg-black/40 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap font-mono text-red-400 border border-white/5">
@@ -93,8 +101,8 @@ export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
     <div className="h-full overflow-auto p-4 space-y-4">
       {/* Status Banner */}
       <div className={`rounded-lg p-4 flex items-center gap-4 ${isAccepted
-          ? "bg-emerald-500/10 border border-emerald-500/20"
-          : "bg-red-500/10 border border-red-500/20"
+        ? "bg-emerald-500/10 border border-emerald-500/20"
+        : "bg-red-500/10 border border-red-500/20"
         }`}>
         <div className={`p-2 rounded-full ${isAccepted ? "bg-emerald-500/20" : "bg-red-500/20"}`}>
           {isAccepted ? (
