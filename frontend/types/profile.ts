@@ -118,3 +118,15 @@ export interface SavedProblem {
     notes?: string;
     savedAt: string;
 }
+
+export interface Session {
+    id: string;
+    device?: string;
+    browser?: string;
+    os?: string;
+    ipAddress?: string;
+    location?: string;
+    isCurrent: boolean;
+    createdAt: string;
+    lastActiveAt: string;
+}

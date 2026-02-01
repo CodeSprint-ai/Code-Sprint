@@ -12,7 +12,7 @@ export class MailService {
   });
 
   async sendEmailVerification(email: string, token: string) {
-    const url = `http://localhost:5000/auth/verify-email?token=${token}`;
+    const url = `http://localhost:3000/auth/verify-email?token=${token}`;
     return this.transporter.sendMail({
       to: email,
       subject: 'Verify your email',
@@ -21,7 +21,7 @@ export class MailService {
   }
 
   async sendPasswordReset(email: string, token: string) {
-    const url = `http://localhost:5000/auth/reset-password?token=${token}`;
+    const url = `http://localhost:3000/auth/reset-password?token=${token}`;
     return this.transporter.sendMail({
       to: email,
       subject: 'Reset your password',

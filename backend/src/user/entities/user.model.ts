@@ -4,10 +4,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { ProviderEnum } from 'src/auth/enum/ProviderEnum';
 import { RoleEnum } from 'src/user/enum/RoleEnum';
 import { UserLevel } from '../enum/UserLevel';
+import { AccountStatus } from '../enum/AccountStatus';
 
 export interface SocialLinks {
   github?: string;
@@ -17,6 +19,7 @@ export interface SocialLinks {
 }
 
 @Entity({ name: 'users' })
+@Index(['status'])
 export class User {
   @PrimaryGeneratedColumn('uuid', { name: 'uuid' })
   uuid: string;
@@ -60,6 +63,10 @@ export class User {
   @Column({ name: 'provider', type: 'enum', enum: ProviderEnum, default: ProviderEnum.LOCAL })
   provider: ProviderEnum;
 
+  /**
+   * @deprecated Use session-specific refresh tokens instead.
+   * Kept for backward compatibility during migration period.
+   */
   @Column({ name: 'refresh_token', type: 'varchar', nullable: true })
   refreshToken?: string | null;
 
@@ -69,9 +76,40 @@ export class User {
   @Column({ name: 'level', type: 'enum', enum: UserLevel, default: UserLevel.BEGINNER })
   level: UserLevel;
 
+  /**
+   * Account status for lifecycle management.
+   * Controls what actions the user can perform.
+   */
+  @Column({
+    name: 'status',
+    type: 'enum',
+    enum: AccountStatus,
+    default: AccountStatus.UNVERIFIED
+  })
+  status: AccountStatus;
+
+  /**
+   * Timestamp when account was soft-deleted.
+   */
+  @Column({ name: 'deleted_at', type: 'timestamptz', nullable: true })
+  deletedAt?: Date | null;
+
+  /**
+   * Timestamp when account was suspended.
+   */
+  @Column({ name: 'suspended_at', type: 'timestamptz', nullable: true })
+  suspendedAt?: Date | null;
+
+  /**
+   * Reason for account suspension.
+   */
+  @Column({ name: 'suspension_reason', type: 'text', nullable: true })
+  suspensionReason?: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
+

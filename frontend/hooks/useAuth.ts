@@ -11,6 +11,7 @@ import {
   AuthResponse,
   LoginCredentials,
   SignupCredentials,
+  SignupResponse,
   User,
 } from "../types/auth";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,7 +25,7 @@ interface UseAuthReturn {
   >["mutateAsync"];
 
   signup: UseMutationResult<
-    AuthResponse,
+    SignupResponse,
     Error,
     SignupCredentials,
     unknown
@@ -66,25 +67,29 @@ export const useAuth = (): UseAuthReturn => {
 
       setAuth(data.data.user, data.data.accessToken);
       console.log("🔥 Zustand state after login:", useAuthStore.getState());
-      // queryClient.invalidateQueries();
+
+      // Redirect to dashboard after successful login
       const redirect = searchParams.get("redirect") || "/dashboard";
-      router.push(redirect);
+      console.log("📍 Redirecting to:", redirect);
+
+      // Use window.location for more reliable navigation
+      window.location.href = redirect;
     },
   });
 
   // Signup mutation
-  const signupMutation = useMutation<AuthResponse, Error, SignupCredentials>({
+  const signupMutation = useMutation<SignupResponse, Error, SignupCredentials>({
     mutationFn: async (
       credentials: SignupCredentials
-    ): Promise<AuthResponse> => {
-      const response = await api.post<AuthResponse>(
+    ): Promise<SignupResponse> => {
+      const response = await api.post<SignupResponse>(
         "/auth/register",
         credentials
       );
       return response.data;
     },
-    onSuccess: (data: AuthResponse) => {
-      setAuth(data.data.user, data.data.accessToken);
+    onSuccess: () => {
+      // Registration successful, wait for email verification
       queryClient.invalidateQueries();
     },
   });

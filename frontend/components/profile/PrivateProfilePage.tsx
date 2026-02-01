@@ -10,6 +10,9 @@ import {
   updateMyProfile,
   updateMySettings,
   recalculateMyStats,
+  getSessions,
+  revokeSession,
+  revokeAllSessions,
 } from '@/services/profileApi';
 import ProfileHeader from './ProfileHeader';
 import StatsCards from './StatsCards';
@@ -17,12 +20,12 @@ import DifficultyChart from './DifficultyChart';
 import SubmissionHeatmap from './SubmissionHeatmap';
 import BadgesGrid from './BadgesGrid';
 import LanguageChart from './LanguageChart';
-import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap } from 'lucide-react';
-import { PrivateProfile, SavedProblem, UserPreferences } from '@/types/profile';
+import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap, Shield, Smartphone, Globe, Monitor, Trash2 } from 'lucide-react';
+import { PrivateProfile, SavedProblem, UserPreferences, Session } from '@/types/profile';
 import { toast } from 'sonner';
 import ProfileImageUpload from './ProfileImageUpload';
 
-type TabId = 'overview' | 'badges' | 'saved' | 'settings';
+type TabId = 'overview' | 'badges' | 'saved' | 'settings' | 'sessions';
 
 export default function PrivateProfilePage() {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
@@ -47,6 +50,12 @@ export default function PrivateProfilePage() {
     queryKey: ['my-saved-problems'],
     queryFn: getMySavedProblems,
     enabled: activeTab === 'saved',
+  });
+
+  const { data: sessions = [], isLoading: sessionsLoading } = useQuery({
+    queryKey: ['my-sessions'],
+    queryFn: getSessions,
+    enabled: activeTab === 'sessions',
   });
 
   const updateProfileMutation = useMutation({
@@ -83,6 +92,28 @@ export default function PrivateProfilePage() {
     },
   });
 
+  const revokeSessionMutation = useMutation({
+    mutationFn: revokeSession,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-sessions'] });
+      toast.success('Session revoked successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to revoke session');
+    },
+  });
+
+  const revokeAllSessionsMutation = useMutation({
+    mutationFn: revokeAllSessions,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['my-sessions'] });
+      toast.success(`Logged out from ${data.sessionsRevoked} other sessions`);
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to revoke all sessions');
+    },
+  });
+
   if (profileLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -115,6 +146,7 @@ export default function PrivateProfilePage() {
     { id: 'overview' as TabId, label: 'Overview', icon: Activity },
     { id: 'badges' as TabId, label: 'Badges', icon: Award },
     { id: 'saved' as TabId, label: 'Saved Problems', icon: Bookmark },
+    { id: 'sessions' as TabId, label: 'Sessions', icon: Shield },
     { id: 'settings' as TabId, label: 'Settings', icon: Settings },
   ];
 
@@ -202,6 +234,16 @@ export default function PrivateProfilePage() {
             <SavedProblemsTab savedProblems={savedProblems} />
           )}
 
+          {activeTab === 'sessions' && (
+            <SessionsTab
+              sessions={sessions}
+              isLoading={sessionsLoading}
+              onRevoke={(id) => revokeSessionMutation.mutate(id)}
+              onRevokeAll={() => revokeAllSessionsMutation.mutate()}
+              isRevoking={revokeSessionMutation.isPending || revokeAllSessionsMutation.isPending}
+            />
+          )}
+
           {activeTab === 'settings' && (
             <SettingsTab
               profile={profile}
@@ -258,6 +300,116 @@ function SavedProblemsTab({ savedProblems }: { savedProblems: SavedProblem[] }) 
             )}
           </a>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// Sessions Tab Component
+function SessionsTab({
+  sessions,
+  isLoading,
+  onRevoke,
+  onRevokeAll,
+  isRevoking,
+}: {
+  sessions: Session[];
+  isLoading: boolean;
+  onRevoke: (id: string) => void;
+  onRevokeAll: () => void;
+  isRevoking: boolean;
+}) {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center p-12">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+      </div>
+    );
+  }
+
+  const currentSession = sessions.find((s) => s.isCurrent);
+  const otherSessions = sessions.filter((s) => !s.isCurrent);
+  const sortedSessions = currentSession ? [currentSession, ...otherSessions] : sessions;
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Shield size={20} className="text-emerald-400" />
+              Active Sessions
+            </h3>
+            <p className="text-sm text-zinc-400 mt-1">
+              Manage your active sessions across different devices and browsers.
+            </p>
+          </div>
+          {otherSessions.length > 0 && (
+            <button
+              onClick={onRevokeAll}
+              disabled={isRevoking}
+              className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg text-sm font-medium transition-colors border border-red-500/20 flex items-center gap-2"
+            >
+              <Trash2 size={16} />
+              Revoke All Others
+            </button>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          {sortedSessions.map((session) => (
+            <div
+              key={session.id}
+              className={`flex items-center justify-between p-4 rounded-lg border ${session.isCurrent
+                ? 'bg-emerald-500/5 border-emerald-500/20'
+                : 'bg-zinc-800/30 border-zinc-800'
+                }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${session.isCurrent ? 'bg-emerald-500/10 text-emerald-400' : 'bg-zinc-800 text-zinc-400'
+                  }`}>
+                  {session.device?.toLowerCase().includes('mobile') ? (
+                    <Smartphone size={20} />
+                  ) : (
+                    <Monitor size={20} />
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-medium">
+                      {session.browser || 'Unknown Browser'} on {session.os || 'Unknown OS'}
+                    </span>
+                    {session.isCurrent && (
+                      <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs rounded-full border border-emerald-500/20 font-medium">
+                        Current Session
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-4 text-xs text-zinc-500 mt-1">
+                    <span className="flex items-center gap-1">
+                      <Globe size={12} />
+                      {session.ipAddress || 'Unknown IP'} • {session.location || 'Unknown Location'}
+                    </span>
+                    <span>
+                      Active: {new Date(session.lastActiveAt).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {!session.isCurrent && (
+                <button
+                  onClick={() => onRevoke(session.id)}
+                  disabled={isRevoking}
+                  className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                  title="Revoke Session"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

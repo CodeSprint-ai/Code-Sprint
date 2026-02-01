@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Terminal, ArrowRight, Loader2, ArrowLeft } from "lucide-react";
+import { Terminal, ArrowRight, Loader2, ArrowLeft, Mail } from "lucide-react";
 import Link from "next/link";
 
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { loginSchema, LoginFormValues } from "@/validations/authForm";
 import { GoogleIcon } from "../icons/GoogleIcon";
 import { GitHubIcon } from "../icons/GithubIcon";
+import api from "@/services/api";
 
 const LoginForm: React.FC = () => {
   const { login, isLoading, error } = useAuth();
@@ -22,10 +23,15 @@ const LoginForm: React.FC = () => {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
 
+  const [showResendVerification, setShowResendVerification] = React.useState(false);
+  const [resendEmail, setResendEmail] = React.useState("");
+  const [isResending, setIsResending] = React.useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -33,12 +39,39 @@ const LoginForm: React.FC = () => {
 
   const onSubmit = async (values: LoginFormValues) => {
     try {
+      setShowResendVerification(false);
       await login(values);
       toast.success("Login successful 🎉", { description: "Welcome back!" });
     } catch (err: any) {
-      toast.error("Login failed", {
-        description: err?.message || "Invalid credentials",
+      const errorMessage = err?.response?.data?.message || err?.message || "Invalid credentials";
+
+      // Check if error is about email verification
+      if (errorMessage.toLowerCase().includes("verify your email") ||
+        errorMessage.toLowerCase().includes("email not verified")) {
+        setShowResendVerification(true);
+        setResendEmail(values.email);
+      }
+
+      toast.error("Login failed", { description: errorMessage });
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!resendEmail) return;
+
+    setIsResending(true);
+    try {
+      await api.post("/auth/resend-verification", { email: resendEmail });
+      toast.success("Verification email sent!", {
+        description: "Please check your inbox and spam folder."
       });
+      setShowResendVerification(false);
+    } catch (err: any) {
+      toast.error("Failed to resend", {
+        description: err?.response?.data?.message || "Please try again later."
+      });
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -130,6 +163,34 @@ const LoginForm: React.FC = () => {
             {error && (
               <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium animate-in zoom-in-95 fade-in">
                 {error.message}
+              </div>
+            )}
+
+            {/* Resend Verification Email */}
+            {showResendVerification && (
+              <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 animate-in zoom-in-95 fade-in">
+                <p className="text-amber-400 text-sm text-center mb-3">
+                  Your email is not verified. Please check your inbox or request a new verification email.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full bg-amber-500/10 border-amber-500/30 hover:bg-amber-500/20 text-amber-400 font-medium h-10 rounded-lg transition-all duration-300"
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                >
+                  {isResending ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Sending...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Resend Verification Email
+                    </span>
+                  )}
+                </Button>
               </div>
             )}
 

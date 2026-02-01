@@ -7,6 +7,7 @@ import {
     SavedProblem,
     UserPreferences,
     SocialLinks,
+    Session,
 } from '../types/profile';
 import { ApiResponse } from '../types/common';
 
@@ -112,6 +113,22 @@ export const removeSavedProblem = async (savedProblemUuid: string): Promise<void
     await api.delete(`/profile/me/saved-problems/${savedProblemUuid}`);
 };
 
+// ============== Session APIs ==============
+
+export const getSessions = async (): Promise<Session[]> => {
+    const { data } = await api.get<ApiResponse<Session[]>>('/auth/sessions');
+    return data.data;
+};
+
+export const revokeSession = async (sessionId: string): Promise<void> => {
+    await api.delete(`/auth/sessions/${sessionId}`);
+};
+
+export const revokeAllSessions = async (): Promise<{ sessionsRevoked: number }> => {
+    const { data } = await api.post<ApiResponse<{ sessionsRevoked: number }>>('/auth/sessions/revoke-all');
+    return data.data;
+};
+
 // Export all as a namespace for convenience
 export const profileApi = {
     getPublicProfile,
@@ -129,6 +146,9 @@ export const profileApi = {
     saveProblem,
     updateSavedProblem,
     removeSavedProblem,
+    getSessions,
+    revokeSession,
+    revokeAllSessions,
 };
 
 

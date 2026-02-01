@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleEnum } from './enum/RoleEnum';
 import { UserLevel } from './enum/UserLevel';
+import { AccountStatus } from './enum/AccountStatus';
 
 @Injectable()
 export class UserService {
@@ -18,7 +19,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly context: RequestContextService,
     private readonly logger: AppLogger,
-  ) {}
+  ) { }
 
   async createLocalUser(command: RegisterCommand): Promise<User> {
     const { email, password, name } = command;
@@ -51,6 +52,7 @@ export class UserService {
       isVerified: false,
       role: RoleEnum.USER,
       level: UserLevel.BEGINNER,
+      status: AccountStatus.UNVERIFIED, // Set initial status
     });
     const savedUser = await this.userRepository.save(user);
     this.logger.info(
@@ -112,7 +114,13 @@ export class UserService {
       `Creating new OAuth user: ${profile.email}`,
       UserService.name,
     );
-    const user = this.userRepository.create({ ...profile });
+    const user = this.userRepository.create({
+      ...profile,
+      isVerified: true, // OAuth users are pre-verified
+      status: AccountStatus.ACTIVE, // Active since verified by OAuth provider
+      role: RoleEnum.USER,
+      level: UserLevel.BEGINNER,
+    });
     return this.userRepository.save(user);
   }
 

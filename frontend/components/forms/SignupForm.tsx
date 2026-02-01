@@ -43,7 +43,7 @@ const SignUpForm: React.FC = () => {
       router.push("/auth/login");
     } catch (err: any) {
       toast.error("Sign up failed", {
-        description: err?.message || "Something went wrong",
+        description: err?.response?.data?.message || err?.message || "Something went wrong",
       });
     }
   };

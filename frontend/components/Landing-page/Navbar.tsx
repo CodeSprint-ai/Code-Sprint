@@ -190,10 +190,10 @@ const Navbar: React.FC = () => {
               ))}
               <div className="h-px bg-white/10 my-2" />
               <div className="h-px bg-white/10 my-2" />
-              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/auth/login" onClick={() => setIsMobileMenuOpen(false)}>
                 <button className="text-white font-medium py-4 border border-white/10 rounded-xl hover:bg-white/5 transition-colors w-full mb-4">Log In</button>
               </Link>
-              <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
                 <button className="bg-brand-green text-black font-bold py-4 rounded-xl w-full shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                   Create New Account
                 </button>

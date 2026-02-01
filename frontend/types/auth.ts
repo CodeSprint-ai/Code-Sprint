@@ -11,9 +11,15 @@ export interface User {
 }
 
 export interface AuthResponse {
-  data: {   // i would remove it on mine
+  data: {
     accessToken: string;
     user: User;
+  };
+}
+
+export interface SignupResponse {
+  data: {
+    message: string;
   };
 }
 
@@ -26,6 +32,21 @@ export interface SignupCredentials {
 export interface LoginCredentials {
   email: string;
   password: string;
+}
+
+export interface ForgotPasswordCredentials {
+  email: string;
+}
+
+export interface ResetPasswordCredentials {
+  token: string;
+  newPassword: string;
+}
+
+export interface MessageResponse {
+  data: {
+    message: string;
+  };
 }
 
 export interface AuthStore {
