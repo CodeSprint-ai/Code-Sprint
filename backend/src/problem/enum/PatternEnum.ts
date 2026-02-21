@@ -24,4 +24,5 @@ export enum PatternEnum {
     QUEUE = 'QUEUE',
     BINARY_SEARCH = 'BINARY_SEARCH',
     LINKED_LIST = 'LINKED_LIST',
+    KADANE_ALGORITHM = 'KADANE_ALGORITHM',
 }
