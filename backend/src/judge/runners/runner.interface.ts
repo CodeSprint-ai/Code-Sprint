@@ -1,8 +1,12 @@
 import { Language } from '../enums/language.enum';
+import { ExecutionConfig } from '../interfaces/execution-config.interface';
 
 /**
- * Runner interface for building executable code from user solution + template
+ * Runner interface for building executable code from user solution + global template
  * Each language has its own implementation
+ *
+ * ❌ No per-problem runner templates
+ * ✅ Uses global templates driven by ExecutionConfig
  */
 export interface Runner {
   /**
@@ -11,12 +15,14 @@ export interface Runner {
   readonly language: Language;
 
   /**
-   * Build the final executable code by combining user's solution with runner template
+   * Build the final executable code from user code + execution config
+   * Uses global templates — NOT per-problem template strings
+   *
    * @param userCode - The user's Solution class code
-   * @param runnerTemplate - The template that wraps the Solution class
+   * @param config - The problem's execution configuration
    * @returns Complete source code ready for Judge0 execution
    */
-  build(userCode: string, runnerTemplate: string): string;
+  build(userCode: string, config: ExecutionConfig): string;
 
   /**
    * Serialize the test case input to JSON string for stdin
@@ -24,13 +30,4 @@ export interface Runner {
    * @returns JSON string to be passed as stdin
    */
   serializeInput(input: Record<string, unknown>): string;
-
-  /**
-   * Parse the stdout from Judge0 and compare with expected output
-   * @param stdout - Raw stdout from Judge0
-   * @param expectedOutput - Expected output value
-   * @returns Whether the outputs match
-   */
-  compareOutput(stdout: string, expectedOutput: unknown): boolean;
 }
-

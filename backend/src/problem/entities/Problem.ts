@@ -12,14 +12,16 @@ import { User } from '../../user/entities/user.model';
 import { TestCase } from './TestCase';
 import { DifficultyEnum } from '../enum/DifficultyEnum';
 import { PatternEnum } from '../enum/PatternEnum';
-import { StarterCode, RunnerTemplate } from '../../judge/interfaces/starter-code.interface';
+import { StarterCode } from '../../judge/interfaces/starter-code.interface';
+import { ExecutionConfig } from '../../judge/interfaces/execution-config.interface';
 
 /**
  * Problem Entity
- * 
- * ✅ Function-based problems only
- * ✅ Supports Java, Python, C++ 
- * ✅ Contains starter code (what user sees) and runner templates (what Judge0 executes)
+ *
+ * ✅ Function-based, stdin/stdout, and class-design problems
+ * ✅ Supports Java, Python, C++
+ * ✅ executionConfig drives global runner templates
+ * ❌ NO per-problem runner templates
  */
 @Entity('problems')
 export class Problem {
@@ -80,12 +82,25 @@ export class Problem {
   starterCode: StarterCode;
 
   /**
-   * Runner template - What Judge0 actually executes
-   * 🚨 User NEVER sees this
-   * Contains JSON parsing, Solution instantiation, and output formatting
+   * Execution config - Drives the global runner templates
+   * Defines how to execute, compare, and serialize output
+   *
+   * @example
+   * {
+   *   "type": "FUNCTION",
+   *   "className": "Solution",
+   *   "methodName": "twoSum",
+   *   "compareMode": "EXACT",
+   *   "outputSerializer": "NONE"
+   * }
    */
-  @Column({ name: 'runner_template', type: 'jsonb', nullable: true, default: () => `'{"java":"","python":"","cpp":""}'` })
-  runnerTemplate: RunnerTemplate;
+  @Column({
+    name: 'execution_config',
+    type: 'jsonb',
+    nullable: true,
+    default: () => `'{"type":"FUNCTION","className":"Solution","methodName":"","compareMode":"EXACT","outputSerializer":"NONE"}'`,
+  })
+  executionConfig: ExecutionConfig;
 
   @Column({ name: 'time_limit_seconds', default: 2 })
   timeLimitSeconds: number;

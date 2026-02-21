@@ -1,13 +1,16 @@
 /**
  * Submission Processor
- * 
+ *
  * NestJS Execution Flow (STRICT):
  * Controller → SubmissionService → SubmissionProcessor → RunnerFactory → Judge0Service
- * 
- * ❌ No if-else chains for language selection
- * ❌ No raw user code execution
- * ✅ Function-based problems only
- * ✅ JSON input/output format
+ *
+ * Architecture:
+ * ✅ SINGLE Judge0 submission per problem (all test cases bundled)
+ * ✅ Runner template handles comparison internally
+ * ✅ executionConfig + tests sent as one JSON payload via stdin
+ * ✅ Runner returns JSON array: [{ok, output, expected, durationMs, error}, ...]
+ * ❌ No per-problem runner templates
+ * ❌ No batch submission (one execution = all test cases)
  */
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
@@ -19,10 +22,27 @@ import { Submission } from '../entities/Submission';
 import { SubmissionStatus } from '../enum/SubmissionStatus';
 import { Judge0Service } from '../../judge/judge.service';
 import { RunnerFactory } from '../../judge/runners/runner.factory';
-import { LanguageId, normalizeLanguage, Language } from '../../judge/enums/language.enum';
+import { LanguageId, normalizeLanguage } from '../../judge/enums/language.enum';
 import { SubmissionGateway } from '../../common/utils/socket-gateway';
 import { UserStatsService } from '../../profile/user-stats.service';
 
+// ─── Result Interfaces ─────────────────────────────────────────────
+
+/**
+ * Per-test-case judge result (returned by runner via stdout)
+ */
+interface JudgeResult {
+  ok: boolean;
+  output: any;
+  expected: any;
+  durationMs: number;
+  error: string | null;
+  traceback?: string;
+}
+
+/**
+ * Internal test result (stored in DB + emitted via socket)
+ */
 interface TestResult {
   input: Record<string, unknown>;
   expected: unknown;
@@ -75,7 +95,7 @@ export class SubmissionProcessor {
       await this.submissionRepo.save(submission);
       this.emitUpdate(submission, {
         status: submission.status,
-        error: err.message || 'An internal error occurred during processing'
+        error: err.message || 'An internal error occurred during processing',
       });
     }
   }
@@ -87,48 +107,45 @@ export class SubmissionProcessor {
       throw new Error('Language not specified in submission');
     }
 
-    // Get the appropriate runner (no if-else chains!)
+    // Get the appropriate runner
     const normalizedLang = normalizeLanguage(language);
     const runner = this.runnerFactory.getRunner(normalizedLang);
     const languageId = LanguageId[normalizedLang];
 
-    // Get the runner template for this language
-    if (!problem.runnerTemplate) {
-      throw new Error('Problem missing runner template configuration');
+    // Get execution config from problem
+    if (!problem.executionConfig) {
+      throw new Error('Problem missing execution configuration');
     }
-    const runnerTemplate = this.getRunnerTemplate(problem.runnerTemplate, normalizedLang);
+    const config = problem.executionConfig;
 
-    // Build the final executable code
-    // This combines user's Solution class with the runner template
-    const finalCode = runner.build(code, runnerTemplate);
+    // Build the final executable code (global template + user code)
+    const finalCode = runner.build(code, config);
 
     const useBase64 = process.env.JUDGE0_BASE64 === 'true';
     const encode = (str: string) =>
       useBase64 ? Buffer.from(str).toString('base64') : str;
 
-    // Prepare Judge0 submission payloads
-    const items = problem.testCases.map((tc) => {
-      // Get input using helper method (supports both JSONB and legacy text)
-      const inputData = tc.getInput();
-      const stdin = runner.serializeInput(inputData);
-
-      // Get expected output using helper method
-      const expectedOutputData = tc.getExpectedOutput();
-      const expectedOutput = typeof expectedOutputData === 'string'
-        ? expectedOutputData
-        : JSON.stringify(expectedOutputData);
-
-      return {
-        language_id: languageId,
-        source_code: encode(finalCode),
-        stdin: encode(stdin),
-        expected_output: encode(expectedOutput),
-        cpu_time_limit: problem.timeLimitSeconds ?? 5,
-        memory_limit: (problem.memoryLimitMB ?? 128) * 1024, // Convert MB to KB
-      };
+    // ─── Bundle ALL test cases into a single stdin payload ─────
+    // The runner template handles iteration, comparison, and result formatting
+    const stdinPayload = JSON.stringify({
+      executionConfig: config,
+      tests: problem.testCases.map((tc) => ({
+        input: tc.getInput(),
+        expectedOutput: tc.getExpectedOutput(),
+      })),
     });
 
-    // Submit batch to Judge0
+    // ─── Submit ONE execution to Judge0 ───────────────────────
+    const items = [
+      {
+        language_id: languageId,
+        source_code: encode(finalCode),
+        stdin: encode(stdinPayload),
+        cpu_time_limit: problem.timeLimitSeconds ?? 5,
+        memory_limit: (problem.memoryLimitMB ?? 128) * 1024,
+      },
+    ];
+
     const tokensResp = await this.judge0.submitBatch(items);
 
     if (!tokensResp?.length) {
@@ -142,22 +159,124 @@ export class SubmissionProcessor {
     submission.judgeTokens = JSON.stringify(tokens);
     await this.submissionRepo.save(submission);
 
-    // Poll for results
-    const results = await this.judge0.pollBatchUntilDone(tokens, 60_000, 800) || [];
+    // Poll for result (single submission)
+    const results =
+      (await this.judge0.pollBatchUntilDone(tokens, 60_000, 800)) || [];
 
-    // Process results with JSON comparison
-    const testResults = this.processResults(
-      problem.testCases,
-      results,
-      runner,
-    );
+    const judgeResponse = results[0];
 
-    // Determine final verdict
+    if (!judgeResponse) {
+      throw new Error('No response from Judge0');
+    }
+
+    const statusId = judgeResponse.status?.id ?? judgeResponse.status_id ?? 13;
+
+    // ─── Handle non-success Judge0 statuses ───────────────────
+    if (statusId >= 5) {
+      // TLE, CE, RTE, etc. — the code didn't produce output
+      const verdict = this.mapJudge0Status(statusId);
+      const errorOutput =
+        judgeResponse.stderr ||
+        judgeResponse.compile_output ||
+        judgeResponse.stdout ||
+        null;
+
+      const testResults: TestResult[] = problem.testCases.map((tc) => ({
+        input: tc.getInput(),
+        expected: tc.getExpectedOutput(),
+        got: errorOutput,
+        verdict,
+        time: parseFloat(judgeResponse.time ?? '0'),
+        memory: judgeResponse.memory ?? 0,
+        token: judgeResponse.token ?? '',
+        isHidden: tc.isHidden,
+      }));
+
+      submission.testResults = testResults;
+      submission.status = verdict;
+      submission.executionTime = parseFloat(judgeResponse.time ?? '0');
+      submission.memoryUsage = judgeResponse.memory ?? 0;
+      submission.finishedAt = new Date();
+
+      await this.submissionRepo.save(submission);
+
+      this.emitUpdate(submission, {
+        status: submission.status,
+        testResults: this.filterHiddenResults(testResults),
+        executionTime: submission.executionTime,
+        memoryUsage: submission.memoryUsage,
+      });
+      return;
+    }
+
+    // ─── Parse runner's JSON output ───────────────────────────
+    const stdout = judgeResponse.stdout ?? '';
+    let judgeResults: JudgeResult[];
+
+    try {
+      judgeResults = JSON.parse(stdout.trim());
+
+      if (!Array.isArray(judgeResults)) {
+        throw new Error('Runner output is not an array');
+      }
+    } catch (parseErr: any) {
+      this.logger.error('Failed to parse runner output', parseErr);
+      this.logger.error('Raw stdout:', stdout);
+
+      submission.status = SubmissionStatus.INTERNAL_ERROR;
+      submission.finishedAt = new Date();
+      submission.compileOutput = `Runner output parse error: ${stdout.substring(0, 500)}`;
+      await this.submissionRepo.save(submission);
+
+      this.emitUpdate(submission, {
+        status: submission.status,
+        error: 'Internal error: failed to parse runner output',
+      });
+      return;
+    }
+
+    // ─── Map judge results to test results ────────────────────
+    const testResults: TestResult[] = problem.testCases.map((tc, i) => {
+      const jr = judgeResults[i];
+
+      if (!jr) {
+        return {
+          input: tc.getInput(),
+          expected: tc.getExpectedOutput(),
+          got: null,
+          verdict: SubmissionStatus.INTERNAL_ERROR,
+          time: 0,
+          memory: 0,
+          token: judgeResponse.token ?? '',
+          isHidden: tc.isHidden,
+        };
+      }
+
+      let verdict: SubmissionStatus;
+      if (jr.error) {
+        verdict = SubmissionStatus.RUNTIME_ERROR;
+      } else if (jr.ok) {
+        verdict = SubmissionStatus.ACCEPTED;
+      } else {
+        verdict = SubmissionStatus.WRONG_ANSWER;
+      }
+
+      return {
+        input: tc.getInput(),
+        expected: jr.expected ?? tc.getExpectedOutput(),
+        got: jr.error ?? jr.output,
+        verdict,
+        time: (jr.durationMs ?? 0) / 1000, // convert ms → seconds for consistency
+        memory: judgeResponse.memory ?? 0,
+        token: judgeResponse.token ?? '',
+        isHidden: tc.isHidden,
+      };
+    });
+
+    // ─── Determine final verdict ──────────────────────────────
     const allAccepted = testResults.every(
       (tr) => tr.verdict === SubmissionStatus.ACCEPTED,
     );
-
-    // Find first non-accepted result for detailed status
     const firstFailure = testResults.find(
       (tr) => tr.verdict !== SubmissionStatus.ACCEPTED,
     );
@@ -166,10 +285,8 @@ export class SubmissionProcessor {
     submission.status = allAccepted
       ? SubmissionStatus.ACCEPTED
       : firstFailure?.verdict || SubmissionStatus.WRONG_ANSWER;
-    submission.executionTime = Math.max(
-      ...results.map((r) => parseFloat(r.time ?? '0')),
-    );
-    submission.memoryUsage = Math.max(...results.map((r) => r.memory ?? 0));
+    submission.executionTime = parseFloat(judgeResponse.time ?? '0');
+    submission.memoryUsage = judgeResponse.memory ?? 0;
     submission.finishedAt = new Date();
 
     await this.submissionRepo.save(submission);
@@ -190,93 +307,6 @@ export class SubmissionProcessor {
     });
   }
 
-  private getRunnerTemplate(
-    templates: { java: string; python: string; cpp: string },
-    language: Language,
-  ): string {
-    switch (language) {
-      case Language.JAVA:
-        return templates.java;
-      case Language.PYTHON:
-        return templates.python;
-      case Language.CPP:
-        return templates.cpp;
-    }
-  }
-
-  private processResults(
-    testCases: import('../../problem/entities/TestCase').TestCase[],
-    results: Array<{
-      status?: { id: number };
-      status_id?: number;
-      stdout?: string;
-      stderr?: string;
-      compile_output?: string;
-      time?: string;
-      memory?: number;
-      token?: string;
-    }>,
-    runner: ReturnType<RunnerFactory['getRunner']>,
-  ): TestResult[] {
-    return testCases.map((tc, i) => {
-      const r = results[i] ?? {};
-      const statusId = r.status?.id ?? r.status_id ?? 13;
-
-      // Get input and expected output using helper methods
-      const inputData = tc.getInput();
-      const expectedOutputData = tc.getExpectedOutput();
-
-      // Map Judge0 status IDs to our status enum
-      let verdict: SubmissionStatus;
-      let got: unknown = null;
-
-      if (statusId === 3) {
-        // Status 3 = "Accepted" by Judge0 (execution successful + output matched)
-        const stdout = r.stdout ?? '';
-
-        try {
-          got = JSON.parse(stdout.trim());
-        } catch {
-          got = stdout.trim();
-        }
-
-        // Judge0 already verified, but double-check with our JSON comparator
-        // This handles edge cases like whitespace differences
-        const isCorrect = runner.compareOutput(stdout, expectedOutputData);
-        verdict = isCorrect ? SubmissionStatus.ACCEPTED : SubmissionStatus.WRONG_ANSWER;
-      } else if (statusId === 4) {
-        // Status 4 = Wrong Answer (execution successful but output didn't match)
-        const stdout = r.stdout ?? '';
-
-        try {
-          got = JSON.parse(stdout.trim());
-        } catch {
-          got = stdout.trim();
-        }
-
-        // Double-check with our JSON comparator (Judge0 uses strict string matching)
-        // Our comparator is more lenient (ignores whitespace, compares JSON structure)
-        const isCorrect = runner.compareOutput(stdout, expectedOutputData);
-        verdict = isCorrect ? SubmissionStatus.ACCEPTED : SubmissionStatus.WRONG_ANSWER;
-      } else {
-        // Map other status codes (TLE, RTE, CE, etc.)
-        verdict = this.mapJudge0Status(statusId);
-        got = r.stderr || r.compile_output || r.stdout || null;
-      }
-
-      return {
-        input: inputData,
-        expected: expectedOutputData,
-        got,
-        verdict,
-        time: parseFloat(r.time ?? '0'),
-        memory: r.memory ?? 0,
-        token: r.token ?? '',
-        isHidden: tc.isHidden,
-      };
-    });
-  }
-
   private mapJudge0Status(statusId: number): SubmissionStatus {
     const statusMap: Record<number, SubmissionStatus> = {
       1: SubmissionStatus.QUEUED,
@@ -285,21 +315,20 @@ export class SubmissionProcessor {
       4: SubmissionStatus.WRONG_ANSWER,
       5: SubmissionStatus.TIME_LIMIT_EXCEEDED,
       6: SubmissionStatus.COMPILATION_ERROR,
-      7: SubmissionStatus.RUNTIME_ERROR,  // SIGSEGV
-      8: SubmissionStatus.RUNTIME_ERROR,  // SIGXFSZ
-      9: SubmissionStatus.RUNTIME_ERROR,  // SIGFPE
-      10: SubmissionStatus.RUNTIME_ERROR, // SIGABRT
-      11: SubmissionStatus.RUNTIME_ERROR, // NZEC
-      12: SubmissionStatus.RUNTIME_ERROR, // Other
+      7: SubmissionStatus.RUNTIME_ERROR,
+      8: SubmissionStatus.RUNTIME_ERROR,
+      9: SubmissionStatus.RUNTIME_ERROR,
+      10: SubmissionStatus.RUNTIME_ERROR,
+      11: SubmissionStatus.RUNTIME_ERROR,
+      12: SubmissionStatus.RUNTIME_ERROR,
       13: SubmissionStatus.INTERNAL_ERROR,
-      14: SubmissionStatus.INTERNAL_ERROR, // Exec Format Error
+      14: SubmissionStatus.INTERNAL_ERROR,
     };
 
     return statusMap[statusId] || SubmissionStatus.INTERNAL_ERROR;
   }
 
   private filterHiddenResults(results: TestResult[]): TestResult[] {
-    // Don't expose hidden test case details to users
     return results.map((r) => {
       if (r.isHidden) {
         return {
