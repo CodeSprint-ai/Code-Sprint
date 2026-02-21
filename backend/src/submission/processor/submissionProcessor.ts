@@ -121,9 +121,11 @@ export class SubmissionProcessor {
     // Build the final executable code (global template + user code)
     const finalCode = runner.build(code, config);
 
-    const useBase64 = process.env.JUDGE0_BASE64 === 'true';
+    const useBase64 = true; // Always use base64 for reliability
     const encode = (str: string) =>
-      useBase64 ? Buffer.from(str).toString('base64') : str;
+      Buffer.from(str).toString('base64');
+    const decode = (str: string | null) =>
+      str ? Buffer.from(str, 'base64').toString('utf-8') : null;
 
     // ─── Bundle ALL test cases into a single stdin payload ─────
     // The runner template handles iteration, comparison, and result formatting
@@ -176,9 +178,9 @@ export class SubmissionProcessor {
       // TLE, CE, RTE, etc. — the code didn't produce output
       const verdict = this.mapJudge0Status(statusId);
       const errorOutput =
-        judgeResponse.stderr ||
-        judgeResponse.compile_output ||
-        judgeResponse.stdout ||
+        decode(judgeResponse.stderr) ||
+        decode(judgeResponse.compile_output) ||
+        decode(judgeResponse.stdout) ||
         null;
 
       const testResults: TestResult[] = problem.testCases.map((tc) => ({
@@ -210,7 +212,7 @@ export class SubmissionProcessor {
     }
 
     // ─── Parse runner's JSON output ───────────────────────────
-    const stdout = judgeResponse.stdout ?? '';
+    const stdout = decode(judgeResponse.stdout) ?? '';
     let judgeResults: JudgeResult[];
 
     try {

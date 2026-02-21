@@ -14,9 +14,20 @@ import { getCppTemplate } from '../templates/global-templates';
 export class CppRunner implements Runner {
   readonly language = Language.CPP;
 
-  build(userCode: string, _config: ExecutionConfig): string {
+  build(userCode: string, config: ExecutionConfig): string {
     const template = getCppTemplate();
-    return template.replace('{{USER_CODE}}', userCode);
+    const methodName = config.methodName || 'solve';
+
+    let methodCallBlock = '';
+    if (methodName === 'solve') {
+      methodCallBlock = 'output = sol.solve(input);';
+    } else {
+      methodCallBlock = `output = call_member(&sol, &Solution::${methodName}, input);`;
+    }
+
+    return template
+      .replace('{{USER_CODE}}', userCode)
+      .replace('{{METHOD_CALL_BLOCK}}', methodCallBlock);
   }
 
   serializeInput(input: Record<string, unknown>): string {
