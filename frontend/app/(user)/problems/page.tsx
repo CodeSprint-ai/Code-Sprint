@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { usePaginatedProblems } from "@/hooks/useProblems";
-import { Difficulty, GetProblemsParams, Problem } from "@/types/problems";
+import { Difficulty, GetProblemsParams, PatternEnum, Problem } from "@/types/problems";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -58,6 +58,7 @@ export default function ProblemsPage() {
     page: parseInt(searchParams.get("page") || "1", 10) || 1,
     pageSize: parseInt(searchParams.get("pageSize") || "10", 10) || 10,
     difficulty: (searchParams.get("difficulty") as Difficulty) || undefined,
+    pattern: (searchParams.get("pattern") as PatternEnum) || undefined,
     search: searchParams.get("search") || undefined,
     tag: searchParams.get("tag") || undefined,
     fromDate: searchParams.get("fromDate") || undefined,
@@ -71,6 +72,7 @@ export default function ProblemsPage() {
     if (filters.page && filters.page > 1) params.set("page", String(filters.page));
     if (filters.pageSize && filters.pageSize !== 10) params.set("pageSize", String(filters.pageSize));
     if (filters.difficulty) params.set("difficulty", filters.difficulty);
+    if (filters.pattern) params.set("pattern", filters.pattern);
     if (filters.search) params.set("search", filters.search);
     if (filters.tag) params.set("tag", filters.tag);
     if (filters.fromDate) params.set("fromDate", filters.fromDate);
@@ -91,7 +93,7 @@ export default function ProblemsPage() {
   };
 
   const hasActiveFilters = Boolean(
-    filters.difficulty || filters.search || filters.tag || filters.fromDate || filters.toDate
+    filters.difficulty || filters.pattern || filters.search || filters.tag || filters.fromDate || filters.toDate
   );
   const problems: Problem[] = paginatedProblems.data?.data ?? [];
   const meta = paginatedProblems.data?.meta;
@@ -158,28 +160,44 @@ export default function ProblemsPage() {
               </Button>
             )}
           </div>
-          <div className="grid gap-2 p-2 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="relative group">
+          <div className="grid gap-2 p-2 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="relative group lg:col-span-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500 group-focus-within:text-emerald-500 transition-colors" />
               <Input
-                placeholder="Search by title or description..."
+                placeholder="Search..."
                 value={filters.search ?? ""}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
                 className="border-white/5 bg-black/40 pl-10 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl py-3"
               />
             </div>
             <Select
-              value={filters.difficulty ?? undefined}
+              value={filters.difficulty ?? "all"}
               onValueChange={(v) => handleFilterChange("difficulty", v === "all" ? undefined : v)}
             >
               <SelectTrigger className="border-zinc-700 bg-zinc-800/50 text-zinc-100">
-                <SelectValue placeholder="All difficulties" />
+                <SelectValue placeholder="Difficulty" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All difficulties</SelectItem>
+                <SelectItem value="all">All levels</SelectItem>
                 <SelectItem value="EASY">Easy</SelectItem>
                 <SelectItem value="MEDIUM">Medium</SelectItem>
                 <SelectItem value="HARD">Hard</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={filters.pattern ?? "all"}
+              onValueChange={(v) => handleFilterChange("pattern", v === "all" ? undefined : v)}
+            >
+              <SelectTrigger className="border-zinc-700 bg-zinc-800/50 text-zinc-100">
+                <SelectValue placeholder="Pattern" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[300px]">
+                <SelectItem value="all">All patterns</SelectItem>
+                {Object.values(PatternEnum).map((p) => (
+                  <SelectItem key={p} value={p}>
+                    {p.replace(/_/g, " ")}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Input

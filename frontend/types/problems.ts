@@ -87,12 +87,60 @@ export interface PaginatedProblemsResponse {
   };
 }
 
+export enum PatternEnum {
+  ARRAY = 'ARRAY',
+  HASH_TABLE = 'HASH_TABLE',
+  SLIDING_WINDOW = 'SLIDING_WINDOW',
+  TWO_POINTERS = 'TWO_POINTERS',
+  FAST_AND_SLOW_POINTERS = 'FAST_AND_SLOW_POINTERS',
+  MERGE_INTERVALS = 'MERGE_INTERVALS',
+  CYCLIC_SORT = 'CYCLIC_SORT',
+  INPLACE_REVERSAL_OF_LINKED_LIST = 'INPLACE_REVERSAL_OF_LINKED_LIST',
+  TREE_BFS = 'TREE_BFS',
+  TREE_DFS = 'TREE_DFS',
+  TWO_HEAPS = 'TWO_HEAPS',
+  SUBSETS = 'SUBSETS',
+  MODIFIED_BINARY_SEARCH = 'MODIFIED_BINARY_SEARCH',
+  TOP_K_ELEMENTS = 'TOP_K_ELEMENTS',
+  K_WAY_MERGE = 'K_WAY_MERGE',
+  TOPOLOGICAL_SORT = 'TOPOLOGICAL_SORT',
+  BITWISE_XOR = 'BITWISE_XOR',
+  DYNAMIC_PROGRAMMING = 'DYNAMIC_PROGRAMMING',
+  BACKTRACKING = 'BACKTRACKING',
+  GRAPH = 'GRAPH',
+  GREEDY = 'GREEDY',
+  STACK = 'STACK',
+  QUEUE = 'QUEUE',
+  BINARY_SEARCH = 'BINARY_SEARCH',
+  LINKED_LIST = 'LINKED_LIST',
+  KADANE_ALGORITHM = 'KADANE_ALGORITHM',
+  STRING = 'STRING',
+  MATRIX = 'MATRIX',
+  INPLACE = 'INPLACE',
+  RECURSION = 'RECURSION',
+  TRIE = 'TRIE',
+  HEAPS = 'HEAPS',
+  MONOTONIC_STACK = 'MONOTONIC_STACK',
+  MONOTONIC_QUEUE = 'MONOTONIC_QUEUE',
+  FIBONACCI = 'FIBONACCI',
+  HASH_MAP = 'HASH_MAP',
+  HEAP = 'HEAP',
+  DFS = 'DFS',
+  BFS = 'BFS',
+  DP = 'DP',
+  HASHING = 'HASHING',
+  SORTING = 'SORTING',
+  STRING_SEARCH = 'STRING_SEARCH',
+  KMP = 'KMP',
+}
+
 export interface GetProblemsParams {
   page?: number;
   pageSize?: number;
   difficulty?: Difficulty;
   search?: string;
   tag?: string;
+  pattern?: PatternEnum;
   fromDate?: string;
   toDate?: string;
 }
@@ -150,8 +198,8 @@ export function formatTestCaseInput(testCase: TestCase): string {
 export function formatTestCaseOutput(testCase: TestCase): string {
   // Prefer JSON output, fall back to text
   if (testCase.expectedOutput !== null && testCase.expectedOutput !== undefined) {
-    return typeof testCase.expectedOutput === 'string' 
-      ? testCase.expectedOutput 
+    return typeof testCase.expectedOutput === 'string'
+      ? testCase.expectedOutput
       : JSON.stringify(testCase.expectedOutput, null, 2);
   }
   if (testCase.expectedOutputText) {

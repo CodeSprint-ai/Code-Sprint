@@ -98,6 +98,7 @@ export class ProblemService {
       difficulty?: string;
       search?: string;
       tag?: string;
+      pattern?: string;
       fromDate?: string;
       toDate?: string;
     }
@@ -116,6 +117,7 @@ export class ProblemService {
       difficulty,
       search,
       tag,
+      pattern,
       fromDate,
       toDate,
     } = query;
@@ -148,6 +150,11 @@ export class ProblemService {
       queryBuilder.andWhere('EXISTS (SELECT 1 FROM unnest(problem.tags) AS t WHERE t ILIKE :tag)', {
         tag: `%${tag}%`,
       });
+    }
+
+    // Apply pattern filter
+    if (pattern) {
+      queryBuilder.andWhere(':pattern::"public"."problems_patterns_enum" = ANY(problem.patterns)', { pattern });
     }
 
     // Apply date range filters

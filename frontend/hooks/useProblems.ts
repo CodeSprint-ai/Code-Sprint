@@ -71,10 +71,10 @@ export const useProblem = (uuid?: string): UseProblemsReturn => {
       return response.data;
     },
     onSuccess: async () => {
-      console.log({check:'coming here'});
-      
+      console.log({ check: 'coming here' });
+
       // Refresh the problems list after creation
-     await allProblemsQuery.refetch()
+      await allProblemsQuery.refetch()
       // queryClient.invalidateQueries({ queryKey: ["problems"] });
     },
   });
@@ -105,6 +105,7 @@ export const usePaginatedProblems = (
       if (params.difficulty) queryParams.append("difficulty", params.difficulty);
       if (params.search) queryParams.append("search", params.search);
       if (params.tag) queryParams.append("tag", params.tag);
+      if (params.pattern) queryParams.append("pattern", params.pattern);
       if (params.fromDate) queryParams.append("fromDate", params.fromDate);
       if (params.toDate) queryParams.append("toDate", params.toDate);
 

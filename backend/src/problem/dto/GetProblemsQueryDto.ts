@@ -1,5 +1,6 @@
 import { IsOptional, IsInt, Min, IsEnum, IsString, IsDateString } from 'class-validator';
 import { Type } from 'class-transformer';
+import { PatternEnum } from '../enum/PatternEnum';
 
 export enum ProblemDifficulty {
   EASY = 'EASY',
@@ -31,6 +32,10 @@ export class GetProblemsQueryDto {
   @IsOptional()
   @IsString()
   tag?: string;
+
+  @IsOptional()
+  @IsEnum(PatternEnum)
+  pattern?: PatternEnum;
 
   @IsOptional()
   @IsDateString()
