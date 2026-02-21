@@ -15,6 +15,11 @@ import { PatternEnum } from '../enum/PatternEnum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateTestCaseCommand } from './CreateTestCaseCommand';
+import {
+  ExecutionType,
+  CompareMode,
+  OutputSerializer,
+} from '../../judge/interfaces/execution-config.interface';
 
 /**
  * Starter code structure for all supported languages
@@ -60,39 +65,70 @@ public:
 }
 
 /**
- * Runner template structure for all supported languages
- * 🚨 User NEVER sees this - only for Judge0 execution
+ * Execution configuration DTO
+ * Drives the global runner templates — NO per-problem template strings
  */
-class RunnerTemplateDto {
+class ExecutionConfigDto {
   @IsNotEmpty()
-  @IsString()
+  @IsEnum(ExecutionType)
   @ApiProperty({
-    description: 'Java runner template (imports, Main class, JSON parsing)',
+    enum: ExecutionType,
+    description: 'The type of problem execution',
+    example: ExecutionType.FUNCTION,
   })
-  java: string;
+  type: ExecutionType;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    description: 'Python runner template (imports, JSON parsing, execution)',
+    description: 'The class name for the solution (e.g. "Solution", "LRUCache")',
+    example: 'Solution',
   })
-  python: string;
+  className: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({
+    description: 'The method name for FUNCTION type problems (e.g. "twoSum")',
+    example: 'twoSum',
+  })
+  methodName?: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsEnum(CompareMode)
   @ApiProperty({
-    description: 'C++ runner template (includes, JSON parsing with nlohmann)',
+    enum: CompareMode,
+    description: 'How to compare actual vs expected output',
+    example: CompareMode.EXACT,
   })
-  cpp: string;
+  compareMode: CompareMode;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiPropertyOptional({
+    description: 'Float tolerance for FLOAT_TOLERANCE compare mode',
+    example: 1e-6,
+    default: 1e-6,
+  })
+  floatTolerance?: number;
+
+  @IsNotEmpty()
+  @IsEnum(OutputSerializer)
+  @ApiProperty({
+    enum: OutputSerializer,
+    description: 'Output serializer for special data structures',
+    example: OutputSerializer.NONE,
+  })
+  outputSerializer: OutputSerializer;
 }
 
 /**
  * Command for creating a new problem
- * 
- * ✅ Function-based problems only
+ *
+ * ✅ Function-based, stdin/stdout, and class-design problems
  * ✅ Supports Java, Python, C++
- * ❌ No JavaScript
- * ❌ No stdin-only problems
+ * ✅ executionConfig drives global runners
+ * ❌ No per-problem runner templates
  */
 export class CreateProblemCommand {
   @IsNotEmpty()
@@ -177,12 +213,12 @@ export class CreateProblemCommand {
 
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => RunnerTemplateDto)
+  @Type(() => ExecutionConfigDto)
   @ApiProperty({
-    type: RunnerTemplateDto,
-    description: 'Runner templates for each language (what Judge0 executes)',
+    type: ExecutionConfigDto,
+    description: 'Execution configuration (drives global runner templates)',
   })
-  runnerTemplate: RunnerTemplateDto;
+  executionConfig: ExecutionConfigDto;
 
   @IsNotEmpty()
   @IsUUID()

@@ -1,2 +1,1 @@
-export { deepEqual, compareOutput, compareUnorderedArrays } from './output-comparator';
-
+export { compareWithMode, deepEqual } from './output-comparator';

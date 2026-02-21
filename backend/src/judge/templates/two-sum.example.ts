@@ -1,14 +1,20 @@
 /**
- * Example: Two Sum Problem Templates
- * 
+ * Example: Two Sum Problem Configuration
+ *
  * This file shows the complete structure for a function-based problem
- * following the Judge0 Wrapper Architecture.
- * 
+ * using the new ExecutionConfig-driven judge system.
+ *
  * Problem: Given an array of integers nums and an integer target,
  * return indices of the two numbers such that they add up to target.
  */
 
-import { StarterCode, RunnerTemplate } from '../interfaces';
+import { StarterCode } from '../interfaces';
+import {
+  ExecutionConfig,
+  ExecutionType,
+  CompareMode,
+  OutputSerializer,
+} from '../interfaces/execution-config.interface';
 import { CreateTestCaseCommand } from '../../problem/command/CreateTestCaseCommand';
 
 /**
@@ -43,73 +49,17 @@ public:
 
 /**
  * ================================================
- * RUNNER TEMPLATES (What Judge0 actually executes)
- * 🚨 User NEVER sees this
+ * EXECUTION CONFIG (Drives global runner templates)
+ * ❌ No per-problem runner template strings
+ * ✅ Global templates generate code from this config
  * ================================================
  */
-export const twoSumRunnerTemplate: RunnerTemplate = {
-  // 🟦 Java Runner Template
-  java: `import java.util.*;
-import com.google.gson.*;
-
-{{USER_CODE}}
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String input = sc.useDelimiter("\\\\A").next();
-
-        JsonObject data = JsonParser.parseString(input).getAsJsonObject();
-
-        int[] nums = new Gson().fromJson(data.get("nums"), int[].class);
-        int target = data.get("target").getAsInt();
-
-        Solution solution = new Solution();
-        int[] result = solution.twoSum(nums, target);
-
-        System.out.println(new Gson().toJson(result));
-    }
-}`,
-
-  // 🟨 Python Runner Template
-  python: `import sys, json
-
-{{USER_CODE}}
-
-data = json.loads(sys.stdin.read())
-
-nums = data["nums"]
-target = data["target"]
-
-solution = Solution()
-result = solution.twoSum(nums, target)
-
-print(json.dumps(result))`,
-
-  // 🟥 C++ Runner Template
-  // ⚠️ Requires nlohmann/json.hpp (supported in Judge0 GNU++17)
-  cpp: `#include <bits/stdc++.h>
-#include <nlohmann/json.hpp>
-using namespace std;
-using json = nlohmann::json;
-
-{{USER_CODE}}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string input((istreambuf_iterator<char>(cin)), {});
-    auto data = json::parse(input);
-
-    vector<int> nums = data["nums"].get<vector<int>>();
-    int target = data["target"].get<int>();
-
-    Solution solution;
-    vector<int> result = solution.twoSum(nums, target);
-
-    cout << json(result).dump();
-}`,
+export const twoSumExecutionConfig: ExecutionConfig = {
+  type: ExecutionType.FUNCTION,
+  className: 'Solution',
+  methodName: 'twoSum',
+  compareMode: CompareMode.ORDER_INSENSITIVE,
+  outputSerializer: OutputSerializer.NONE,
 };
 
 /**
@@ -170,9 +120,8 @@ Output: [1,2]
   tags: ['array', 'hash-table'],
   companies: ['Google', 'Amazon', 'Apple', 'Meta', 'Microsoft'],
   starterCode: twoSumStarterCode,
-  runnerTemplate: twoSumRunnerTemplate,
+  executionConfig: twoSumExecutionConfig,
   testCases: twoSumTestCases,
   timeLimitSeconds: 2,
   memoryLimitMB: 256,
 };
-

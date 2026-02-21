@@ -74,7 +74,7 @@ export class Judge0Service {
 
                 for (const item of items) {
                     const resp = await this.client.post(
-                        `/submissions?base64_encoded=${base64}&wait=false&fields=*`,
+                        `/submissions?base64_encoded=true&wait=false&fields=*`,
                         item,
                     );
 
@@ -90,7 +90,7 @@ export class Judge0Service {
             } else {
                 // ✅ For self-hosted Judge0
                 const resp = await this.client.post(
-                    `/submissions/batch?base64_encoded=${base64}&wait=false&fields=*`,
+                    `/submissions/batch?base64_encoded=true&wait=false&fields=*`,
                     { submissions: items },
                 );
 
@@ -115,7 +115,7 @@ export class Judge0Service {
         const resp = await this.client.get('/submissions/batch', {
             params: {
                 tokens: tokenStr,
-                base64_encoded: 'false',
+                base64_encoded: 'true',
             },
         });
 

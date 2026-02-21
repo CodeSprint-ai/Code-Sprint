@@ -4,15 +4,16 @@ import { PatternEnum } from '../enum/PatternEnum';
 import { UserDto } from '../../user/dto/user.dto';
 import { TestCaseDto } from './TestCaseDto';
 import { Problem } from '../entities/Problem';
-import { StarterCode, RunnerTemplate } from '../../judge/interfaces/starter-code.interface';
+import { StarterCode } from '../../judge/interfaces/starter-code.interface';
+import { ExecutionConfig } from '../../judge/interfaces/execution-config.interface';
 
 /**
  * DTO for a problem
- * 
- * ✅ Function-based problems only
+ *
+ * ✅ Function-based, stdin/stdout, and class-design problems
  * ✅ Supports Java, Python, C++
  * ✅ Contains starter code (what user sees)
- * 🚨 Runner templates are NEVER exposed to users in public DTO
+ * 🚨 executionConfig is ONLY exposed in admin DTO
  */
 export class ProblemDto {
   @ApiProperty({ description: 'The UUID of the problem' })
@@ -89,7 +90,7 @@ export class ProblemDto {
 
   /**
    * Convert Problem entity to public DTO
-   * 🚨 Runner templates are NEVER included - only for internal use
+   * 🚨 executionConfig is NEVER included in public DTO
    */
   public static toDto(problem: Problem): ProblemDto {
     return {
@@ -119,16 +120,16 @@ export class ProblemDto {
   }
 
   /**
-   * Convert Problem entity to admin DTO (includes all details)
+   * Convert Problem entity to admin DTO (includes executionConfig)
    * Used only for admin endpoints
    */
-  public static toAdminDto(problem: Problem): ProblemDto & { runnerTemplate: RunnerTemplate } {
+  public static toAdminDto(problem: Problem): ProblemDto & { executionConfig: ExecutionConfig } {
     return {
       ...this.toDto(problem),
       testCases: problem.testCases?.map((testCase) =>
         TestCaseDto.toDto(testCase),
       ) ?? [],
-      runnerTemplate: problem.runnerTemplate,
+      executionConfig: problem.executionConfig,
     };
   }
 }
