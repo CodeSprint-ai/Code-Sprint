@@ -21,6 +21,8 @@ import { RolesGuard } from './auth/guard/role.guard';
 import { JwtAuthGuard } from './auth/guard/jwt.guard';
 import { BullModule } from '@nestjs/bull';
 import { SubmissionProcessor } from './submission/processor/submissionProcessor';
+import { RedisModule } from './common/redis/redis.module';
+import { PostSubmissionModule } from './ai/post-submission/post-submission.module';
 
 @Module({
   imports: [
@@ -55,6 +57,8 @@ import { SubmissionProcessor } from './submission/processor/submissionProcessor'
     ProfileModule,
     ContestModule,
     CloudinaryModule,
+    RedisModule,
+    PostSubmissionModule,
   ],
   controllers: [AppController],
   providers: [

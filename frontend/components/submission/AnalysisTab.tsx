@@ -116,7 +116,7 @@ export default function AnalysisTab({ submission, isLoading }: AnalysisTabProps)
       </section>
 
       {/* AI Feedback Section */}
-      <section className="space-y-3">
+      {/* <section className="space-y-3">
         <h3 className="font-semibold flex items-center gap-2">
           <Brain className="h-5 w-5 text-emerald-500" />
           AI Feedback
@@ -167,7 +167,7 @@ export default function AnalysisTab({ submission, isLoading }: AnalysisTabProps)
             ]}
           />
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }
