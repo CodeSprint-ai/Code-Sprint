@@ -23,6 +23,8 @@ import { BullModule } from '@nestjs/bull';
 import { SubmissionProcessor } from './submission/processor/submissionProcessor';
 import { RedisModule } from './common/redis/redis.module';
 import { PostSubmissionModule } from './ai/post-submission/post-submission.module';
+import { HintModule } from './ai/hints/hint.module';
+import { RoadmapModule } from './roadmap/roadmap.module';
 
 @Module({
   imports: [
@@ -59,6 +61,8 @@ import { PostSubmissionModule } from './ai/post-submission/post-submission.modul
     CloudinaryModule,
     RedisModule,
     PostSubmissionModule,
+    HintModule,
+    RoadmapModule,
   ],
   controllers: [AppController],
   providers: [

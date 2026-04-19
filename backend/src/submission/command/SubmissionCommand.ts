@@ -1,5 +1,5 @@
 // create-submission.dto.ts
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID, IsInt } from 'class-validator';
 
 export class SubmissionCommand {
   @IsOptional()
@@ -17,4 +17,8 @@ export class SubmissionCommand {
   @IsNotEmpty()
   @IsString()
   language: string; // e.g. 'python', 'cpp', 'c++'
+
+  @IsOptional()
+  @IsInt()
+  timeSpentMs?: number;
 }

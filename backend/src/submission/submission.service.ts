@@ -17,7 +17,7 @@ export class SubmissionService {
     @InjectRepository(Submission) private repo: Repository<Submission>,
     @InjectRepository(Problem) private problemRepo: Repository<Problem>,
     @InjectQueue('submissions') private submissionQueue: Queue
-  ) {}
+  ) { }
 
   async createSubmission(command: SubmissionCommand, user: any) {
     const problem = command.problemUuid ? await this.problemRepo.findOne({ where: { uuid: command.problemUuid }, relations: ['testCases'] })
@@ -30,7 +30,8 @@ export class SubmissionService {
       problem,
       code: command.code,
       language: command.language,
-      status: SubmissionStatus.PENDING
+      status: SubmissionStatus.PENDING,
+      timeSpentMs: command.timeSpentMs,
     });
     await this.repo.save(submission);
 
@@ -44,16 +45,16 @@ export class SubmissionService {
     return submission;
   }
 
-  async getSubmissionsByUuid(submissionUuid: string) : Promise<SubmissionDto> {
+  async getSubmissionsByUuid(submissionUuid: string): Promise<SubmissionDto> {
     const submissions = await this.repo.findOne({
-      where: {uuid: submissionUuid },
+      where: { uuid: submissionUuid },
     });
     if (!submissions) throw new Error('Submission not found');
-    return SubmissionDto.toDto(submissions) ;
+    return SubmissionDto.toDto(submissions);
   }
 
   // get submissions by problem UUID
-  async getSubmissionsByProblemUuid(problemUuid: string) : Promise<SubmissionDto[]> {
+  async getSubmissionsByProblemUuid(problemUuid: string): Promise<SubmissionDto[]> {
     const submissions = await this.repo.find({
       where: { problem: { uuid: problemUuid } },
       order: { createdAt: 'DESC' },
@@ -62,7 +63,7 @@ export class SubmissionService {
   }
 
   // get submissions by problem UUID
-  async getSubmissionsByUserUuid(userUuid: string) : Promise<SubmissionDto[]> {
+  async getSubmissionsByUserUuid(userUuid: string): Promise<SubmissionDto[]> {
     const submissions = await this.repo.find({
       where: { user: { uuid: userUuid } },
       order: { createdAt: 'DESC' },

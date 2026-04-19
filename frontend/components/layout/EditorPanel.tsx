@@ -8,6 +8,8 @@ import EditorHeader from "../editor/EditorHeader";
 import CodeEditor from "../editor/CodeEditor";
 import { SubmissionPanel } from "../submission";
 import { useSubmission } from "@/hooks/useSubmission";
+import { useTimer } from "@/hooks/useTimer";
+import { useHints } from "@/hooks/useHints";
 import { Problem, StarterCode } from "@/types/problems";
 import { getMySettings } from "@/services/profileApi";
 
@@ -102,6 +104,10 @@ export default function EditorPanel({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
 
+  // Roadmap & Mastery Tracking
+  const { getElapsedMs } = useTimer();
+  const { levelReached } = useHints(problem?.uuid);
+
   const { createSubmission } = useSubmission(problem?.uuid);
 
   /**
@@ -134,6 +140,7 @@ export default function EditorPanel({
         language: languageMap[language.toLowerCase()] || language,
         problemUuid: problem.uuid,
         slug: problem.slug,
+        timeSpentMs: getElapsedMs(),
       });
 
       console.log("Submission created:", resp);

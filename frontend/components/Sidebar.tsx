@@ -41,6 +41,7 @@ type RouteItem = {
 // Menu items.
 const userRoutes: RouteItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Roadmap", url: "/roadmap", icon: Sparkles },
   { title: "Sprint Mode", url: "/sprint", icon: Zap },
   { title: "Problems", url: "/problems", icon: ListTodo },
   { title: "Submissions", url: "/submission", icon: FileCode },
@@ -50,6 +51,7 @@ const userRoutes: RouteItem[] = [
 
 const adminRoutes: RouteItem[] = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Roadmap", url: "/roadmap", icon: Sparkles },
   { title: "Sprint Mode", url: "/admin/sprint", icon: Zap },
   { title: "Problems", url: "/admin/problems", icon: ListTodo },
   { title: "Submissions", url: "/admin/submission", icon: FileCode },
