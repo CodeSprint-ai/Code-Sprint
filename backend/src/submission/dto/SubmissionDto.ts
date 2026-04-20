@@ -18,6 +18,9 @@ export class SubmissionDto {
   compileOutput?: string;
   aiAnalysis?: AnalysisResult | null;
   finishedAt?: Date;
+  timeSpentMs?: number;
+  hintsUsedCount?: number;
+  attemptNumber?: number;
 
   static toDto(submission: Submission): SubmissionDto {
     return {
@@ -37,6 +40,9 @@ export class SubmissionDto {
       compileOutput: submission.compileOutput,
       aiAnalysis: submission.aiAnalysis,
       finishedAt: submission.finishedAt,
+      timeSpentMs: submission.timeSpentMs,
+      hintsUsedCount: submission.hintsUsedCount,
+      attemptNumber: submission.attemptNumber,
     };
   }
 }

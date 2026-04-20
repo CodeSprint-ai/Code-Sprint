@@ -11,6 +11,7 @@ import { SubmissionProcessor } from './processor/submissionProcessor';
 import { CommonModule } from 'src/common/common.module';
 import { JudgeModule } from '../judge/judge.module';
 import { ProfileModule } from '../profile/profile.module';
+import { RoadmapModule } from '../roadmap/roadmap.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ProfileModule } from '../profile/profile.module';
     CommonModule,
     JudgeModule,
     ProfileModule,
+    RoadmapModule,
     BullModule.registerQueue({
       name: 'submissions',   // 👈 name must match
     }),

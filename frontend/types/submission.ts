@@ -81,6 +81,7 @@ export interface CreateSubmissionInput {
   language: string;
   problemUuid?: string;
   slug?: string;
+  timeSpentMs?: number;
 }
 
 /**

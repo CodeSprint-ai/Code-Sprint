@@ -29,13 +29,16 @@ export class DocumentEmbedding {
   metadata: Record<string, any>;
 
   /**
-   * 768-dimensional vector for Gemini text-embedding-004.
-   * Stored as pgvector `vector(768)` type.
+   * 3072-dimensional vector for Gemini gemini-embedding-001.
+   * Stored as pgvector `vector(3072)` type in the database.
+   * TypeORM column type is a placeholder — actual type is managed via migrations.
+   * select: false prevents TypeORM from auto-selecting this large column.
    */
   @Column({
-    type: 'float',
+    type: 'float8',
     array: true,
     nullable: true,
+    select: false,
   })
   embedding: number[];
 

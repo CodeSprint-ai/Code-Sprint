@@ -25,6 +25,7 @@ import { RunnerFactory } from '../../judge/runners/runner.factory';
 import { LanguageId, normalizeLanguage } from '../../judge/enums/language.enum';
 import { SubmissionGateway } from '../../common/utils/socket-gateway';
 import { UserStatsService } from '../../profile/user-stats.service';
+import { MasteryAggregatorService } from '../../roadmap/mastery-aggregator.service';
 
 // ─── Result Interfaces ─────────────────────────────────────────────
 
@@ -66,6 +67,7 @@ export class SubmissionProcessor {
     private readonly runnerFactory: RunnerFactory,
     private readonly socket: SubmissionGateway,
     private readonly userStatsService: UserStatsService,
+    private readonly masteryAggregator: MasteryAggregatorService,
   ) { }
 
   @Process('process')
@@ -80,6 +82,15 @@ export class SubmissionProcessor {
     if (!submission) {
       throw new Error(`Submission ${submissionId} not found`);
     }
+
+    // Calculate attempt number (count of prior submissions for same user+problem + 1)
+    const priorCount = await this.submissionRepo.count({
+      where: {
+        user: { uuid: submission.user.uuid },
+        problem: { uuid: submission.problem.uuid },
+      },
+    });
+    submission.attemptNumber = priorCount; // current submission is already counted
 
     // Mark as processing
     submission.status = SubmissionStatus.PROCESSING;
@@ -300,6 +311,11 @@ export class SubmissionProcessor {
         submission.problem.uuid,
       );
     }
+
+    // Fire-and-forget mastery recalculation (runs in background)
+    this.masteryAggregator.recalculateForUser(submission.user.uuid).catch(err =>
+      this.logger.error('[Mastery] Failed to recalculate:', err),
+    );
 
     this.emitUpdate(submission, {
       status: submission.status,

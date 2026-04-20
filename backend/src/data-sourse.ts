@@ -14,6 +14,12 @@ import { UserPreferences } from './profile/entities/UserPreferences';
 import { SavedProblem } from './profile/entities/SavedProblem';
 import { UserSession } from './profile/entities/UserSession';
 import { DocumentEmbedding } from './entities/DocumentEmbedding';
+import { ProblemHint } from './ai/hints/entities/problem-hint.entity';
+import { HintUsage } from './ai/hints/entities/hint-usage.entity';
+import { UserTopicMastery } from './roadmap/entities/user-topic-mastery.entity';
+import { ProblemDifficultyStats } from './roadmap/entities/problem-difficulty-stats.entity';
+import { UserRoadmap } from './roadmap/entities/user-roadmap.entity';
+import { RoadmapBadge } from './roadmap/entities/roadmap-badge.entity';
 
 // Load environment variables
 config();
@@ -38,6 +44,12 @@ export const AppDataSource = new DataSource({
     SavedProblem,
     UserSession,
     DocumentEmbedding,
+    ProblemHint,
+    HintUsage,
+    UserTopicMastery,
+    ProblemDifficultyStats,
+    UserRoadmap,
+    RoadmapBadge,
   ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],

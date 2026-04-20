@@ -61,6 +61,15 @@ export class Submission {
   @Column({ name: 'ai_analysis', type: 'jsonb', nullable: true })
   aiAnalysis: AnalysisResult | null;
 
+  @Column({ name: 'time_spent_ms', type: 'int', nullable: true })
+  timeSpentMs: number;
+
+  @Column({ name: 'hints_used_count', type: 'int', default: 0 })
+  hintsUsedCount: number;
+
+  @Column({ name: 'attempt_number', type: 'int', default: 1 })
+  attemptNumber: number;
+
   @Column({ name: 'finished_at', nullable: true })
   finishedAt?: Date;
 

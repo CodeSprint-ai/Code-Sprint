@@ -1,4 +1,5 @@
 import { Problem, TestCase, formatTestCaseInput, formatTestCaseOutput } from "@/types/problems";
+import HintSystem from "./HintSystem";
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -62,6 +63,9 @@ export default function ProblemDescription({ problem }: ProblemDescriptionProps)
           </div>
         </div>
       )}
+
+      {/* Hints */}
+      <HintSystem problemUuid={problem.uuid} />
     </div>
   );
 }
