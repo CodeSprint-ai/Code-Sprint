@@ -13,6 +13,7 @@ import { UserBadge } from './profile/entities/UserBadge';
 import { UserPreferences } from './profile/entities/UserPreferences';
 import { SavedProblem } from './profile/entities/SavedProblem';
 import { UserSession } from './profile/entities/UserSession';
+import { DocumentEmbedding } from './entities/DocumentEmbedding';
 
 // Load environment variables
 config();
@@ -36,6 +37,7 @@ export const AppDataSource = new DataSource({
     UserPreferences,
     SavedProblem,
     UserSession,
+    DocumentEmbedding,
   ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],

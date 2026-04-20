@@ -2,6 +2,15 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useSubmissionSocket } from "@/hooks/useSubmissionSocket";
+import { useAIAnalysis } from "@/hooks/useAIAnalysis";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import AIAnalysisView from "./AIAnalysisView";
 import {
   RealTimeSubmission,
   initialSubmissionState,
@@ -27,6 +36,24 @@ export default function SubmissionPanel({
   const [activeTab, setActiveTab] = useState("results");
   const [submission, setSubmission] = useState<RealTimeSubmission>(initialSubmissionState);
   const [testCaseFilter, setTestCaseFilter] = useState<"all" | "passed" | "failed">("all");
+
+  // AI Analysis hook — lifted here to share state between ResultsTab (trigger) and modal (display)
+  const {
+    data: aiData,
+    status: aiStatus,
+    error: aiError,
+    isPolling: isAIPolling,
+    triggerAnalysis,
+  } = useAIAnalysis(submission.id || undefined);
+
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+
+  const handleAnalyze = useCallback(() => {
+    if (submission.id) {
+      triggerAnalysis(submission.id);
+      setIsAIModalOpen(true); // open the modal
+    }
+  }, [submission.id, triggerAnalysis]);
 
   // Reset submission state when starting new submission
   useEffect(() => {
@@ -190,7 +217,12 @@ export default function SubmissionPanel({
       {/* Tab Content */}
       <div className="flex-1 overflow-auto">
         {activeTab === "results" && (
-          <ResultsTab submission={submission} isLoading={isActive} />
+          <ResultsTab
+            submission={submission}
+            isLoading={isActive}
+            onAnalyze={handleAnalyze}
+            isAnalyzing={isAIPolling}
+          />
         )}
         {activeTab === "testcases" && (
           <TestCasesTab
@@ -205,6 +237,19 @@ export default function SubmissionPanel({
           <AnalysisTab submission={submission} isLoading={isActive} />
         )}
       </div>
+
+      {/* AI Analysis Modal */}
+      <Dialog open={isAIModalOpen} onOpenChange={setIsAIModalOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto bg-[#0d0d0d] border-gray-800">
+          <DialogHeader>
+            <DialogTitle className="text-white">AI Diagnostic</DialogTitle>
+            <DialogDescription className="text-zinc-500">
+              AI-powered analysis of your submission
+            </DialogDescription>
+          </DialogHeader>
+          <AIAnalysisView data={aiData} status={aiStatus} error={aiError} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

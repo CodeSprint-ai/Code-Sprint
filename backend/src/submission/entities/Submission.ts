@@ -10,6 +10,7 @@ import { User } from '../../user/entities/user.model';
 import { Problem } from '../../problem/entities/Problem';
 import { SprintSession } from '../../sprint/entities/SprintSession';
 import { SubmissionStatus } from '../enum/SubmissionStatus';
+import { AnalysisResult } from '../../ai/post-submission/schema/analysis.schema';
 
 @Entity('submissions')
 export class Submission {
@@ -56,6 +57,9 @@ export class Submission {
 
   @Column({ name: 'compile_output', type: 'text', nullable: true })
   compileOutput?: string; // optional aggregate compile output
+
+  @Column({ name: 'ai_analysis', type: 'jsonb', nullable: true })
+  aiAnalysis: AnalysisResult | null;
 
   @Column({ name: 'finished_at', nullable: true })
   finishedAt?: Date;

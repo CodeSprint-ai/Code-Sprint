@@ -12,15 +12,18 @@ import {
   Loader2,
   AlertTriangle,
   Code2,
+  SparklesIcon,
 } from "lucide-react";
 import { RealTimeSubmission, getStatusColorClass } from "@/types/realtime";
 
 interface ResultsTabProps {
   submission: RealTimeSubmission;
   isLoading: boolean;
+  onAnalyze?: () => void;
+  isAnalyzing?: boolean;
 }
 
-export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
+export default function ResultsTab({ submission, isLoading, onAnalyze, isAnalyzing }: ResultsTabProps) {
   const { status, phase, executionTime, memoryUsage, passedCount, totalTestCases, language, id, completedAt, error, compileOutput } = submission;
 
   // Show loading state
@@ -100,27 +103,42 @@ export default function ResultsTab({ submission, isLoading }: ResultsTabProps) {
   return (
     <div className="h-full overflow-auto p-4 space-y-4">
       {/* Status Banner */}
-      <div className={`rounded-lg p-4 flex items-center gap-4 ${isAccepted
+      <div className={`rounded-lg p-4 flex items-center justify-between ${isAccepted
         ? "bg-emerald-500/10 border border-emerald-500/20"
         : "bg-red-500/10 border border-red-500/20"
         }`}>
-        <div className={`p-2 rounded-full ${isAccepted ? "bg-emerald-500/20" : "bg-red-500/20"}`}>
-          {isAccepted ? (
-            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+        <div className="flex items-center gap-4">
+          <div className={`p-2 rounded-full ${isAccepted ? "bg-emerald-500/20" : "bg-red-500/20"}`}>
+            {isAccepted ? (
+              <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+            ) : (
+              <XCircle className="w-6 h-6 text-red-500" />
+            )}
+          </div>
+          <div>
+            <h3 className={`font-bold text-lg tracking-tight ${isAccepted ? "text-emerald-500" : "text-red-500"}`}>
+              {status?.replace(/_/g, " ")}
+            </h3>
+            <p className={`text-xs font-mono ${isAccepted ? "text-emerald-400/60" : "text-red-400/60"}`}>
+              {isAccepted
+                ? "Congratulations! All test cases passed."
+                : `${passedCount} / ${totalTestCases} test cases passed`}
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={onAnalyze}
+          disabled={isAnalyzing}
+          className="flex items-center gap-2 px-4 py-1.5 rounded-md bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-sm font-medium transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isAnalyzing ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <XCircle className="w-6 h-6 text-red-500" />
+            <SparklesIcon className="w-4 h-4" />
           )}
-        </div>
-        <div>
-          <h3 className={`font-bold text-lg tracking-tight ${isAccepted ? "text-emerald-500" : "text-red-500"}`}>
-            {status?.replace(/_/g, " ")}
-          </h3>
-          <p className={`text-xs font-mono ${isAccepted ? "text-emerald-400/60" : "text-red-400/60"}`}>
-            {isAccepted
-              ? "Congratulations! All test cases passed."
-              : `${passedCount} / ${totalTestCases} test cases passed`}
-          </p>
-        </div>
+          {isAnalyzing ? "Analyzing..." : "Analyze with AI"}
+        </button>
       </div>
 
       {/* Stats Grid */}

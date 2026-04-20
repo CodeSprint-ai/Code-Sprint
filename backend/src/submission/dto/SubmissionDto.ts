@@ -1,4 +1,5 @@
 import { Submission } from '../entities/Submission';
+import { AnalysisResult } from '../../ai/post-submission/schema/analysis.schema';
 
 export class SubmissionDto {
   uuid: string;
@@ -15,6 +16,7 @@ export class SubmissionDto {
   userName?: string;
   testResults?: any;
   compileOutput?: string;
+  aiAnalysis?: AnalysisResult | null;
   finishedAt?: Date;
 
   static toDto(submission: Submission): SubmissionDto {
@@ -33,6 +35,7 @@ export class SubmissionDto {
       userName: submission.user?.name,
       testResults: submission.testResults,
       compileOutput: submission.compileOutput,
+      aiAnalysis: submission.aiAnalysis,
       finishedAt: submission.finishedAt,
     };
   }
