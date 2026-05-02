@@ -68,12 +68,7 @@ export const useAuth = (): UseAuthReturn => {
       setAuth(data.data.user, data.data.accessToken);
       console.log("🔥 Zustand state after login:", useAuthStore.getState());
 
-      // Redirect to dashboard after successful login
-      const redirect = searchParams.get("redirect") || "/dashboard";
-      console.log("📍 Redirecting to:", redirect);
-
-      // Use window.location for more reliable navigation
-      window.location.href = redirect;
+      // Let the caller component handle redirection
     },
   });
 

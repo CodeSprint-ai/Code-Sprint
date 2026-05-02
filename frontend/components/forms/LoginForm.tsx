@@ -4,7 +4,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, Loader2, ArrowLeft, Mail } from "lucide-react";
 import Link from "next/link";
@@ -22,6 +22,7 @@ const LoginForm: React.FC = () => {
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
+  const router = useRouter();
 
   const [showResendVerification, setShowResendVerification] = React.useState(false);
   const [resendEmail, setResendEmail] = React.useState("");
@@ -42,6 +43,7 @@ const LoginForm: React.FC = () => {
       setShowResendVerification(false);
       await login(values);
       toast.success("Login successful 🎉", { description: "Welcome back!" });
+      router.push("/dashboard");
     } catch (err: any) {
       const errorMessage = err?.response?.data?.message || err?.message || "Invalid credentials";
 
