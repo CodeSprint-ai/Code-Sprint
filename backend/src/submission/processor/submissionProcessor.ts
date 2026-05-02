@@ -312,6 +312,13 @@ export class SubmissionProcessor {
       );
     }
 
+    // Update user rating and level based on submission result (accepted or rejected)
+    await this.userStatsService.updateUserRatingAndLevel(
+      submission.user.uuid,
+      submission.problem.uuid,
+      submission.status,
+    );
+
     // Fire-and-forget mastery recalculation (runs in background)
     this.masteryAggregator.recalculateForUser(submission.user.uuid).catch(err =>
       this.logger.error('[Mastery] Failed to recalculate:', err),

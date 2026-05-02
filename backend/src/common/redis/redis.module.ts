@@ -11,7 +11,14 @@ import Redis from 'ioredis';
     {
       provide: 'REDIS_CLIENT',
       useFactory: () => {
-        const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+        const host = process.env.REDIS_HOST ?? 'localhost';
+        const port = parseInt(process.env.REDIS_PORT ?? '6379');
+        const password = process.env.REDIS_PASSWORD || undefined;
+
+        const redis = new Redis({
+          host,
+          port,
+          password,
           maxRetriesPerRequest: 3,
           lazyConnect: true,
         });
@@ -31,3 +38,4 @@ import Redis from 'ioredis';
   exports: ['REDIS_CLIENT'],
 })
 export class RedisModule {}
+

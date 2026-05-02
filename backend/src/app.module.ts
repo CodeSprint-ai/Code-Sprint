@@ -46,9 +46,16 @@ import { RoadmapModule } from './roadmap/roadmap.module';
       }),
       inject: [ConfigService],
     }),
-    BullModule.forRoot({
-      // @ts-ignore
-      redis: { url: process.env.REDIS_URL || 'redis://localhost:6379' },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        redis: {
+          host: configService.get<string>('REDIS_HOST')!,
+          port: parseInt(configService.get<string>('REDIS_PORT')!),
+          password: configService.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
     }),
     BullModule.registerQueue({ name: 'submissions' }),
     AuthModule,

@@ -33,10 +33,22 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                                 </div>
                             )}
                         </div>
-                        {/* Rank Badge */}
-                        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-yellow-500/10 text-yellow-500 text-[10px] font-bold px-2 py-0.5 rounded border border-yellow-500/20 backdrop-blur-md uppercase tracking-wide">
-                            {profile.stats?.rank ? `#${profile.stats.rank}` : 'Unranked'}
-                        </div>
+                        {/* Level Badge */}
+                        {(() => {
+                            const level = profile.level || 'BEGINNER';
+                            const levelStyles: Record<string, string> = {
+                                BEGINNER: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
+                                INTERMEDIATE: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                                ADVANCED: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+                                EXPERT: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+                            };
+                            const style = levelStyles[level] || levelStyles.BEGINNER;
+                            return (
+                                <div className={`absolute -bottom-3 left-1/2 -translate-x-1/2 ${style} text-[10px] font-bold px-2 py-0.5 rounded border backdrop-blur-md uppercase tracking-wide`}>
+                                    {level}
+                                </div>
+                            );
+                        })()}
                     </div>
 
                     {/* User Info */}

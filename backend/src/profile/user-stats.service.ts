@@ -2,10 +2,12 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserStats } from './entities/UserStats';
+import { User } from '../user/entities/user.model';
 import { Problem } from '../problem/entities/Problem';
 import { Submission } from '../submission/entities/Submission';
 import { SubmissionStatus } from '../submission/enum/SubmissionStatus';
 import { DifficultyEnum } from '../problem/enum/DifficultyEnum';
+import { UserLevel } from '../user/enum/UserLevel';
 
 /**
  * UserStatsService
@@ -24,6 +26,8 @@ export class UserStatsService {
         private readonly submissionRepo: Repository<Submission>,
         @InjectRepository(Problem)
         private readonly problemRepo: Repository<Problem>,
+        @InjectRepository(User)
+        private readonly userRepo: Repository<User>,
     ) { }
 
     /**
@@ -128,6 +132,99 @@ export class UserStatsService {
         stats.lastSubmissionDate = today;
 
         this.logger.log(`Updated streak: current=${stats.currentStreak}, max=${stats.maxStreak}`);
+    }
+
+    /**
+     * Determine user level based on current rating.
+     */
+    private getLevelFromRating(rating: number): UserLevel {
+        if (rating >= 600) return UserLevel.EXPERT;
+        if (rating >= 300) return UserLevel.ADVANCED;
+        if (rating >= 100) return UserLevel.INTERMEDIATE;
+        return UserLevel.BEGINNER;
+    }
+
+    /**
+     * Update user rating and level based on submission result.
+     * - Awards base points + streak bonus on first accepted submission for a problem
+     * - Deducts base points on wrong answers for unsolved problems
+     * - Rating cannot drop below 0
+     * - Recalculates user level after every rating change
+     */
+    async updateUserRatingAndLevel(
+        userUuid: string,
+        problemUuid: string,
+        status: SubmissionStatus,
+    ): Promise<void> {
+        try {
+            // 1. Fetch required data
+            const stats = await this.statsRepo.findOne({ where: { userId: userUuid } });
+            const user = await this.userRepo.findOne({ where: { uuid: userUuid } });
+            const problem = await this.problemRepo.findOne({ where: { uuid: problemUuid } });
+            if (!stats || !user || !problem) return;
+
+            // 2. Check if user has already solved this problem before
+            const previousAcceptedCount = await this.submissionRepo.count({
+                where: {
+                    user: { uuid: userUuid },
+                    problem: { uuid: problemUuid },
+                    status: SubmissionStatus.ACCEPTED,
+                },
+            });
+            const alreadySolved = previousAcceptedCount > 0;
+
+            // 3. Define base deltas by difficulty
+            const deltas: Record<string, { win: number; lose: number }> = {
+                [DifficultyEnum.EASY]: { win: 10, lose: -5 },
+                [DifficultyEnum.MEDIUM]: { win: 20, lose: -10 },
+                [DifficultyEnum.HARD]: { win: 30, lose: -15 },
+            };
+            const delta = deltas[problem.difficulty];
+            if (!delta) return;
+
+            // 4. Calculate streak bonus (only on ACCEPTED)
+            let streakBonus = 0;
+            if (status === SubmissionStatus.ACCEPTED) {
+                if (stats.currentStreak >= 10) streakBonus = 20;
+                else if (stats.currentStreak >= 5) streakBonus = 10;
+                else if (stats.currentStreak >= 3) streakBonus = 5;
+            }
+
+            // 5. Apply rating change
+            if (status === SubmissionStatus.ACCEPTED && !alreadySolved) {
+                // First time correct → reward + streak bonus
+                stats.rating += delta.win + streakBonus;
+            } else if (status !== SubmissionStatus.ACCEPTED && !alreadySolved) {
+                // Wrong answer on unsolved problem → penalize
+                stats.rating += delta.lose;
+            }
+            // Otherwise → no change (already solved, or wrong on already-solved)
+
+            // 6. Enforce rating floor
+            if (stats.rating < 0) stats.rating = 0;
+
+            // 7. Save updated rating
+            await this.statsRepo.save(stats);
+
+            // 8. Recalculate and update user level
+            const newLevel = this.getLevelFromRating(stats.rating);
+            if (user.level !== newLevel) {
+                user.level = newLevel;
+                await this.userRepo.save(user);
+                this.logger.log(
+                    `User ${userUuid} leveled up to ${newLevel} (rating: ${stats.rating})`,
+                );
+            }
+
+            this.logger.log(
+                `Rating updated for user ${userUuid}: ${stats.rating} | Level: ${user.level}`,
+            );
+        } catch (error) {
+            this.logger.error(
+                `Failed to update rating/level for user ${userUuid}`,
+                error,
+            );
+        }
     }
 
     /**
