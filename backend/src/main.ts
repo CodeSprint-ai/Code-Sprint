@@ -19,7 +19,7 @@ async function bootstrap() {
     })
   );
   app.useGlobalFilters(new GlobalExceptionFilter(app.get(AppLogger)));
-  app.enableCors({ origin: ['http://localhost:3000', 'https://code-sprint-weld.vercel.app/'] , credentials: true });
+  app.enableCors({ origin: ['http://localhost:3000', 'https://code-sprint-weld.vercel.app'] , credentials: true });
   app.use(cookieParser());
   const contextService = app.get(RequestContextService);
   app.use((req, res, next) => contextService.run(req.user, () => next()));

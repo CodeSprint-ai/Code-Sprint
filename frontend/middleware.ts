@@ -15,9 +15,8 @@ const authConfig = {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Check for the refresh_token cookie (indicates active session)
-  const sessionCookie = request.cookies.get("refresh_token")?.value;
-  const hasSession = Boolean(sessionCookie);
+  // Check for the refresh_token cookie (indicates active session locally) or is_authenticated (cross-domain)
+  const hasSession = Boolean(request.cookies.get("refresh_token")?.value || request.cookies.get("is_authenticated")?.value);
 
   // For now, we consider user authenticated if they have a session cookie
   // Role-based access control will be handled client-side

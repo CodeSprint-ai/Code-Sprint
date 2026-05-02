@@ -1,4 +1,5 @@
 // src/hooks/useAuth.ts
+import Cookies from "js-cookie";
 import {
   useMutation,
   useQueryClient,
@@ -66,6 +67,7 @@ export const useAuth = (): UseAuthReturn => {
       });
 
       setAuth(data.data.user, data.data.accessToken);
+      Cookies.set("is_authenticated", "true", { expires: 7 }); // For middleware
       console.log("🔥 Zustand state after login:", useAuthStore.getState());
 
       // Let the caller component handle redirection
@@ -98,6 +100,7 @@ export const useAuth = (): UseAuthReturn => {
     onSuccess: () => {
       clearAuth();
       queryClient.clear();
+      Cookies.remove("is_authenticated");
     },
   });
 
@@ -105,8 +108,10 @@ export const useAuth = (): UseAuthReturn => {
     try {
       const { data } = await api.get<AuthResponse>("/auth/me");
       setAuth(data.data.user, data.data.accessToken);
+      Cookies.set("is_authenticated", "true", { expires: 7 });
     } catch {
       clearAuth();
+      Cookies.remove("is_authenticated");
     }
   };
 

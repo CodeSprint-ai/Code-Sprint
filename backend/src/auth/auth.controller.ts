@@ -311,8 +311,9 @@ export class AuthController {
     });
 
     const redirectUrl = req.query.redirect || '/dashboard';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     return res.redirect(
-      `http://localhost:3000/?oauth=true&redirect=${redirectUrl}`,
+      `${frontendUrl}/?oauth=true&redirect=${redirectUrl}`,
     );
   }
 
@@ -349,8 +350,9 @@ export class AuthController {
     });
 
     const redirectUrl = req.query.redirect || '/dashboard';
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     return res.redirect(
-      `http://localhost:3000/?oauth=true&redirect=${redirectUrl}`,
+      `${frontendUrl}/?oauth=true&redirect=${redirectUrl}`,
     );
   }
 }

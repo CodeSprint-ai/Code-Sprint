@@ -20,7 +20,7 @@ import { ProviderEnum } from './enum/ProviderEnum';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.model';
-import { Response, Request } from 'express';
+import { Response, Request, CookieOptions } from 'express';
 import { SessionService } from './session.service';
 import { SecurityLogService } from './security-log.service';
 import { AccountStatus } from '../user/enum/AccountStatus';
@@ -28,12 +28,12 @@ import { AccountStatus } from '../user/enum/AccountStatus';
 /**
  * Cookie options for refresh token.
  */
-const REFRESH_TOKEN_COOKIE_OPTIONS = {
+const REFRESH_TOKEN_COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: 'none' as const,
+  secure: true, // Production mein true hona chahiye
+  sameSite: 'none', // Cross-site ke liye lazmi hai
   path: '/',
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 };
 
 /**
