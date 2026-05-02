@@ -53,7 +53,6 @@ import { RoadmapModule } from './roadmap/roadmap.module';
           host: configService.get<string>('REDIS_HOST')!,
           port: parseInt(configService.get<string>('REDIS_PORT')!),
           password: configService.get<string>('REDIS_PASSWORD'),
-          tls: {},
           maxRetriesPerRequest: null,
         },
       }),

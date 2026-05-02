@@ -10,6 +10,8 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // Trust proxy is required to set secure cookies behind a reverse proxy (like Render/Heroku)
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
