@@ -51,7 +51,7 @@ export class AuthController {
   @Public()
   @Post('register')
   @UseGuards(RateLimiterGuard)
-  @RateLimit({ maxAttempts: 5, windowSeconds: 3600 }) // 5 signups per hour
+  // @RateLimit({ maxAttempts: 5, windowSeconds: 3600 }) // 5 signups per hour
   async register(@Body() body: RegisterCommand) {
     const result = await this.authService.register(body);
     return ResponseWrapper.success(result, 'Verification email sent');
@@ -63,7 +63,7 @@ export class AuthController {
   @Public()
   @Post('login')
   @UseGuards(RateLimiterGuard)
-  @RateLimit({ maxAttempts: 5, windowSeconds: 900 }) // 5 attempts per 15 min
+  // @RateLimit({ maxAttempts: 5, windowSeconds: 900 }) // 5 attempts per 15 min
   async login(
     @Body() body: LoginCommand,
     @Req() req: Request,
