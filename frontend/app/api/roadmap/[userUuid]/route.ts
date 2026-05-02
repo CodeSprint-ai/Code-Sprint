@@ -19,6 +19,7 @@ export async function GET(
                 // For a direct server-to-server call, we might need a service token.
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             next: { revalidate: 300 } // cache for 5 minutes at the edge
         });
 

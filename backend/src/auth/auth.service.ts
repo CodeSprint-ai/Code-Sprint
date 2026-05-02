@@ -30,8 +30,8 @@ import { AccountStatus } from '../user/enum/AccountStatus';
  */
 const REFRESH_TOKEN_COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  secure: true,
+  sameSite: 'none' as const,
   path: '/',
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
@@ -578,8 +578,8 @@ export class AuthService {
   private clearSessionCookie(res: Response): void {
     res.clearCookie('refresh_token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       path: '/',
     });
   }
