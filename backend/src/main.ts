@@ -17,7 +17,7 @@ async function bootstrap() {
     })
   );
   app.useGlobalFilters(new GlobalExceptionFilter(app.get(AppLogger)));
-  app.enableCors({ origin: "*", credentials: true });
+  app.enableCors({ origin: true , credentials: true });
   app.use(cookieParser());
   const contextService = app.get(RequestContextService);
   app.use((req, res, next) => contextService.run(req.user, () => next()));
