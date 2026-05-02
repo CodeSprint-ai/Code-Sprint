@@ -48,15 +48,14 @@ import { RoadmapModule } from './roadmap/roadmap.module';
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         redis: {
-          host: configService.get<string>('REDIS_HOST')!,
-          port: parseInt(configService.get<string>('REDIS_PORT')!),
+          host: configService.get<string>('REDIS_HOST'),
+          port: parseInt(configService.get<string>('REDIS_PORT') || '6379'),
           password: configService.get<string>('REDIS_PASSWORD'),
-          maxRetriesPerRequest: null,
         },
       }),
-      inject: [ConfigService],
     }),
     BullModule.registerQueue({ name: 'submissions' }),
     AuthModule,
