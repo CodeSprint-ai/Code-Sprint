@@ -76,7 +76,8 @@ const LoginForm: React.FC = () => {
   };
 
   const handleOAuthLogin = (provider: string) => {
-    window.location.href = `http://localhost:5000/auth/${provider}?redirect=${redirect}`;
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    window.location.href = `${backendUrl}/auth/${provider}?redirect=${redirect}`;
   };
 
   return (

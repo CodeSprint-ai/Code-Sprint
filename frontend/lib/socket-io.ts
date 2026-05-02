@@ -5,7 +5,7 @@ let socket: Socket | null = null;
 
 export const initSocket = (token: string) => {
   if (!socket) {
-    socket = io("http://localhost:5000", {
+    socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000", {
       auth: { token },
       transports: ["websocket"],
       reconnectionAttempts: 5, // optional
