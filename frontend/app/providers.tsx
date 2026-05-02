@@ -1,7 +1,7 @@
 "use client";
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import type { ReactNode } from "react";
+import React, { Suspense, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
@@ -19,7 +19,9 @@ export function Provider({ children }: Props) {
     <QueryClientProvider client={queryClient}>
       <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
         <AuthInitializer>
-          <OAuthInitializer>{children}</OAuthInitializer>
+          <Suspense fallback={null}>
+            <OAuthInitializer>{children}</OAuthInitializer>
+          </Suspense>
         </AuthInitializer>
         <Toaster />
       </NextThemesProvider>

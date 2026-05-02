@@ -1,3 +1,5 @@
+"use client";
+
 import CTA from "@/components/Landing-page/CTA";
 import Features from "@/components/Landing-page/Features";
 import Footer from "@/components/Landing-page/Footer";

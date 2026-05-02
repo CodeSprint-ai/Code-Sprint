@@ -1,3 +1,5 @@
+"use client";
+
 import ResetPasswordForm from "@/components/forms/ResetPasswordForm";
 import React, { Suspense } from "react";
 

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSessions, useLogoutAllDevices } from '@/hooks/useSessions';
 import { formatRelativeTime, getDeviceIcon, getBrowserIcon } from '@/services/sessionApi';
 
-export default function SessionsPage() {
+function SessionsContent() {
     const { sessions, isLoading, isError, refetch, revokeSession, revokeAllSessions, isRevoking } = useSessions();
     const { logoutAll, isLoggingOut } = useLogoutAllDevices();
     const [revokingId, setRevokingId] = useState<string | null>(null);
@@ -157,5 +157,24 @@ export default function SessionsPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function SessionsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0a0a0f] text-white p-6">
+                <div className="max-w-4xl mx-auto">
+                    <h1 className="text-2xl font-bold mb-6">Active Sessions</h1>
+                    <div className="animate-pulse space-y-4">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="bg-[#1a1a2e] rounded-lg p-4 h-24" />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        }>
+            <SessionsContent />
+        </Suspense>
     );
 }
