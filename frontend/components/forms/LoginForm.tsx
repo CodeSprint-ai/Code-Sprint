@@ -43,7 +43,7 @@ const LoginForm: React.FC = () => {
       setShowResendVerification(false);
       await login(values);
       toast.success("Login successful 🎉", { description: "Welcome back!" });
-      router.push("/dashboard");
+      router.push(redirect);
     } catch (err: any) {
       const errorMessage = err?.response?.data?.message || err?.message || "Invalid credentials";
 
