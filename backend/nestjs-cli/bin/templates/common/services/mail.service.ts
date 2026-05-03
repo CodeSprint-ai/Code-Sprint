@@ -8,7 +8,7 @@ export class MailService {
   async sendEmailVerification(email: string, token: string) {
     const url = `http://localhost:5000/auth/verify-email?token=${token}`;
     return this.resend.emails.send({
-      from: 'CodeSprint AI <onboarding@resend.dev>',
+      from: 'CodeSprint AI <noreply@moinuddin.info>',
       to: email,
       subject: 'Verify your email',
       html: `<p>Click <a href="${url}">here</a> to verify your email.</p>`,
@@ -18,7 +18,7 @@ export class MailService {
   async sendPasswordReset(email: string, token: string) {
     const url = `http://localhost:5000/auth/reset-password?token=${token}`;
     return this.resend.emails.send({
-      from: 'CodeSprint AI <onboarding@resend.dev>',
+      from: 'CodeSprint AI <noreply@moinuddin.info>',
       to: email,
       subject: 'Reset your password',
       html: `<p>Click <a href="${url}">here</a> to reset your password. This link will expire in 15 minutes.</p>`,
