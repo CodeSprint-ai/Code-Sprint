@@ -11,4 +11,6 @@ export class RegisterCommand {
     @IsNotEmpty()
     @MinLength(6)
     password: string;
+
+    theme?: 'dark' | 'light';
 }

@@ -27,6 +27,7 @@ export interface SignupCredentials {
   name: string;
   email: string;
   password: string;
+  theme?: "dark" | "light";
 }
 
 export interface LoginCredentials {
@@ -36,6 +37,7 @@ export interface LoginCredentials {
 
 export interface ForgotPasswordCredentials {
   email: string;
+  theme?: "dark" | "light";
 }
 
 export interface ResetPasswordCredentials {

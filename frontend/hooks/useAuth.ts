@@ -16,6 +16,7 @@ import {
   User,
 } from "../types/auth";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTheme } from "next-themes";
 
 interface UseAuthReturn {
   login: UseMutationResult<
@@ -47,6 +48,7 @@ export const useAuth = (): UseAuthReturn => {
   const { user, token, setAuth, clearAuth } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { resolvedTheme } = useTheme();
 
   const queryClient = useQueryClient();
 
@@ -79,9 +81,11 @@ export const useAuth = (): UseAuthReturn => {
     mutationFn: async (
       credentials: SignupCredentials
     ): Promise<SignupResponse> => {
+      const currentTheme = resolvedTheme === "light" ? "light" : "dark";
+      const payload = { ...credentials, theme: currentTheme };
       const response = await api.post<SignupResponse>(
         "/auth/register",
-        credentials
+        payload
       );
       return response.data;
     },

@@ -8,6 +8,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, Loader2, ArrowLeft, Mail } from "lucide-react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import api from "@/services/api";
 
 const LoginForm: React.FC = () => {
   const { login, isLoading, error } = useAuth();
+  const { resolvedTheme } = useTheme();
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
@@ -63,7 +65,8 @@ const LoginForm: React.FC = () => {
 
     setIsResending(true);
     try {
-      await api.post("/auth/resend-verification", { email: resendEmail });
+      const currentTheme = resolvedTheme === "light" ? "light" : "dark";
+      await api.post("/auth/resend-verification", { email: resendEmail, theme: currentTheme });
       toast.success("Verification email sent!", {
         description: "Please check your inbox and spam folder."
       });

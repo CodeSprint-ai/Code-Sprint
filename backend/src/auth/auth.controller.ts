@@ -235,7 +235,7 @@ export class AuthController {
     @Body() command: ForgotPasswordCommand,
     @Req() req: Request,
   ) {
-    const result = await this.authService.forgotPassword(command.email, req);
+    const result = await this.authService.forgotPassword(command.email, req, command.theme);
     return ResponseWrapper.success(result, 'Reset link sent');
   }
 
@@ -272,9 +272,9 @@ export class AuthController {
   @Public()
   @Post('resend-verification')
   @UseGuards(RateLimiterGuard)
-  @RateLimit({ maxAttempts: 3, windowSeconds: 3600 }) // 3 requests per hour
-  async resendVerification(@Body() body: { email: string }) {
-    const result = await this.authService.resendVerificationEmail(body.email);
+  // @RateLimit({ maxAttempts: 3, windowSeconds: 3600 }) // 3 requests per hour
+  async resendVerification(@Body() body: { email: string; theme?: 'dark' | 'light' }) {
+    const result = await this.authService.resendVerificationEmail(body.email, body.theme);
     return ResponseWrapper.success(result, 'Verification email sent');
   }
 

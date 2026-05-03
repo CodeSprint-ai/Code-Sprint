@@ -24,6 +24,7 @@ import { Response, Request, CookieOptions } from 'express';
 import { SessionService } from './session.service';
 import { SecurityLogService } from './security-log.service';
 import { AccountStatus } from '../user/enum/AccountStatus';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Cookie options for refresh token.
@@ -53,6 +54,7 @@ export class AuthService {
     private readonly dataSource: DataSource,
     private readonly sessionService: SessionService,
     private readonly securityLogService: SecurityLogService,
+    private readonly configService: ConfigService,
   ) { }
 
   /**
@@ -75,7 +77,8 @@ export class AuthService {
       { secret: process.env.EMAIL_TOKEN_SECRET, expiresIn: '1h' },
     );
 
-    await this.mailService.sendEmailVerification(user.email, token);
+    const theme = cmd.theme || 'light';
+    await this.mailService.sendEmailVerification(user.email, user.name || 'Sprinter', token, theme);
 
     this.logger.info(
       `Verification email sent to: ${user.email}`,
@@ -312,7 +315,7 @@ export class AuthService {
   /**
    * Resend verification email.
    */
-  async resendVerificationEmail(email: string): Promise<{ message: string }> {
+  async resendVerificationEmail(email: string, theme: 'dark' | 'light' = 'light'): Promise<{ message: string }> {
     this.logger.debug(`Resending verification email to: ${email}`, AuthService.name);
 
     const user = await this.userRepository.findOneBy({ email });
@@ -329,10 +332,10 @@ export class AuthService {
     // Generate new verification token
     const token = this.jwtService.sign(
       { userUuid: user.uuid },
-      { secret: process.env.EMAIL_TOKEN_SECRET, expiresIn: '1h' },
+      { secret: this.configService.get('EMAIL_TOKEN_SECRET'), expiresIn: '1h' },
     );
 
-    await this.mailService.sendEmailVerification(user.email, token);
+    await this.mailService.sendEmailVerification(user.email, user.name || 'Sprinter', token, theme);
 
     this.logger.info(
       `Verification email resent to: ${user.email}`,
@@ -346,7 +349,7 @@ export class AuthService {
    * Initiate password reset flow.
    */
   @Transactional()
-  async forgotPassword(email: string, req: Request, manager?: EntityManager) {
+  async forgotPassword(email: string, req: Request, theme: 'dark' | 'light' = 'light', manager?: EntityManager) {
     this.logger.debug(
       `Initiating forgot password for: ${email}`,
       AuthService.name,
@@ -370,7 +373,7 @@ export class AuthService {
       passwordResetExpires,
     });
 
-    await this.mailService.sendPasswordReset(user.email, token);
+    await this.mailService.sendPasswordReset(user.email, user.name || 'Sprinter', token, theme);
     await this.securityLogService.logPasswordResetRequest(email, req);
 
     this.logger.info(

@@ -145,9 +145,9 @@ const Showcase: React.FC = () => {
                             initial={{ height: 0 }}
                             whileInView={{ height: `${h}%` }}
                             transition={{ duration: 0.5, delay: i * 0.05 }}
-                            className="flex-1 dark:bg-white/5 bg-zinc-100 rounded-t-sm relative overflow-hidden group"
+                            className="flex-1 dark:bg-white/5 bg-zinc-200 rounded-t-sm relative overflow-hidden group"
                         >
-                            <div className="absolute bottom-0 w-full h-full bg-gradient-to-t dark:from-brand-green/10 dark:to-brand-green/40 from-brand-green/20 to-brand-green/60 group-hover:from-brand-green/30 group-hover:to-brand-green/70 transition-all" />
+                            <div className="absolute bottom-0 w-full h-full bg-gradient-to-t dark:from-brand-green/10 dark:to-brand-green/40 from-brand-green/40 to-brand-green/90 group-hover:from-brand-green/50 group-hover:to-brand-green transition-all" />
                         </motion.div>
                     ))}
                 </div>

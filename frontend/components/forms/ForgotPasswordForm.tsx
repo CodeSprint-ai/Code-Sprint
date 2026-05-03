@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, Loader2, ArrowLeft, Mail, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ const ForgotPasswordForm: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isSuccess, setIsSuccess] = React.useState(false);
     const [submittedEmail, setSubmittedEmail] = React.useState("");
+    const { resolvedTheme } = useTheme();
 
     const {
         register,
@@ -30,7 +32,8 @@ const ForgotPasswordForm: React.FC = () => {
     const onSubmit = async (values: ForgotPasswordFormValues) => {
         setIsLoading(true);
         try {
-            await api.post("/auth/forgot-password", { email: values.email });
+            const currentTheme = resolvedTheme === "light" ? "light" : "dark";
+            await api.post("/auth/forgot-password", { email: values.email, theme: currentTheme });
             setSubmittedEmail(values.email);
             setIsSuccess(true);
             toast.success("Reset link sent!", { description: "Check your email for instructions" });
