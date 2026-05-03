@@ -26,7 +26,8 @@
 // ─── Python Template ───────────────────────────────────────────────
 
 export function getPythonTemplate(): string {
-    return `import sys, json, time, traceback, math, collections
+    return `from __future__ import annotations
+import sys, json, time, traceback, math, collections
 from typing import *
 
 # ================= USER CODE INJECTION =================
