@@ -13,7 +13,7 @@ export class MailService {
   constructor(private readonly configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
       host: this.configService.get<string>('SMTP_HOST'),
-      port: this.configService.get<number>('SMTP_PORT'),
+      port: parseInt(this.configService.get('SMTP_PORT')!, 10),
       secure: false,
       auth: {
         user: this.configService.get<string>('SMTP_USER'),
@@ -32,7 +32,7 @@ export class MailService {
     const url = `${frontendUrl}/auth/verify-email?token=${token}`;
     try {
       await this.transporter.sendMail({
-        from: `"CodeSprint AI" <${process.env.SMTP_USER}>`,
+        from: `"CodeSprint AI" <${this.configService.get('SMTP_USER')}>`,
         to: email,
         subject: 'Verify your email – CodeSprint AI',
         html: emailVerificationTemplate(name, url, theme),
@@ -54,7 +54,7 @@ export class MailService {
     const url = `${frontendUrl}/auth/reset-password?token=${token}`;
     try {
       await this.transporter.sendMail({
-        from: `"CodeSprint AI" <${process.env.SMTP_USER}>`,
+        from: `"CodeSprint AI" <${this.configService.get('SMTP_USER')}>`,
         to: email,
         subject: 'Reset your password – CodeSprint AI',
         html: passwordResetTemplate(name, url, theme),
