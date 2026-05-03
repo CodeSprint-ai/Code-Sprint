@@ -18,7 +18,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
         super({
             clientID,
             clientSecret,
-            callbackURL: 'http://localhost:5000/auth/github/callback',
+            callbackURL: `${configService.get<string>('BASE_URL')}/auth/github/callback`,
             scope: ['user:email'],
         });
     }
