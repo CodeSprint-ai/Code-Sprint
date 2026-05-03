@@ -188,14 +188,14 @@ function SubmissionView({ submission }: { submission: Submission }) {
 function ProblemSolveView({ problem }: { problem: Problem }) {
   return (
     <main className="h-screen w-full flex flex-col bg-zinc-950 text-zinc-100">
-      <section className="flex flex-1 flex-col lg:flex-row overflow-hidden">
+      <section className="flex flex-1 flex-col lg:flex-row overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0">
         {/* Left panel - Problem Description */}
-        <div className="lg:w-1/2 border-b lg:border-b-0 lg:border-r border-zinc-800 overflow-y-auto h-full">
+        <div className="lg:w-1/2 min-h-[50vh] lg:min-h-0 border-b lg:border-b-0 lg:border-r border-zinc-800 overflow-y-auto h-full shrink-0 lg:shrink">
           <ProblemPanel problem={problem} />
         </div>
 
         {/* Right panel - Editor */}
-        <div className="lg:w-1/2 flex flex-col overflow-hidden h-full">
+        <div className="lg:w-1/2 min-h-[70vh] lg:min-h-0 flex flex-col overflow-hidden h-full shrink-0 lg:shrink">
           <EditorPanel problem={problem} hideSubmit={false} />
         </div>
       </section>

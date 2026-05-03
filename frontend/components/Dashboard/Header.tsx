@@ -41,8 +41,8 @@ const Header = () => {
       className="
         sticky top-0 z-10
         w-full
-        h-20
-        px-8
+        h-16 sm:h-20
+        px-3 sm:px-8
         flex items-center justify-between
         border-b dark:border-white/5 border-zinc-200
         dark:bg-black/60 bg-white/80 backdrop-blur-md
@@ -73,7 +73,7 @@ const Header = () => {
       </div>
 
       {/* Right: Stats & Actions */}
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-3 sm:gap-8">
         {/* Stats (hidden on mobile) */}
         <div className="hidden md:flex items-center gap-6">
           {/* Day Streak */}
@@ -90,7 +90,7 @@ const Header = () => {
         <div className="h-6 w-px dark:bg-white/10 bg-zinc-200" />
 
         {/* User Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {/* Theme Toggle */}
           <ThemeToggle />
 

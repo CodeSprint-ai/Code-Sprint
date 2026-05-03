@@ -18,6 +18,7 @@ import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Search,
   Filter,
   X,
@@ -93,7 +94,7 @@ function SubmissionCardItem({
   return (
     <Link
       href={viewHref}
-      className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-6 relative group dark:hover:border-emerald-500/20 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg block shadow-sm dark:shadow-none"
+      className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-4 sm:p-6 relative group dark:hover:border-emerald-500/20 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg block shadow-sm dark:shadow-none"
     >
       {/* Header with title and status badge */}
       <div className="flex justify-between items-start mb-6">
@@ -165,6 +166,7 @@ export default function SubmissionsPage() {
 
   type ViewMode = 'cards' | 'table';
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const [filters, setFilters] = useState<GetSubmissionsParams>({
     page: parseInt(searchParams.get("page") || "1", 10) || 1,
@@ -208,20 +210,20 @@ export default function SubmissionsPage() {
   const showPagination = meta !== undefined;
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
+    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden px-3 py-4 sm:px-6 sm:py-6 lg:px-8 w-full">
       <div className="flex w-full flex-1 min-h-0 flex-col overflow-hidden">
-        <div className="mb-8 flex items-start justify-between">
+        <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
               All Submissions
             </h1>
-            <p className="mt-1 text-sm dark:text-zinc-400 text-zinc-500">
+            <p className="mt-1 text-xs sm:text-sm dark:text-zinc-400 text-zinc-500">
               View and filter submissions from all users.
             </p>
           </div>
 
           {/* View toggle */}
-          <div className="flex dark:bg-[#09090b] bg-white p-1 rounded-xl border dark:border-white/5 border-zinc-200 shrink-0">
+          <div className="flex dark:bg-[#09090b] bg-white p-1 rounded-xl border dark:border-white/5 border-zinc-200 shrink-0 self-start">
             <button
               onClick={() => setViewMode('cards')}
               className={cn(
@@ -250,26 +252,42 @@ export default function SubmissionsPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-8 p-1 rounded-2xl border dark:border-white/5 border-zinc-200 dark:bg-[#09090b] bg-white shadow-sm dark:shadow-none">
-          <div className="p-3 flex items-center justify-between">
+        <div className="mb-3 sm:mb-8 p-1 rounded-2xl border dark:border-white/5 border-zinc-200 dark:bg-[#09090b] bg-white shadow-sm dark:shadow-none">
+          <button
+            type="button"
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="w-full p-3 flex items-center justify-between sm:cursor-default"
+          >
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 dark:text-zinc-400 text-zinc-500" />
               <span className="text-sm font-medium dark:text-zinc-300 text-zinc-700">Filters</span>
+              {hasActiveFilters && (
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+              )}
             </div>
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10"
-              >
-                <X className="mr-1 h-3.5 w-3.5" />
-                Clear
-              </Button>
-            )}
-          </div>
-          <div className="grid gap-2 p-2 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="relative group">
+            <div className="flex items-center gap-2">
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => { e.stopPropagation(); clearFilters(); }}
+                  className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10 h-7 px-2"
+                >
+                  <X className="mr-1 h-3.5 w-3.5" />
+                  Clear
+                </Button>
+              )}
+              <ChevronDown className={cn(
+                "h-4 w-4 dark:text-zinc-500 text-zinc-400 transition-transform sm:hidden",
+                filtersOpen && "rotate-180"
+              )} />
+            </div>
+          </button>
+          <div className={cn(
+            "grid gap-2 p-2 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 transition-all",
+            !filtersOpen && "hidden sm:grid"
+          )}>
+            <div className="relative group col-span-2 sm:col-span-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500 group-focus-within:text-emerald-500 transition-colors" />
               <Input
                 placeholder="Search by title or user..."
@@ -337,7 +355,7 @@ export default function SubmissionsPage() {
             ) : (
               viewMode === 'cards' ? (
                 <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+                  <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pb-4">
                     {submissions.map((s) => (
                       <SubmissionCardItem
                         key={s.uuid}
@@ -356,7 +374,7 @@ export default function SubmissionsPage() {
 
             {/* Pagination: sticky at bottom */}
             {showPagination && meta && (
-              <div className="flex-shrink-0 mt-4 rounded-xl border dark:border-zinc-800/80 border-zinc-200 dark:bg-zinc-900/30 bg-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-sm dark:shadow-none">
+              <div className="flex-shrink-0 mt-3 sm:mt-4 rounded-xl border dark:border-zinc-800/80 border-zinc-200 dark:bg-zinc-900/30 bg-white px-3 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 shadow-sm dark:shadow-none">
                 <p className="text-sm dark:text-zinc-400 text-zinc-500">
                   Showing{" "}
                   <span className="font-medium dark:text-zinc-300 text-zinc-700">
@@ -369,7 +387,7 @@ export default function SubmissionsPage() {
                   of <span className="font-medium dark:text-zinc-300 text-zinc-700">{meta.total}</span>{" "}
                   submissions
                 </p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <Button
                     variant="outline"
                     size="sm"

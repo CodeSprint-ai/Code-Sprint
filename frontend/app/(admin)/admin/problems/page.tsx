@@ -17,6 +17,7 @@ import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Search,
   Filter,
   X,
@@ -56,6 +57,7 @@ export default function AdminProblemsPage() {
 
   type ViewMode = 'cards' | 'table';
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const [filters, setFilters] = useState<GetProblemsParams>({
     page: parseInt(searchParams.get("page") || "1", 10) || 1,
@@ -103,18 +105,18 @@ export default function AdminProblemsPage() {
   const showPagination = meta !== undefined;
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden px-4 py-6 sm:px-6 lg:px-8 w-full">
+    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden px-3 py-4 sm:px-6 sm:py-6 lg:px-8 w-full">
       <div className="flex w-full flex-1 min-h-0 flex-col overflow-hidden">
-        <div className="mb-8 flex items-start justify-between">
+        <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
               All Problems
             </h1>
-            <p className="mt-1 text-sm dark:text-zinc-400 text-zinc-500">
+            <p className="mt-1 text-xs sm:text-sm dark:text-zinc-400 text-zinc-500">
               Browse and solve algorithm challenges.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start">
             {/* View toggle */}
             <div className="flex dark:bg-[#09090b] bg-white p-1 rounded-xl border dark:border-white/5 border-zinc-200 shrink-0">
             <button
@@ -144,9 +146,10 @@ export default function AdminProblemsPage() {
             </div>
             {user?.role === "ADMIN" && (
               <Link href="/admin/problems/add">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Problem
+                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm">
+                  <Plus className="mr-1 sm:mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Add Problem</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </Link>
             )}
@@ -154,26 +157,42 @@ export default function AdminProblemsPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-8 p-1 rounded-2xl border dark:border-white/5 border-zinc-200 dark:bg-[#09090b] bg-white shadow-sm dark:shadow-none">
-          <div className="p-3 flex items-center justify-between">
+        <div className="mb-3 sm:mb-8 p-1 rounded-2xl border dark:border-white/5 border-zinc-200 dark:bg-[#09090b] bg-white shadow-sm dark:shadow-none">
+          <button
+            type="button"
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="w-full p-3 flex items-center justify-between sm:cursor-default"
+          >
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 dark:text-zinc-400 text-zinc-500" />
               <span className="text-sm font-medium dark:text-zinc-300 text-zinc-700">Filters</span>
+              {hasActiveFilters && (
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+              )}
             </div>
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10"
-              >
-                <X className="mr-1 h-3.5 w-3.5" />
-                Clear
-              </Button>
-            )}
-          </div>
-          <div className="grid gap-2 p-2 sm:grid-cols-2 lg:grid-cols-5">
-            <div className="relative group lg:col-span-1">
+            <div className="flex items-center gap-2">
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => { e.stopPropagation(); clearFilters(); }}
+                  className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10 h-7 px-2"
+                >
+                  <X className="mr-1 h-3.5 w-3.5" />
+                  Clear
+                </Button>
+              )}
+              <ChevronDown className={cn(
+                "h-4 w-4 dark:text-zinc-500 text-zinc-400 transition-transform sm:hidden",
+                filtersOpen && "rotate-180"
+              )} />
+            </div>
+          </button>
+          <div className={cn(
+            "grid gap-2 p-2 grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 transition-all",
+            !filtersOpen && "hidden sm:grid"
+          )}>
+            <div className="relative group col-span-2 lg:col-span-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500 group-focus-within:text-emerald-500 transition-colors" />
               <Input
                 placeholder="Search..."
@@ -216,9 +235,9 @@ export default function AdminProblemsPage() {
               placeholder="Filter by tag..."
               value={filters.tag ?? ""}
               onChange={(e) => handleFilterChange("tag", e.target.value)}
-              className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-100 text-zinc-800 dark:placeholder:text-zinc-500 placeholder:text-zinc-400"
+              className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-100 text-zinc-800 dark:placeholder:text-zinc-500 placeholder:text-zinc-400 col-span-2 sm:col-span-1"
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 col-span-2 sm:col-span-1">
               <Input
                 type="date"
                 value={filters.fromDate ?? ""}
@@ -260,7 +279,7 @@ export default function AdminProblemsPage() {
             ) : (
               viewMode === 'cards' ? (
                 <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-2">
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+                  <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pb-4">
                     {problems.map((problem, index) => (
                       <ProblemCard key={problem.uuid} {...problem} index={index} />
                     ))}
@@ -275,7 +294,7 @@ export default function AdminProblemsPage() {
 
             {/* Pagination: sticky at bottom */}
             {showPagination && meta && (
-              <div className="flex-shrink-0 mt-4 rounded-xl border dark:border-zinc-800/80 border-zinc-200 dark:bg-zinc-900/30 bg-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-sm dark:shadow-none">
+              <div className="flex-shrink-0 mt-3 sm:mt-4 rounded-xl border dark:border-zinc-800/80 border-zinc-200 dark:bg-zinc-900/30 bg-white px-3 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 shadow-sm dark:shadow-none">
                 <p className="text-sm dark:text-zinc-400 text-zinc-500">
                   Showing{" "}
                   <span className="font-medium dark:text-zinc-300 text-zinc-700">
@@ -288,7 +307,7 @@ export default function AdminProblemsPage() {
                   of <span className="font-medium dark:text-zinc-300 text-zinc-700">{meta.total}</span>{" "}
                   problems
                 </p>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <Button
                     variant="outline"
                     size="sm"
@@ -328,6 +347,6 @@ export default function AdminProblemsPage() {
           </div>
         )}
       </div>
-    // </div>
+     </div>
   );
 }

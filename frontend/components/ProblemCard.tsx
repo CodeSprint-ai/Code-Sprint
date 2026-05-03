@@ -143,7 +143,7 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
 
   return (
     <Link href={problemUrl} className="block group">
-      <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-6 relative dark:hover:border-emerald-500/20 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg flex flex-col h-full shadow-sm dark:shadow-none">
+      <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-4 sm:p-6 relative dark:hover:border-emerald-500/20 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg flex flex-col h-full shadow-sm dark:shadow-none">
         {/* Header Row */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2 dark:text-zinc-500 text-zinc-400 font-mono text-xs">
