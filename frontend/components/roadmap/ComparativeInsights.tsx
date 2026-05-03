@@ -9,16 +9,16 @@ interface Props {
 export function ComparativeInsights({ insights }: Props) {
     if (!insights || insights.length === 0) {
         return (
-            <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-                <h3 className="text-sm font-semibold text-slate-400 mb-3">Speed Insights</h3>
-                <p className="text-xs text-slate-500">Solve more problems to unlock speed comparisons.</p>
+            <div className="dark:bg-white/[0.03] bg-white border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-5 shadow-sm dark:shadow-none">
+                <h3 className="text-sm font-semibold dark:text-slate-400 text-zinc-500 mb-3">Speed Insights</h3>
+                <p className="text-xs dark:text-slate-500 text-zinc-500">Solve more problems to unlock speed comparisons.</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-            <h3 className="text-sm font-semibold text-slate-400 mb-4 flex items-center gap-2">
+        <div className="dark:bg-white/[0.03] bg-white border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-5 shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-semibold dark:text-slate-400 text-zinc-500 mb-4 flex items-center gap-2">
                 <span>📊</span> Speed Insights
             </h3>
             <div className="space-y-3">
@@ -38,20 +38,20 @@ export function ComparativeInsights({ insights }: Props) {
                     return (
                         <div key={insight.topic_name} className="space-y-1.5">
                             <div className="flex items-center justify-between">
-                                <span className="text-xs text-slate-300 font-medium">
+                                <span className="text-xs dark:text-slate-300 text-zinc-700 font-medium">
                                     {insight.topic_name.replace(/_/g, ' ')}
                                 </span>
                                 <span className={`text-xs font-bold ${textColor}`}>
                                     Top {100 - pct}%
                                 </span>
                             </div>
-                            <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-1.5 dark:bg-white/5 bg-zinc-200 rounded-full overflow-hidden">
                                 <div
                                     className={`h-full rounded-full ${color} transition-all duration-1000 ease-out`}
                                     style={{ width: `${pct}%` }}
                                 />
                             </div>
-                            <p className="text-[10px] text-slate-500">
+                            <p className="text-[10px] dark:text-slate-500 text-zinc-500">
                                 Faster than {pct}% of users
                             </p>
                         </div>

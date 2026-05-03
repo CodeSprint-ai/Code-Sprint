@@ -10,7 +10,7 @@ export function StreakCounter({ streak }: Props) {
     const { current, longest, todayActive } = streak;
 
     return (
-        <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 relative overflow-hidden group">
+        <div className="dark:bg-white/[0.03] bg-white border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-5 relative overflow-hidden group shadow-sm dark:shadow-none">
             {/* Background fire glow for active streaks */}
             {current >= 3 && (
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 blur-[60px] rounded-full group-hover:bg-orange-500/20 transition-all duration-700" />
@@ -39,10 +39,10 @@ export function StreakCounter({ streak }: Props) {
                 <div className="space-y-1 flex-1">
                     {current > 0 ? (
                         <>
-                            <p className="text-2xl font-black text-white tracking-tight">
+                            <p className="text-2xl font-black dark:text-white text-zinc-900 tracking-tight">
                                 {current}-day streak!
                             </p>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs dark:text-slate-400 text-zinc-500">
                                 {todayActive ? (
                                     <span className="text-green-400 font-semibold">✓ Active today</span>
                                 ) : (
@@ -54,10 +54,10 @@ export function StreakCounter({ streak }: Props) {
                         </>
                     ) : (
                         <>
-                            <p className="text-lg font-bold text-slate-300">
+                            <p className="text-lg font-bold dark:text-slate-300 text-zinc-700">
                                 Start your streak!
                             </p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs dark:text-slate-500 text-zinc-500">
                                 Solve a problem today to begin
                                 {longest > 0 && ` · Best ever: ${longest} days`}
                             </p>
@@ -73,7 +73,7 @@ export function StreakCounter({ streak }: Props) {
                                 key={milestone}
                                 className={`text-[9px] font-bold px-2 py-0.5 rounded-full border tracking-wider ${current >= milestone
                                         ? 'bg-orange-500/15 text-orange-400 border-orange-500/25'
-                                        : 'bg-white/[0.02] text-slate-600 border-white/5'
+                                        : 'dark:bg-white/[0.02] bg-zinc-100 dark:text-slate-600 text-zinc-400 dark:border-white/5 border-zinc-200'
                                     }`}
                             >
                                 {milestone}d{current >= milestone ? ' ✓' : ''}

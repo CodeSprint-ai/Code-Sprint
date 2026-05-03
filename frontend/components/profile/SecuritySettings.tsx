@@ -61,7 +61,7 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
     };
 
     return (
-        <div className="bg-[#1a1a2e] rounded-lg p-6 border border-[#2a2a3e]">
+        <div className="dark:bg-[#1a1a2e] bg-white rounded-lg p-6 border dark:border-[#2a2a3e] border-zinc-200">
             <h2 className="text-xl font-semibold mb-4">Security Settings</h2>
 
             {/* Success/Error Messages */}
@@ -79,7 +79,7 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
             {/* Password Section */}
             <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-gray-300">Password</span>
+                    <span className="dark:text-gray-300 text-gray-700">Password</span>
                     <button
                         onClick={() => setShowPasswordForm(!showPasswordForm)}
                         className="text-sm text-blue-400 hover:text-blue-300"
@@ -102,7 +102,7 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
                                     type="password"
                                     value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
-                                    className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
+                                    className="w-full dark:bg-[#0a0a0f] bg-zinc-50 border dark:border-[#2a2a3e] border-zinc-200 rounded-lg px-3 py-2 dark:text-white text-zinc-900 focus:border-blue-500 focus:outline-none"
                                     required
                                 />
                             </div>
@@ -113,7 +113,7 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
                                 type="password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
+                                className="w-full dark:bg-[#0a0a0f] bg-zinc-50 border dark:border-[#2a2a3e] border-zinc-200 rounded-lg px-3 py-2 dark:text-white text-zinc-900 focus:border-blue-500 focus:outline-none"
                                 required
                                 minLength={6}
                             />
@@ -124,7 +124,7 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:outline-none"
+                                className="w-full dark:bg-[#0a0a0f] bg-zinc-50 border dark:border-[#2a2a3e] border-zinc-200 rounded-lg px-3 py-2 dark:text-white text-zinc-900 focus:border-blue-500 focus:outline-none"
                                 required
                             />
                         </div>
@@ -150,7 +150,7 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
                             <button
                                 type="button"
                                 onClick={() => setShowPasswordForm(false)}
-                                className="px-4 py-2 bg-[#2a2a3e] text-gray-300 rounded-lg hover:bg-[#3a3a4e] transition-colors"
+                                className="px-4 py-2 dark:bg-[#2a2a3e] bg-zinc-200 dark:text-gray-300 text-gray-700 rounded-lg dark:hover:bg-[#3a3a4e] hover:bg-zinc-300 transition-colors"
                             >
                                 Cancel
                             </button>
@@ -160,10 +160,10 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
             </div>
 
             {/* Sessions Link */}
-            <div className="pt-4 border-t border-[#2a2a3e]">
+            <div className="pt-4 border-t dark:border-[#2a2a3e] border-zinc-200">
                 <div className="flex items-center justify-between">
                     <div>
-                        <span className="text-gray-300">Active Sessions</span>
+                        <span className="dark:text-gray-300 text-gray-700">Active Sessions</span>
                         <p className="text-sm text-gray-500">Manage your logged-in devices</p>
                     </div>
                     <Link

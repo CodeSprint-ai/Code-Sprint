@@ -10,17 +10,17 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
     return (
-        <div className="relative rounded-2xl overflow-hidden border border-white/5 bg-[#09090b] group">
+        <div className="relative rounded-2xl overflow-hidden border dark:border-white/5 border-zinc-200 dark:bg-[#09090b] bg-white group">
             {/* Banner with gradient and dot pattern */}
-            <div className="h-48 bg-gradient-to-r from-emerald-900/10 via-black to-emerald-900/10 relative">
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="h-48 bg-gradient-to-r dark:from-emerald-900/10 dark:via-black dark:to-emerald-900/10 from-emerald-100/50 via-white to-emerald-100/50 relative">
+                <div className="absolute inset-0 opacity-20 dark:bg-[radial-gradient(#10b981_1px,transparent_1px)] bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]" />
             </div>
 
             <div className="px-8 pb-8">
                 <div className="relative flex flex-col md:flex-row items-start md:items-end gap-6 -mt-16">
                     {/* Avatar */}
                     <div className="relative group">
-                        <div className="w-32 h-32 rounded-2xl bg-[#09090b] border-4 border-[#09090b] shadow-2xl flex items-center justify-center overflow-hidden">
+                        <div className="w-32 h-32 rounded-2xl dark:bg-[#09090b] bg-white border-4 dark:border-[#09090b] border-white shadow-2xl flex items-center justify-center overflow-hidden">
                             {profile.avatarUrl ? (
                                 <img
                                     src={profile.avatarUrl}
@@ -28,7 +28,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+                                <div className="w-full h-full dark:bg-zinc-900 bg-zinc-100 flex items-center justify-center">
                                     <span className="text-4xl">🧑‍💻</span>
                                 </div>
                             )}
@@ -54,7 +54,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                     {/* User Info */}
                     <div className="flex-1 mb-2 space-y-1">
                         <div className="flex items-center gap-3">
-                            <h1 className="text-3xl font-black text-white tracking-tight">
+                            <h1 className="text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
                                 {profile.name || profile.username}
                             </h1>
                             <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wider">
@@ -103,7 +103,7 @@ function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode
             href={fullHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white border border-white/5 hover:border-white/10 transition-all"
+            className="p-2 rounded-lg dark:bg-white/5 bg-zinc-100 dark:hover:bg-white/10 hover:bg-zinc-200 dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-900 border dark:border-white/5 border-zinc-200 dark:hover:border-white/10 hover:border-zinc-300 transition-all"
             title={label}
         >
             {icon}

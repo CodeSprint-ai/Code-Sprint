@@ -27,10 +27,10 @@ function ProgressBar({
             <div className="flex justify-between text-xs">
                 <span className={`font-bold ${colorClass}`}>{label}</span>
                 <span className="font-mono text-zinc-400">
-                    <span className="text-white">{solved}</span> / {total}
+                    <span className="dark:text-white text-zinc-900">{solved}</span> / {total}
                 </span>
             </div>
-            <div className="h-2 w-full bg-zinc-900 rounded-full overflow-hidden">
+            <div className="h-2 w-full dark:bg-zinc-900 bg-zinc-200 rounded-full overflow-hidden">
                 <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
@@ -51,9 +51,9 @@ export function DifficultyChart({ distribution }: DifficultyChartProps) {
     return (
         <div className="space-y-6 relative z-10">
             <div className="flex justify-between items-end mb-2">
-                <div className="text-sm font-medium text-white">Solved Problems</div>
+                <div className="text-sm font-medium dark:text-white text-zinc-900">Solved Problems</div>
                 <div className="text-sm font-mono font-bold text-zinc-400">
-                    <span className="text-white text-lg">{totalSolved}</span>{' '}
+                    <span className="dark:text-white text-zinc-900 text-lg">{totalSolved}</span>{' '}
                     <span className="text-zinc-600">/</span> {totalProblems}
                 </div>
             </div>

@@ -35,7 +35,7 @@ function AIAnalysisSkeleton() {
 
             {/* 2-column grid skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-[#1e1e1e] border border-gray-800 rounded-lg p-4">
+                <div className="dark:bg-[#1e1e1e] bg-zinc-50 border dark:border-gray-800 border-zinc-200 rounded-lg p-4">
                     <div className="h-3 w-24 rounded bg-zinc-700 mb-3" />
                     <div className="space-y-2 ml-4">
                         <div className="h-3 w-full rounded bg-zinc-700/60" />
@@ -43,7 +43,7 @@ function AIAnalysisSkeleton() {
                         <div className="h-3 w-4/6 rounded bg-zinc-700/60" />
                     </div>
                 </div>
-                <div className="bg-[#1e1e1e] border border-gray-800 rounded-lg p-4">
+                <div className="dark:bg-[#1e1e1e] bg-zinc-50 border dark:border-gray-800 border-zinc-200 rounded-lg p-4">
                     <div className="h-3 w-20 rounded bg-zinc-700 mb-3" />
                     <div className="flex justify-between items-center border-b border-gray-800 pb-2 mb-2">
                         <div className="h-3 w-28 rounded bg-zinc-700/60" />
@@ -66,11 +66,11 @@ function AIAnalysisSkeleton() {
             </div>
 
             {/* Code block skeleton */}
-            <div className="rounded-lg overflow-hidden border border-gray-800">
-                <div className="bg-[#252525] px-4 py-2">
+            <div className="rounded-lg overflow-hidden border dark:border-gray-800 border-zinc-200">
+                <div className="dark:bg-[#252525] bg-zinc-100 px-4 py-2">
                     <div className="h-3 w-40 rounded bg-zinc-700" />
                 </div>
-                <div className="p-4 bg-[#0d0d0d] space-y-2">
+                <div className="p-4 dark:bg-[#0d0d0d] bg-white space-y-2">
                     <div className="h-3 w-full rounded bg-zinc-700/40" />
                     <div className="h-3 w-5/6 rounded bg-zinc-700/40" />
                     <div className="h-3 w-4/6 rounded bg-zinc-700/40" />
@@ -101,7 +101,7 @@ export default function AIAnalysisView({
                     <h3 className="text-red-400 font-semibold mb-1 flex items-center gap-2">
                         <AlertTriangle className="w-5 h-5" /> Analysis Failed
                     </h3>
-                    <p className="text-gray-300 text-sm">
+                    <p className="dark:text-gray-300 text-zinc-700 text-sm">
                         {error || "An unexpected error occurred during AI analysis."}
                     </p>
                 </div>
@@ -145,17 +145,17 @@ export default function AIAnalysisView({
                         </span>
                     )}
                 </h3>
-                <p className="text-gray-300 text-sm">{data.feedback}</p>
+                <p className="dark:text-gray-300 text-zinc-700 text-sm">{data.feedback}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Optimizations */}
-                <div className="bg-[#1e1e1e] border border-gray-800 rounded-lg p-4">
-                    <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <div className="dark:bg-[#1e1e1e] bg-zinc-50 border dark:border-gray-800 border-zinc-200 rounded-lg p-4">
+                    <h4 className="dark:text-gray-400 text-zinc-500 text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
                         <Lightbulb className="w-3.5 h-3.5" />
                         {data.isOptimal ? "Strengths" : "Potential Improvements"}
                     </h4>
-                    <ul className="text-sm text-gray-300 space-y-2 list-disc ml-4">
+                    <ul className="text-sm dark:text-gray-300 text-zinc-700 space-y-2 list-disc ml-4">
                         {data.optimizations.map((item, index) => (
                             <li key={index}>{item}</li>
                         ))}
@@ -163,18 +163,18 @@ export default function AIAnalysisView({
                 </div>
 
                 {/* Complexity Analysis */}
-                <div className="bg-[#1e1e1e] border border-gray-800 rounded-lg p-4">
-                    <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3">
+                <div className="dark:bg-[#1e1e1e] bg-zinc-50 border dark:border-gray-800 border-zinc-200 rounded-lg p-4">
+                    <h4 className="dark:text-gray-400 text-zinc-500 text-xs uppercase tracking-wider mb-3">
                         Efficiency
                     </h4>
-                    <div className="flex justify-between items-center border-b border-gray-800 pb-2 mb-2">
-                        <span className="text-sm text-gray-400">Time Complexity</span>
+                    <div className="flex justify-between items-center border-b dark:border-gray-800 border-zinc-200 pb-2 mb-2">
+                        <span className="text-sm dark:text-gray-400 text-zinc-500">Time Complexity</span>
                         <span className="text-sm text-emerald-400 font-mono">
                             {data.timeComplexity}
                         </span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-400">Space Complexity</span>
+                        <span className="text-sm dark:text-gray-400 text-zinc-500">Space Complexity</span>
                         <span className="text-sm text-emerald-400 font-mono">
                             {data.spaceComplexity}
                         </span>
@@ -184,12 +184,12 @@ export default function AIAnalysisView({
 
             {/* Edge Cases */}
             {data.edgeCases.length > 0 && (
-                <div className="bg-[#1e1e1e] border border-gray-800 rounded-lg p-4">
-                    <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <div className="dark:bg-[#1e1e1e] bg-zinc-50 border dark:border-gray-800 border-zinc-200 rounded-lg p-4">
+                    <h4 className="dark:text-gray-400 text-zinc-500 text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
                         <ShieldAlert className="w-3.5 h-3.5" />
                         Edge Cases to Watch
                     </h4>
-                    <ul className="text-sm text-gray-300 space-y-2 list-disc ml-4">
+                    <ul className="text-sm dark:text-gray-300 text-zinc-700 space-y-2 list-disc ml-4">
                         {data.edgeCases.map((item, index) => (
                             <li key={index}>{item}</li>
                         ))}
@@ -198,8 +198,8 @@ export default function AIAnalysisView({
             )}
 
             {/* Approach / Code Suggestion */}
-            <div className="rounded-lg overflow-hidden border border-gray-800">
-                <div className="bg-[#252525] px-4 py-2 text-xs text-gray-400 flex justify-between">
+            <div className="rounded-lg overflow-hidden border dark:border-gray-800 border-zinc-200">
+                <div className="dark:bg-[#252525] bg-zinc-100 px-4 py-2 text-xs dark:text-gray-400 text-zinc-500 flex justify-between">
                     <span>AI Approach Analysis</span>
                     <button
                         onClick={handleCopy}
@@ -216,7 +216,7 @@ export default function AIAnalysisView({
                         )}
                     </button>
                 </div>
-                <pre className="p-4 bg-[#0d0d0d] text-sm text-emerald-50/80 font-mono overflow-x-auto whitespace-pre-wrap">
+                <pre className="p-4 dark:bg-[#0d0d0d] bg-white text-sm dark:text-emerald-50/80 text-zinc-800 font-mono overflow-x-auto whitespace-pre-wrap">
                     {data.approach}
                 </pre>
             </div>

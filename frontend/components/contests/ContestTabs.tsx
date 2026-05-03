@@ -40,7 +40,7 @@ const TABS = [
 
 export function ContestTabs({ activeTab, onTabChange, counts }: ContestTabsProps) {
     return (
-        <div className="flex flex-wrap gap-2 p-1 rounded-xl bg-zinc-900/50 border border-zinc-800">
+        <div className="flex flex-wrap gap-2 p-1 rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200">
             {TABS.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -60,7 +60,7 @@ export function ContestTabs({ activeTab, onTabChange, counts }: ContestTabsProps
                                     tab.color === 'amber' && 'from-amber-600/30 to-amber-500/10 text-amber-400 shadow-amber-500/10',
                                     tab.color === 'cyan' && 'from-cyan-600/30 to-cyan-500/10 text-cyan-400 shadow-cyan-500/10',
                                 )
-                                : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                                : 'dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-900 dark:hover:bg-zinc-800/50 hover:bg-zinc-100'
                         )}
                     >
                         <Icon className={cn(
@@ -78,7 +78,7 @@ export function ContestTabs({ activeTab, onTabChange, counts }: ContestTabsProps
                                         tab.color === 'amber' && 'bg-amber-500/30 text-amber-300',
                                         tab.color === 'cyan' && 'bg-cyan-500/30 text-cyan-300',
                                     )
-                                    : 'bg-zinc-700/50 text-zinc-400'
+                                    : 'dark:bg-zinc-700/50 bg-zinc-200 dark:text-zinc-400 text-zinc-600'
                             )}>
                                 {count}
                             </span>

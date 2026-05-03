@@ -167,13 +167,13 @@ export default function SubmissionPanel({
   const tabClasses = (tab: string) => {
     const isActiveTab = activeTab === tab;
     return `h-full px-4 text-xs font-bold transition-colors flex items-center gap-2 ${isActiveTab
-      ? "text-white border-b-2 border-emerald-500 bg-white/5"
-      : "text-zinc-500 hover:text-white"
+      ? "dark:text-white text-zinc-900 border-b-2 border-emerald-500 dark:bg-white/5 bg-zinc-100"
+      : "dark:text-zinc-500 text-zinc-600 dark:hover:text-white hover:text-zinc-900"
       }`;
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#09090b] border-t border-white/5 overflow-hidden">
+    <div className="flex flex-col h-full dark:bg-[#09090b] bg-white border-t dark:border-white/5 border-zinc-200 overflow-hidden">
       {/* Progress Bar */}
       {showProgress && (
         <SubmissionProgress
@@ -184,7 +184,7 @@ export default function SubmissionPanel({
       )}
 
       {/* Custom Tabs */}
-      <div className="h-10 border-b border-white/5 flex items-center px-2 bg-white/[0.02] shrink-0">
+      <div className="h-10 border-b dark:border-white/5 border-zinc-200 flex items-center px-2 dark:bg-white/[0.02] bg-zinc-50 shrink-0">
         <button
           onClick={() => setActiveTab("results")}
           className={tabClasses("results")}
@@ -201,7 +201,7 @@ export default function SubmissionPanel({
         >
           Test Cases
           {submission.testResults.length > 0 && (
-            <span className="text-[10px] bg-white/10 px-1.5 rounded-full">
+            <span className="text-[10px] dark:bg-white/10 bg-zinc-200 px-1.5 rounded-full">
               {submission.passedCount}/{submission.testResults.length}
             </span>
           )}
@@ -240,10 +240,10 @@ export default function SubmissionPanel({
 
       {/* AI Analysis Modal */}
       <Dialog open={isAIModalOpen} onOpenChange={setIsAIModalOpen}>
-        <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto bg-[#0d0d0d] border-gray-800">
+        <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto dark:bg-[#0d0d0d] bg-white dark:border-gray-800 border-zinc-200">
           <DialogHeader>
-            <DialogTitle className="text-white">AI Diagnostic</DialogTitle>
-            <DialogDescription className="text-zinc-500">
+            <DialogTitle className="dark:text-white text-zinc-900">AI Diagnostic</DialogTitle>
+            <DialogDescription className="dark:text-zinc-500 text-zinc-600">
               AI-powered analysis of your submission
             </DialogDescription>
           </DialogHeader>

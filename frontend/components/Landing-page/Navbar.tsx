@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, Terminal, ChevronDown, Code, Cpu, BookOpen, Users, Zap, Globe, FileText, Layout, MessageSquare, Briefcase, BarChart, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const NAV_ITEMS = [
   {
@@ -59,8 +60,10 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#09090B]/80 backdrop-blur-lg py-4' : 'bg-transparent py-6'
-        }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'dark:bg-[#09090B]/80 bg-white/80 backdrop-blur-lg py-4 shadow-sm dark:shadow-none'
+        : 'bg-transparent py-6'
+      }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
@@ -68,7 +71,7 @@ const Navbar: React.FC = () => {
           <div className="bg-gradient-to-tr from-brand-green to-emerald-900 p-2 rounded-lg group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all duration-300">
             <Terminal className="text-white w-5 h-5" />
           </div>
-          <span className="text-lg font-bold tracking-tight text-white code-font">
+          <span className="text-lg font-bold tracking-tight dark:text-white text-zinc-900 code-font">
             CodeSprint<span className="text-brand-green">AI</span>
           </span>
         </div>
@@ -84,8 +87,10 @@ const Navbar: React.FC = () => {
             >
               <a
                 href={item.href}
-                className={`flex items-center gap-1.5 text-sm font-medium transition-all duration-300 ${hoveredNav === item.label ? 'text-white' : 'text-zinc-400 hover:text-white'
-                  }`}
+                className={`flex items-center gap-1.5 text-sm font-medium transition-all duration-300 ${hoveredNav === item.label
+                  ? 'dark:text-white text-zinc-900'
+                  : 'dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-zinc-900'
+                }`}
               >
                 {item.label}
                 <ChevronDown
@@ -104,22 +109,22 @@ const Navbar: React.FC = () => {
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     className="absolute top-full left-1/2 -translate-x-1/2 pt-6 w-[320px]"
                   >
-                    <div className="bg-[#0c0c0e] backdrop-blur-2xl border border-white/10 rounded-2xl p-2 shadow-[0_20px_40px_-15px_rgba(0,0,0,1)] overflow-hidden ring-1 ring-white/5">
+                    <div className="dark:bg-[#0c0c0e] bg-white backdrop-blur-2xl dark:border-white/10 border-zinc-200 border rounded-2xl p-2 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_40px_-15px_rgba(0,0,0,1)] overflow-hidden dark:ring-1 dark:ring-white/5 ring-1 ring-zinc-100">
                       <div className="flex flex-col gap-1">
                         {item.children.map((child, idx) => (
                           <a
                             key={idx}
                             href={child.href}
-                            className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors group/item"
+                            className="flex items-start gap-3 p-3 rounded-xl dark:hover:bg-white/5 hover:bg-zinc-50 transition-colors group/item"
                           >
-                            <div className="mt-1 w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-zinc-400 group-hover/item:text-brand-green group-hover/item:bg-brand-green/10 transition-colors border border-white/5 group-hover/item:border-brand-green/20">
+                            <div className="mt-1 w-8 h-8 rounded-lg dark:bg-white/5 bg-zinc-100 flex items-center justify-center dark:text-zinc-400 text-zinc-500 group-hover/item:text-brand-green group-hover/item:bg-brand-green/10 transition-colors dark:border-white/5 border-zinc-200 border group-hover/item:border-brand-green/20">
                               <child.icon size={16} />
                             </div>
                             <div>
-                              <div className="text-sm font-semibold text-zinc-200 group-hover/item:text-white mb-0.5 flex items-center gap-2">
+                              <div className="text-sm font-semibold dark:text-zinc-200 text-zinc-800 dark:group-hover/item:text-white group-hover/item:text-zinc-900 mb-0.5 flex items-center gap-2">
                                 {child.label}
                               </div>
-                              <div className="text-xs text-zinc-500 group-hover/item:text-zinc-400 leading-relaxed">
+                              <div className="text-xs dark:text-zinc-500 text-zinc-500 dark:group-hover/item:text-zinc-400 group-hover/item:text-zinc-600 leading-relaxed">
                                 {child.desc}
                               </div>
                             </div>
@@ -135,9 +140,10 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* CTAs */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4">
+          <ThemeToggle />
           <Link href="/auth/login?redirect=%2Fdashboard">
-            <button className="text-sm font-medium text-zinc-400 hover:text-white transition-colors cursor-pointer">
+            <button className="text-sm font-medium dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-zinc-900 transition-colors cursor-pointer">
               Log In
             </button>
           </Link>
@@ -150,12 +156,15 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-white p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex md:hidden items-center gap-2">
+          <ThemeToggle />
+          <button
+            className="text-foreground p-2"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -165,12 +174,12 @@ const Navbar: React.FC = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: '100vh' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#09090B] fixed inset-0 top-[72px] z-40 overflow-y-auto"
+            className="md:hidden dark:bg-[#09090B] bg-white fixed inset-0 top-[72px] z-40 overflow-y-auto"
           >
             <div className="p-6 flex flex-col gap-6 min-h-full pb-32">
               {NAV_ITEMS.map((item) => (
                 <div key={item.label}>
-                  <div className="text-white text-lg font-bold mb-4 flex items-center gap-2">
+                  <div className="dark:text-white text-zinc-900 text-lg font-bold mb-4 flex items-center gap-2">
                     {item.label}
                   </div>
                   <div className="grid gap-3">
@@ -178,22 +187,22 @@ const Navbar: React.FC = () => {
                       <a
                         key={i}
                         href={child.href}
-                        className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 active:bg-white/10"
+                        className="flex items-center gap-4 p-3 rounded-xl dark:bg-white/5 bg-zinc-50 dark:border-white/5 border-zinc-200 border dark:active:bg-white/10 active:bg-zinc-100"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-black/50 flex items-center justify-center text-brand-green">
+                        <div className="w-8 h-8 rounded-lg dark:bg-black/50 bg-brand-green/10 flex items-center justify-center text-brand-green">
                           <child.icon size={16} />
                         </div>
-                        <div className="font-medium text-zinc-300 text-sm">{child.label}</div>
+                        <div className="font-medium dark:text-zinc-300 text-zinc-700 text-sm">{child.label}</div>
                       </a>
                     ))}
                   </div>
                 </div>
               ))}
-              <div className="h-px bg-white/10 my-2" />
-              <div className="h-px bg-white/10 my-2" />
+              <div className="h-px dark:bg-white/10 bg-zinc-200 my-2" />
+              <div className="h-px dark:bg-white/10 bg-zinc-200 my-2" />
               <Link href="/auth/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="text-white font-medium py-4 border border-white/10 rounded-xl hover:bg-white/5 transition-colors w-full mb-4">Log In</button>
+                <button className="dark:text-white text-zinc-800 font-medium py-4 border dark:border-white/10 border-zinc-200 rounded-xl dark:hover:bg-white/5 hover:bg-zinc-50 transition-colors w-full mb-4">Log In</button>
               </Link>
               <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
                 <button className="bg-brand-green text-black font-bold py-4 rounded-xl w-full shadow-[0_0_15px_rgba(16,185,129,0.2)]">

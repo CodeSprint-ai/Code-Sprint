@@ -11,7 +11,7 @@ import Showcase from "@/components/Landing-page/Showcase";
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-green/30 selection:text-brand-green">
+        <div className="min-h-screen dark:bg-brand-dark bg-white dark:text-white text-zinc-900 dark:selection:bg-brand-green/30 dark:selection:text-brand-green selection:bg-brand-green/20 selection:text-brand-green">
             <Navbar />
             <main>
                 <Hero />

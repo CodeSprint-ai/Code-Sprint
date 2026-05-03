@@ -476,10 +476,10 @@ const LiveDemo: React.FC = () => {
                     <span className="text-brand-green font-mono text-sm font-semibold tracking-wider uppercase mb-3 block">
                         Interactive Sandbox
                     </span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                    <h2 className="text-3xl md:text-5xl font-bold dark:text-white text-zinc-900 mb-6">
                         Experience the <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-emerald-300">speed.</span>
                     </h2>
-                    <p className="text-gray-400 max-w-2xl mx-auto">
+                    <p className="dark:text-gray-400 text-zinc-500 max-w-2xl mx-auto">
                         Test our execution engine powered by the Monaco Editor. Real-time syntax highlighting, VIM keybindings, and near-instant output.
                     </p>
                 </motion.div>

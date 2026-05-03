@@ -17,22 +17,22 @@ function SkeletonRoadmap() {
         <div className="animate-pulse grid grid-cols-12 gap-6 p-6">
             <div className="col-span-12 lg:col-span-8 space-y-6">
                 <div className="space-y-4">
-                    <div className="h-4 bg-white/5 rounded w-24" />
-                    <div className="h-10 bg-white/5 rounded w-1/2" />
-                    <div className="h-4 bg-white/5 rounded w-full" />
+                    <div className="h-4 dark:bg-white/5 bg-zinc-200 rounded w-24" />
+                    <div className="h-10 dark:bg-white/5 bg-zinc-200 rounded w-1/2" />
+                    <div className="h-4 dark:bg-white/5 bg-zinc-200 rounded w-full" />
                 </div>
                 <div className="space-y-3">
-                    <div className="h-6 bg-white/5 rounded w-32 mb-4" />
+                    <div className="h-6 dark:bg-white/5 bg-zinc-200 rounded w-32 mb-4" />
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="h-24 bg-white/5 rounded-2xl border border-white/5" />
+                        <div key={i} className="h-24 dark:bg-white/5 bg-zinc-200 rounded-2xl border dark:border-white/5 border-zinc-200" />
                     ))}
                 </div>
             </div>
             <div className="col-span-12 lg:col-span-4 space-y-6">
-                <div className="h-20 bg-white/5 rounded-2xl" />
-                <div className="h-48 bg-white/5 rounded-2xl" />
-                <div className="h-72 bg-white/5 rounded-2xl" />
-                <div className="h-32 bg-white/5 rounded-2xl" />
+                <div className="h-20 dark:bg-white/5 bg-zinc-200 rounded-2xl" />
+                <div className="h-48 dark:bg-white/5 bg-zinc-200 rounded-2xl" />
+                <div className="h-72 dark:bg-white/5 bg-zinc-200 rounded-2xl" />
+                <div className="h-32 dark:bg-white/5 bg-zinc-200 rounded-2xl" />
             </div>
         </div>
     );
@@ -52,13 +52,13 @@ function DailyChallengeCard({ problem }: { problem: DailySuggestion }) {
 
             <div className="flex items-start justify-between gap-4 mt-2">
                 <div className="space-y-1">
-                    <h3 className="font-bold text-amber-200 group-hover:text-amber-300 transition-colors text-lg">
+                    <h3 className="font-bold dark:text-amber-200 text-amber-700 group-hover:text-amber-300 transition-colors text-lg">
                         {problem.title}
                     </h3>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs dark:text-slate-400 text-zinc-500 leading-relaxed">
                         {problem.reason}
                     </p>
-                    <p className="text-[10px] text-amber-500/70 font-semibold mt-1">
+                    <p className="text-[10px] dark:text-amber-500/70 text-amber-600 font-semibold mt-1">
                         ⭐ Bonus XP for completing the daily challenge!
                     </p>
                 </div>
@@ -89,7 +89,7 @@ function ProblemCard({ problem }: { problem: DailySuggestion }) {
             href={`/problems/${problem.problemId}`}
             className={`group block relative rounded-2xl p-5 transition-all border ${problem.solved
                 ? 'bg-green-500/[0.04] border-green-500/20 hover:border-green-500/40'
-                : 'bg-white/[0.02] border-white/[0.06] hover:border-green-500/30 hover:bg-white/[0.04]'
+                : 'dark:bg-white/[0.02] bg-zinc-50 dark:border-white/[0.06] border-zinc-200 hover:border-green-500/30 dark:hover:bg-white/[0.04] hover:bg-zinc-100'
                 }`}
         >
             {problem.solved && (
@@ -100,7 +100,7 @@ function ProblemCard({ problem }: { problem: DailySuggestion }) {
                     <div className="flex items-center gap-2">
                         <h3 className={`font-semibold transition-colors ${problem.solved
                             ? 'text-green-400'
-                            : 'text-slate-100 group-hover:text-green-400'
+                            : 'dark:text-slate-100 text-zinc-800 group-hover:text-green-400'
                             }`}>
                             {problem.title}
                         </h3>
@@ -110,7 +110,7 @@ function ProblemCard({ problem }: { problem: DailySuggestion }) {
                             </span>
                         )}
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs dark:text-slate-400 text-zinc-500 leading-relaxed">
                         {problem.reason}
                     </p>
                 </div>
@@ -143,8 +143,8 @@ export default function RoadmapPage() {
                 <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
                     <span className="text-2xl">⚠️</span>
                 </div>
-                <h2 className="text-xl font-bold text-slate-100 mb-2">Something Went Wrong</h2>
-                <p className="text-slate-400 max-w-sm mb-4">
+                <h2 className="text-xl font-bold dark:text-slate-100 text-zinc-800 mb-2">Something Went Wrong</h2>
+                <p className="dark:text-slate-400 text-zinc-500 max-w-sm mb-4">
                     We couldn&apos;t load your roadmap. Please try again.
                 </p>
                 <button
@@ -163,8 +163,8 @@ export default function RoadmapPage() {
                 <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4">
                     <span className="text-2xl">⚡</span>
                 </div>
-                <h2 className="text-xl font-bold text-slate-100 mb-2">No Roadmap Yet</h2>
-                <p className="text-slate-400 max-w-sm">
+                <h2 className="text-xl font-bold dark:text-slate-100 text-zinc-800 mb-2">No Roadmap Yet</h2>
+                <p className="dark:text-slate-400 text-zinc-500 max-w-sm">
                     Solve a few problems first! I need some data to build your personalized learning path.
                 </p>
                 <Link
@@ -212,10 +212,10 @@ export default function RoadmapPage() {
                             </span>
                         )}
                     </div>
-                    <h1 className="text-4xl font-black text-white tracking-tight">
+                    <h1 className="text-4xl font-black dark:text-white text-zinc-900 tracking-tight">
                         {roadmap.themeOfWeek}
                     </h1>
-                    <p className="text-slate-400 mt-3 max-w-2xl text-lg leading-relaxed">
+                    <p className="dark:text-slate-400 text-zinc-500 mt-3 max-w-2xl text-lg leading-relaxed">
                         {roadmap.weeklyGoalSummary}
                     </p>
                 </div>
@@ -240,7 +240,7 @@ export default function RoadmapPage() {
 
                     {/* Today's Mission */}
                     <section className="space-y-4">
-                        <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        <h2 className="text-xl font-bold dark:text-slate-100 text-zinc-800 flex items-center gap-2">
                             <span className="w-1.5 h-6 bg-green-500 rounded-full" />
                             Today&apos;s Mission
                         </h2>
@@ -265,15 +265,15 @@ export default function RoadmapPage() {
                                 <p className="text-[10px] text-green-400 font-black uppercase tracking-widest">
                                     AI Coach Insight
                                 </p>
-                                <span className="text-[9px] text-slate-600 font-medium">
+                                <span className="text-[9px] dark:text-slate-600 text-zinc-400 font-medium">
                                     · {coachMeta.label}
                                 </span>
                             </div>
-                            <p className="text-slate-200 text-base leading-relaxed italic">
+                            <p className="dark:text-slate-200 text-zinc-700 text-base leading-relaxed italic">
                                 &ldquo;{roadmap.coachInsight}&rdquo;
                             </p>
                             {roadmap.streak?.current > 0 && (
-                                <p className="text-xs text-green-400/60 mt-2">
+                                <p className="text-xs dark:text-green-400/60 text-green-600/70 mt-2">
                                     🔥 Streak-aware coaching — your {roadmap.streak.current}-day streak influences these recommendations.
                                 </p>
                             )}
@@ -282,13 +282,13 @@ export default function RoadmapPage() {
 
                     {/* Next Week Preview */}
                     {roadmap.nextWeekPreview?.length > 0 && (
-                        <section className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6">
-                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-4">
+                        <section className="dark:bg-white/[0.02] bg-zinc-50 border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-6">
+                            <p className="text-xs dark:text-slate-500 text-zinc-500 font-bold uppercase tracking-widest mb-4">
                                 Coming Next Week
                             </p>
                             <div className="flex gap-2 flex-wrap">
                                 {roadmap.nextWeekPreview.map((topic: string) => (
-                                    <span key={topic} className="bg-white/5 text-slate-300 text-[10px] font-bold px-3 py-1.5 rounded-full border border-white/5 uppercase tracking-wide">
+                                    <span key={topic} className="dark:bg-white/5 bg-zinc-100 dark:text-slate-300 text-zinc-700 text-[10px] font-bold px-3 py-1.5 rounded-full border dark:border-white/5 border-zinc-200 uppercase tracking-wide">
                                         {topic.replace(/_/g, ' ')}
                                     </span>
                                 ))}

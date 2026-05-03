@@ -5,7 +5,7 @@ import { Zap, Play, Terminal, Lock, Activity, Database, Clock } from "lucide-rea
 import { useSprint, SprintSession } from "@/hooks/useSprint";
 import { useAuthStore } from "@/store/authStore";
 import SprintActive from "@/components/Sprint/SprintActive";
-import { toast } from "sonner";
+import { toast } from "sonner"; // Assuming sonner is used for toasts, similar to container
 
 export default function AdminSprintPage() {
     const { createSprint, finishSprint, isCreating } = useSprint();
@@ -50,17 +50,17 @@ export default function AdminSprintPage() {
 
             {/* Header */}
             <div className="relative z-10 text-center mb-16 space-y-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#09090b] border border-emerald-500/20 shadow-[0_0_30px_-5px_rgba(16,185,129,0.3)] group">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl dark:bg-[#09090b] bg-white border dark:border-emerald-500/20 border-emerald-500/30 shadow-[0_0_30px_-5px_rgba(16,185,129,0.3)] group">
                     <Zap className="w-8 h-8 text-emerald-500 fill-emerald-500/20 group-hover:scale-110 transition-transform duration-500" />
                 </div>
 
                 <div className="space-y-2">
-                    <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter font-mono">
+                    <h1 className="text-4xl md:text-5xl font-black dark:text-white text-zinc-900 tracking-tighter font-mono">
                         SPRINT_MODE<span className="animate-pulse text-emerald-500">_</span>
                     </h1>
-                    <p className="text-zinc-500 text-sm md:text-base font-mono max-w-lg mx-auto leading-relaxed">
+                    <p className="dark:text-zinc-500 text-zinc-500 text-sm md:text-base font-mono max-w-lg mx-auto leading-relaxed">
                         High-intensity cognitive loading. 60 minute duration.<br />
-                        <span className="text-zinc-600">5 randomized algorithm challenges.</span>
+                        <span className="dark:text-zinc-600 text-zinc-400">5 randomized algorithm challenges.</span>
                     </p>
                 </div>
             </div>
@@ -69,7 +69,7 @@ export default function AdminSprintPage() {
                 {/* Active Session Card */}
                 <div className="group relative">
                     <div className="absolute -inset-0.5 bg-gradient-to-br from-emerald-500/30 to-emerald-900/30 rounded-2xl blur opacity-20 group-hover:opacity-50 transition duration-500" />
-                    <div className="relative h-full bg-[#09090b] border border-white/5 rounded-2xl p-8 flex flex-col justify-between overflow-hidden">
+                    <div className="relative h-full dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-2xl p-8 flex flex-col justify-between overflow-hidden shadow-sm dark:shadow-none">
                         {/* Decor */}
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                             <Terminal className="w-32 h-32 text-emerald-500" />
@@ -77,33 +77,33 @@ export default function AdminSprintPage() {
 
                         <div className="space-y-8">
                             <div className="flex items-center justify-between">
-                                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-emerald-950/50 border border-emerald-500/20">
+                                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded dark:bg-emerald-950/50 bg-emerald-50 border dark:border-emerald-500/20 border-emerald-500/30">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                                     <span className="text-[10px] font-bold tracking-widest text-emerald-400 uppercase font-mono">
                                         System Ready
                                     </span>
                                 </div>
-                                <Activity className="w-5 h-5 text-zinc-700" />
+                                <Activity className="w-5 h-5 dark:text-zinc-700 text-zinc-400" />
                             </div>
 
                             <div>
-                                <h3 className="text-2xl font-bold text-white mb-6 tracking-tight font-mono">
+                                <h3 className="text-2xl font-bold dark:text-white text-zinc-900 mb-6 tracking-tight font-mono">
                                     Initialize Session
                                 </h3>
-                                <div className="font-mono text-xs space-y-3 text-zinc-500 bg-black/40 p-5 rounded-lg border border-white/5">
+                                <div className="font-mono text-xs space-y-3 dark:text-zinc-500 text-zinc-500 dark:bg-black/40 bg-zinc-50 p-5 rounded-lg border dark:border-white/5 border-zinc-200">
                                     <div className="flex items-center gap-3">
                                         <span className="text-emerald-500">➜</span>
-                                        <span className="text-zinc-400">Allocating memory heap...</span>
+                                        <span className="dark:text-zinc-400 text-zinc-600">Allocating memory heap...</span>
                                         <span className="text-emerald-500 ml-auto font-bold">OK</span>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className="text-emerald-500">➜</span>
-                                        <span className="text-zinc-400">Fetching problem set...</span>
+                                        <span className="dark:text-zinc-400 text-zinc-600">Fetching problem set...</span>
                                         <span className="text-emerald-500 ml-auto font-bold">OK</span>
                                     </div>
-                                    <div className="flex items-center gap-3 border-t border-white/5 pt-3 mt-1">
+                                    <div className="flex items-center gap-3 border-t dark:border-white/5 border-zinc-200 pt-3 mt-1">
                                         <span className="text-emerald-500 animate-pulse">➜</span>
-                                        <span className="text-zinc-200">Ready to begin sequence.</span>
+                                        <span className="dark:text-zinc-200 text-zinc-800">Ready to begin sequence.</span>
                                     </div>
                                 </div>
                             </div>
@@ -124,30 +124,30 @@ export default function AdminSprintPage() {
                 </div>
 
                 {/* Archived Card / Results */}
-                <div className="relative h-full bg-[#09090b] border border-white/5 rounded-2xl p-8 flex flex-col hover:border-white/10 transition-colors group">
+                <div className="relative h-full dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-2xl p-8 flex flex-col dark:hover:border-white/10 hover:border-zinc-300 transition-colors group shadow-sm dark:shadow-none">
                     <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-lg font-bold text-zinc-300 font-mono flex items-center gap-3">
-                            <Clock className="w-5 h-5 text-zinc-500" />
+                        <h3 className="text-lg font-bold dark:text-zinc-300 text-zinc-700 font-mono flex items-center gap-3">
+                            <Clock className="w-5 h-5 dark:text-zinc-500 text-zinc-400" />
                             {lastResult ? "Last Session Results" : "Archived_Runs"}
                         </h3>
                     </div>
 
                     {lastResult ? (
-                        <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-emerald-500/30 rounded-xl bg-emerald-900/10 p-8 mb-8">
-                            <div className="text-4xl font-bold text-white mb-2">
+                        <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-emerald-500/30 rounded-xl dark:bg-emerald-900/10 bg-emerald-50 p-8 mb-8">
+                            <div className="text-4xl font-bold dark:text-white text-zinc-900 mb-2">
                                 {lastResult.score}
                             </div>
-                            <p className="text-zinc-400 font-mono text-sm">Points Acquired</p>
+                            <p className="dark:text-zinc-400 text-zinc-500 font-mono text-sm">Points Acquired</p>
                             <p className="text-emerald-500 text-xs mt-4">
                                 Completed: {new Date(lastResult.endTime).toLocaleDateString()}
                             </p>
                         </div>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-zinc-800 rounded-xl bg-zinc-900/20 p-8 mb-8 group-hover:border-zinc-700 transition-colors">
-                            <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                                <Lock className="w-5 h-5 text-zinc-600" />
+                        <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed dark:border-zinc-800 border-zinc-200 rounded-xl dark:bg-zinc-900/20 bg-zinc-50 p-8 mb-8 dark:group-hover:border-zinc-700 group-hover:border-zinc-300 transition-colors">
+                            <div className="w-12 h-12 dark:bg-zinc-900 bg-zinc-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                                <Lock className="w-5 h-5 dark:text-zinc-600 text-zinc-400" />
                             </div>
-                            <p className="text-xs text-zinc-500 font-mono text-center leading-relaxed">
+                            <p className="text-xs dark:text-zinc-500 text-zinc-500 font-mono text-center leading-relaxed">
                                 <span className="text-red-500/50 block mb-1 font-bold tracking-wider">
                                     ACCESS_DENIED
                                 </span>
@@ -156,7 +156,7 @@ export default function AdminSprintPage() {
                         </div>
                     )}
 
-                    <button className="w-full py-3.5 border border-white/5 hover:border-white/10 hover:bg-white/5 text-zinc-400 hover:text-white rounded-xl transition-all text-xs font-mono font-medium uppercase tracking-wider flex items-center justify-center gap-2">
+                    <button className="w-full py-3.5 border dark:border-white/5 border-zinc-200 dark:hover:border-white/10 hover:border-zinc-300 dark:hover:bg-white/5 hover:bg-zinc-50 dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-800 rounded-xl transition-all text-xs font-mono font-medium uppercase tracking-wider flex items-center justify-center gap-2">
                         <Database className="w-4 h-4" />
                         View_Database
                     </button>

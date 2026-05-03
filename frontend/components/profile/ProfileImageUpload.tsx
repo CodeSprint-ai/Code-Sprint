@@ -122,7 +122,7 @@ export default function ProfileImageUpload({ currentAvatarUrl, userName }: Profi
         `}
             >
                 {/* Avatar Image or Initials */}
-                <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-emerald-600 to-emerald-800 border-4 border-zinc-800">
+                <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-emerald-600 to-emerald-800 border-4 dark:border-zinc-800 border-white">
                     {displayImage ? (
                         <Image
                             src={displayImage}
@@ -171,10 +171,10 @@ export default function ProfileImageUpload({ currentAvatarUrl, userName }: Profi
 
             {/* Instructions */}
             <div className="text-center">
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs dark:text-zinc-500 text-zinc-600">
                     Click or drag to upload
                 </p>
-                <p className="text-xs text-zinc-600 mt-0.5">
+                <p className="text-xs dark:text-zinc-600 text-zinc-500 mt-0.5">
                     JPG, PNG, GIF or WebP • Max 5MB
                 </p>
             </div>

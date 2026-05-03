@@ -33,7 +33,7 @@ export default function ResultsTab({ submission, isLoading, onAnalyze, isAnalyzi
         <div className="text-center space-y-4">
           <Loader2 className="h-8 w-8 animate-spin mx-auto text-emerald-500" />
           <div>
-            <p className="font-medium text-white">Processing your submission...</p>
+            <p className="font-medium dark:text-white text-zinc-900">Processing your submission...</p>
             <p className="text-sm text-zinc-500 mt-1">
               {phase === "compiling" && "Compiling your code..."}
               {phase === "running" && `Running test cases...`}
@@ -88,7 +88,7 @@ export default function ResultsTab({ submission, isLoading, onAnalyze, isAnalyzi
         {compileOutput && isCompilationError && (
           <div className="space-y-2">
             <h4 className="font-medium text-sm text-zinc-300">Compiler Output:</h4>
-            <pre className="bg-black/40 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap font-mono text-red-400 border border-white/5">
+            <pre className="dark:bg-black/40 bg-red-50 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap font-mono text-red-400 border dark:border-white/5 border-red-200">
               {compileOutput}
             </pre>
           </div>
@@ -143,23 +143,23 @@ export default function ResultsTab({ submission, isLoading, onAnalyze, isAnalyzi
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+        <div className="dark:bg-black/40 bg-zinc-50 p-3 rounded-lg border dark:border-white/5 border-zinc-200">
           <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
             <Clock className="w-3 h-3" /> Runtime
           </div>
-          <div className="text-lg font-mono text-zinc-300 font-bold">
+          <div className="text-lg font-mono dark:text-zinc-300 text-zinc-800 font-bold">
             {executionTime ? `${(executionTime * 1000).toFixed(0)} ms` : "---"}
           </div>
         </div>
-        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+        <div className="dark:bg-black/40 bg-zinc-50 p-3 rounded-lg border dark:border-white/5 border-zinc-200">
           <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
             <Cpu className="w-3 h-3" /> Memory
           </div>
-          <div className="text-lg font-mono text-zinc-300 font-bold">
+          <div className="text-lg font-mono dark:text-zinc-300 text-zinc-800 font-bold">
             {memoryUsage ? `${(memoryUsage / 1024).toFixed(1)} MB` : "---"}
           </div>
         </div>
-        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+        <div className="dark:bg-black/40 bg-zinc-50 p-3 rounded-lg border dark:border-white/5 border-zinc-200">
           <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
             <CheckCircle2 className="w-3 h-3" /> Passed
           </div>
@@ -170,11 +170,11 @@ export default function ResultsTab({ submission, isLoading, onAnalyze, isAnalyzi
             <span className="text-zinc-600 text-sm"> / {totalTestCases}</span>
           </div>
         </div>
-        <div className="bg-black/40 p-3 rounded-lg border border-white/5">
+        <div className="dark:bg-black/40 bg-zinc-50 p-3 rounded-lg border dark:border-white/5 border-zinc-200">
           <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
             <FileCode className="w-3 h-3" /> Language
           </div>
-          <div className="text-lg font-mono text-zinc-300 font-bold capitalize">
+          <div className="text-lg font-mono dark:text-zinc-300 text-zinc-800 font-bold capitalize">
             {language || "---"}
           </div>
         </div>

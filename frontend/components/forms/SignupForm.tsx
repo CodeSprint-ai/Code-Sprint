@@ -53,7 +53,7 @@ const SignUpForm: React.FC = () => {
       {/* Back to Home */}
       <Link
         href="/"
-        className="absolute top-8 left-8 text-zinc-400 hover:text-brand-green flex items-center gap-2 transition-colors z-20 font-medium text-sm group"
+        className="absolute top-8 left-8 dark:text-zinc-400 text-zinc-500 hover:text-brand-green flex items-center gap-2 transition-colors z-20 font-medium text-sm group"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         Back to Home
@@ -72,19 +72,19 @@ const SignUpForm: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="glass-card rounded-2xl p-8 backdrop-blur-xl border border-white/10 shadow-2xl">
+        <div className="glass-card rounded-2xl p-8 backdrop-blur-xl border dark:border-white/10 border-black/5 shadow-2xl dark:shadow-none">
           {/* Logo & Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center gap-2 mb-6 group cursor-pointer hover:opacity-80 transition-opacity">
               <div className="bg-gradient-to-tr from-brand-green to-emerald-900 p-2 rounded-lg shadow-lg group-hover:shadow-brand-green/20 transition-all duration-300">
                 <Terminal className="text-white w-6 h-6" />
               </div>
-              <span className="text-2xl font-bold tracking-tight text-white code-font">
+              <span className="text-2xl font-bold tracking-tight dark:text-white text-zinc-900 code-font">
                 CodeSprint<span className="text-brand-green">AI</span>
               </span>
             </Link>
-            <h1 className="text-2xl font-bold text-white mb-2">Create an account</h1>
-            <p className="text-zinc-400">Join our community of developers today</p>
+            <h1 className="text-2xl font-bold dark:text-white text-zinc-900 mb-2">Create an account</h1>
+            <p className="dark:text-zinc-400 text-zinc-500">Join our community of developers today</p>
           </div>
 
           <Form {...form}>
@@ -95,12 +95,12 @@ const SignUpForm: React.FC = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-sm font-medium text-zinc-300 ml-1">Full Name</FormLabel>
+                    <FormLabel className="text-sm font-medium dark:text-zinc-300 text-zinc-700 ml-1">Full Name</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="John Doe"
                         {...field}
-                        className="bg-brand-surface/50 border-white/10 text-zinc-100 focus:border-brand-green/50 focus:ring-brand-green/20 placeholder:text-zinc-600 pl-4 h-11 transition-all duration-300"
+                        className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
                       />
                     </FormControl>
                     <FormMessage className="text-xs text-red-500 ml-1 font-medium animate-in slide-in-from-top-1 fade-in" />
@@ -114,13 +114,13 @@ const SignUpForm: React.FC = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-sm font-medium text-zinc-300 ml-1">Email</FormLabel>
+                    <FormLabel className="text-sm font-medium dark:text-zinc-300 text-zinc-700 ml-1">Email</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="you@example.com"
                         {...field}
-                        className="bg-brand-surface/50 border-white/10 text-zinc-100 focus:border-brand-green/50 focus:ring-brand-green/20 placeholder:text-zinc-600 pl-4 h-11 transition-all duration-300"
+                        className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
                       />
                     </FormControl>
                     <FormMessage className="text-xs text-red-500 ml-1 font-medium animate-in slide-in-from-top-1 fade-in" />
@@ -134,13 +134,13 @@ const SignUpForm: React.FC = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-sm font-medium text-zinc-300 ml-1">Password</FormLabel>
+                    <FormLabel className="text-sm font-medium dark:text-zinc-300 text-zinc-700 ml-1">Password</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
                         placeholder="••••••••"
                         {...field}
-                        className="bg-brand-surface/50 border-white/10 text-zinc-100 focus:border-brand-green/50 focus:ring-brand-green/20 placeholder:text-zinc-600 pl-4 h-11 transition-all duration-300"
+                        className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
                       />
                     </FormControl>
                     <div className="flex gap-1 mt-1">
@@ -177,7 +177,7 @@ const SignUpForm: React.FC = () => {
           </Form>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-sm text-zinc-500">
+          <p className="mt-8 text-center text-sm dark:text-zinc-500 text-zinc-600">
             Already have an account?{" "}
             <Link
               href="/auth/login"

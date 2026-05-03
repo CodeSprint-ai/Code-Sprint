@@ -87,7 +87,7 @@ const LoginForm: React.FC = () => {
       {/* Back to Home */}
       <Link
         href="/"
-        className="absolute top-8 left-8 text-zinc-400 hover:text-brand-green flex items-center gap-2 transition-colors z-20 font-medium text-sm group"
+        className="absolute top-8 left-8 dark:text-zinc-400 text-zinc-500 hover:text-brand-green flex items-center gap-2 transition-colors z-20 font-medium text-sm group"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         Back to Home
@@ -106,31 +106,31 @@ const LoginForm: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="glass-card rounded-2xl p-8 backdrop-blur-xl border border-white/10 shadow-2xl">
+        <div className="glass-card rounded-2xl p-8 backdrop-blur-xl border dark:border-white/10 border-black/5 shadow-2xl dark:shadow-none">
           {/* Logo & Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center gap-2 mb-6 group cursor-pointer hover:opacity-80 transition-opacity">
               <div className="bg-gradient-to-tr from-brand-green to-emerald-900 p-2 rounded-lg shadow-lg group-hover:shadow-brand-green/20 transition-all duration-300">
                 <Terminal className="text-white w-6 h-6" />
               </div>
-              <span className="text-2xl font-bold tracking-tight text-white code-font">
+              <span className="text-2xl font-bold tracking-tight dark:text-white text-zinc-900 code-font">
                 CodeSprint<span className="text-brand-green">AI</span>
               </span>
             </Link>
-            <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-            <p className="text-zinc-400">Enter your credentials to access your account</p>
+            <h1 className="text-2xl font-bold dark:text-white text-zinc-900 mb-2">Welcome back</h1>
+            <p className="dark:text-zinc-400 text-zinc-500">Enter your credentials to access your account</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Email */}
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-zinc-300 ml-1">Email</label>
+              <label className="text-sm font-medium dark:text-zinc-300 text-zinc-700 ml-1">Email</label>
               <div className="relative group">
                 <Input
                   type="email"
                   placeholder="name@example.com"
                   {...register("email")}
-                  className="bg-brand-surface/50 border-white/10 text-zinc-100 focus:border-brand-green/50 focus:ring-brand-green/20 placeholder:text-zinc-600 pl-4 h-11 transition-all duration-300"
+                  className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
                 />
               </div>
               {errors.email && (
@@ -141,7 +141,7 @@ const LoginForm: React.FC = () => {
             {/* Password */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between ml-1">
-                <label className="text-sm font-medium text-zinc-300">Password</label>
+                <label className="text-sm font-medium dark:text-zinc-300 text-zinc-700">Password</label>
                 <Link
                   href="/auth/forgot-password"
                   className="text-xs text-brand-green hover:text-brand-greenGlow transition-colors"
@@ -154,7 +154,7 @@ const LoginForm: React.FC = () => {
                   type="password"
                   placeholder="••••••••"
                   {...register("password")}
-                  className="bg-brand-surface/50 border-white/10 text-zinc-100 focus:border-brand-green/50 focus:ring-brand-green/20 placeholder:text-zinc-600 pl-4 h-11 transition-all duration-300"
+                  className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
                 />
               </div>
               {errors.password && (
@@ -219,10 +219,10 @@ const LoginForm: React.FC = () => {
           {/* Divider */}
           <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-white/10" />
+              <span className="w-full border-t dark:border-white/10 border-black/10" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-[#18181b] px-4 text-zinc-500 font-medium tracking-wider">
+              <span className="dark:bg-[#18181b] bg-white px-4 text-zinc-500 font-medium tracking-wider">
                 Or continue with
               </span>
             </div>
@@ -232,22 +232,22 @@ const LoginForm: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <Button
               variant="outline"
-              className="bg-white/5 border-white/10 hover:bg-white/10 hover:text-white text-zinc-300 h-11 rounded-xl transition-all duration-300"
+              className="dark:bg-white/5 bg-zinc-100 dark:border-white/10 border-black/10 dark:hover:bg-white/10 hover:bg-zinc-200 dark:hover:text-white hover:text-zinc-900 dark:text-zinc-300 text-zinc-700 h-11 rounded-xl transition-all duration-300"
               onClick={() => handleOAuthLogin("google")}
             >
               <GoogleIcon className="h-5 w-5 mr-2" /> Google
             </Button>
             <Button
               variant="outline"
-              className="bg-white/5 border-white/10 hover:bg-white/10 hover:text-white text-zinc-300 h-11 rounded-xl transition-all duration-300"
+              className="dark:bg-white/5 bg-zinc-100 dark:border-white/10 border-black/10 dark:hover:bg-white/10 hover:bg-zinc-200 dark:hover:text-white hover:text-zinc-900 dark:text-zinc-300 text-zinc-700 h-11 rounded-xl transition-all duration-300"
               onClick={() => handleOAuthLogin("github")}
             >
-              <GitHubIcon className="h-5 w-5 mr-2 text-white" /> GitHub
+              <GitHubIcon className="h-5 w-5 mr-2 dark:text-white text-zinc-800" /> GitHub
             </Button>
           </div>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-sm text-zinc-500">
+          <p className="mt-8 text-center text-sm dark:text-zinc-500 text-zinc-600">
             Don't have an account?{" "}
             <Link
               href="/auth/signup"

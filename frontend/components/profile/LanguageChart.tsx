@@ -37,11 +37,11 @@ export function LanguageChart({ usage }: LanguageChartProps) {
     const dominantColor = languageColors[languages[0]?.[0]?.toLowerCase()] || '#2563eb';
 
     return (
-        <div className="bg-[#111] rounded-xl p-6 border border-white/5">
-            <h4 className="text-xs font-bold text-white mb-6">Language Usage</h4>
+        <div className="dark:bg-[#111] bg-white rounded-xl p-6 border dark:border-white/5 border-zinc-200">
+            <h4 className="text-xs font-bold dark:text-white text-zinc-900 mb-6">Language Usage</h4>
 
             {/* Bar composition */}
-            <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden flex mb-4">
+            <div className="h-2 w-full dark:bg-zinc-800 bg-zinc-200 rounded-full overflow-hidden flex mb-4">
                 {languages.map(([lang, percentage]) => {
                     const color = languageColors[lang.toLowerCase()] || '#6366F1';
                     return (
@@ -68,9 +68,9 @@ export function LanguageChart({ usage }: LanguageChartProps) {
                                 className="w-2 h-2 rounded-full"
                                 style={{ backgroundColor: languageColors[lang.toLowerCase()] || '#6366F1' }}
                             />
-                            <span className="text-zinc-300 font-medium capitalize">{lang}</span>
+                            <span className="dark:text-zinc-300 text-zinc-700 font-medium capitalize">{lang}</span>
                         </div>
-                        <span className="text-zinc-500 font-mono">{percentage}%</span>
+                        <span className="dark:text-zinc-500 text-zinc-400 font-mono">{percentage}%</span>
                     </div>
                 ))}
             </div>

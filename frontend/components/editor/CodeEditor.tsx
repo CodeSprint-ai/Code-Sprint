@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -14,12 +15,28 @@ interface Props {
 }
 
 export default function CodeEditor({ language, code, setCode }: Props) {
+  const { theme, systemTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Determine the current effective theme
+  const currentTheme = theme === "system" ? systemTheme : theme;
+  const editorTheme = currentTheme === "light" ? "vs" : "vs-dark";
+
+  // Prevent hydration mismatch by rendering a skeleton or waiting for mount
+  if (!mounted) {
+    return <div className="h-full w-full dark:bg-[#1e1e1e] bg-white" />;
+  }
+
   return (
     <div className="h-full w-full">
       <MonacoEditor
         language={language}
         value={code}
-        theme="vs-dark"
+        theme={editorTheme}
         onChange={(val) => setCode(val ?? "")}
         options={{
           minimap: { enabled: false },

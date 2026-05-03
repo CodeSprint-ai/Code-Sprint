@@ -50,7 +50,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
         <div className="space-y-3">
             {/* Search bar */}
             <form onSubmit={handleSearchSubmit} className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 dark:text-zinc-500 text-zinc-400" />
                 <input
                     type="text"
                     placeholder="Search contests..."
@@ -58,7 +58,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                     onChange={(e) => handleSearchChange(e.target.value)}
                     className={cn(
                         'w-full pl-10 pr-4 py-2.5 rounded-lg text-sm',
-                        'bg-zinc-800/50 border border-zinc-700 text-white placeholder-zinc-500',
+                        'dark:bg-zinc-800/50 bg-white border dark:border-zinc-700 border-zinc-200 dark:text-white text-zinc-900 dark:placeholder-zinc-500 placeholder-zinc-400',
                         'focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20',
                         'transition-all'
                     )}
@@ -70,7 +70,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                             setSearchValue('');
                             onFiltersChange({ ...filters, search: undefined });
                         }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 dark:text-zinc-500 text-zinc-400 dark:hover:text-zinc-300 hover:text-zinc-600"
                     >
                         <X className="w-4 h-4" />
                     </button>
@@ -83,8 +83,8 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                     onClick={() => setIsExpanded(!isExpanded)}
                     className={cn(
                         'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all',
-                        'text-zinc-400 hover:text-white hover:bg-zinc-800/50',
-                        isExpanded && 'bg-zinc-800/50 text-white'
+                        'dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-900 dark:hover:bg-zinc-800/50 hover:bg-zinc-100',
+                        isExpanded && 'dark:bg-zinc-800/50 bg-zinc-100 dark:text-white text-zinc-900'
                     )}
                 >
                     <Filter className="w-4 h-4" />
@@ -100,7 +100,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                 {hasActiveFilters && (
                     <button
                         onClick={clearFilters}
-                        className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+                        className="text-xs dark:text-zinc-500 text-zinc-400 dark:hover:text-zinc-300 hover:text-zinc-600 transition-colors"
                     >
                         Clear all
                     </button>
@@ -109,10 +109,10 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
 
             {/* Expanded filters */}
             {isExpanded && (
-                <div className="space-y-4 p-4 rounded-lg bg-zinc-800/30 border border-zinc-700/50">
+                <div className="space-y-4 p-4 rounded-lg dark:bg-zinc-800/30 bg-white border dark:border-zinc-700/50 border-zinc-200">
                     {/* Platforms */}
                     <div>
-                        <h4 className="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Platforms</h4>
+                        <h4 className="text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider mb-2">Platforms</h4>
                         <div className="flex flex-wrap gap-2">
                             {POPULAR_PLATFORMS.map((platform) => {
                                 const isSelected = filters.platforms?.includes(platform.id);
@@ -125,7 +125,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                                             'border',
                                             isSelected
                                                 ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
-                                                : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                                                : 'dark:bg-zinc-800/50 bg-zinc-50 dark:border-zinc-700 border-zinc-200 dark:text-zinc-400 text-zinc-600 dark:hover:border-zinc-600 hover:border-zinc-300 dark:hover:text-zinc-300 hover:text-zinc-800'
                                         )}
                                     >
                                         {platform.name}
@@ -137,7 +137,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
 
                     {/* Sort */}
                     <div>
-                        <h4 className="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Sort By</h4>
+                        <h4 className="text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider mb-2">Sort By</h4>
                         <div className="flex flex-wrap gap-2">
                             {[
                                 { id: 'start', label: 'Start Time ↑' },
@@ -155,7 +155,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                                             'border',
                                             isSelected
                                                 ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400'
-                                                : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
+                                                : 'dark:bg-zinc-800/50 bg-zinc-50 dark:border-zinc-700 border-zinc-200 dark:text-zinc-400 text-zinc-600 dark:hover:border-zinc-600 hover:border-zinc-300 dark:hover:text-zinc-300 hover:text-zinc-800'
                                         )}
                                     >
                                         {option.label}

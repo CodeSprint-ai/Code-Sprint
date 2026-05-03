@@ -49,7 +49,7 @@ export default function ProblemPage({
     const problem = singleProblem.data.data;
 
     return (
-        <div className="h-[calc(100vh-4rem)] w-full flex flex-col text-zinc-100 overflow-hidden p-4 gap-4">
+        <div className="h-[calc(100vh-4rem)] w-full flex flex-col dark:text-zinc-100 text-zinc-900 overflow-hidden p-4 gap-4">
             <Split
                 sizes={[50, 50]}
                 minSize={300}
@@ -58,12 +58,12 @@ export default function ProblemPage({
                 className="flex flex-1 h-full overflow-hidden split-horizontal"
             >
                 {/* Left Panel - Problem Description */}
-                <div className="h-full overflow-hidden flex flex-col bg-[#09090b] rounded-xl border border-white/5">
+                <div className="h-full overflow-hidden flex flex-col dark:bg-[#09090b] bg-white rounded-xl border dark:border-white/5 border-zinc-200">
                     <ProblemPanel problem={problem} basePath={basePath} />
                 </div>
 
                 {/* Right Panel - Editor & Results */}
-                <div className="h-full overflow-hidden flex flex-col bg-[#09090b] rounded-xl border border-white/5">
+                <div className="h-full overflow-hidden flex flex-col dark:bg-[#09090b] bg-white rounded-xl border dark:border-white/5 border-zinc-200">
                     <EditorPanel problem={problem} hideSubmit={false} />
                 </div>
             </Split>

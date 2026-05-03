@@ -63,28 +63,28 @@ export default function ContestPage() {
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Header */}
-      <div className="border-b border-white/5 backdrop-blur-sm sticky top-0 z-10">
+      <div className="border-b dark:border-white/5 border-zinc-200 backdrop-blur-sm sticky top-0 z-10">
         <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-black text-white tracking-tight">
+              <h1 className="text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
                 Programming Contests
               </h1>
-              <p className="text-zinc-400 text-sm mt-1">
+              <p className="dark:text-zinc-400 text-zinc-500 text-sm mt-1">
                 Discover and track coding competitions worldwide
               </p>
             </div>
 
             <div className="flex items-center gap-2">
               {/* View toggle */}
-              <div className="flex bg-[#09090b] p-1 rounded-xl border border-white/5">
+              <div className="flex dark:bg-[#09090b] bg-white p-1 rounded-xl border dark:border-white/5 border-zinc-200">
                 <button
                   onClick={() => setViewMode('cards')}
                   className={cn(
                     'p-2 rounded-lg transition-colors',
                     viewMode === 'cards'
-                      ? 'bg-white/5 text-white shadow-sm border border-white/5'
-                      : 'text-zinc-500 hover:text-white'
+                      ? 'dark:bg-white/5 bg-zinc-100 dark:text-white text-zinc-800 shadow-sm border dark:border-white/5 border-zinc-200'
+                      : 'dark:text-zinc-500 text-zinc-400 dark:hover:text-white hover:text-zinc-800'
                   )}
                   title="Card view"
                 >
@@ -95,8 +95,8 @@ export default function ContestPage() {
                   className={cn(
                     'p-2 rounded-lg transition-colors',
                     viewMode === 'table'
-                      ? 'bg-white/5 text-white shadow-sm border border-white/5'
-                      : 'text-zinc-500 hover:text-white'
+                      ? 'dark:bg-white/5 bg-zinc-100 dark:text-white text-zinc-800 shadow-sm border dark:border-white/5 border-zinc-200'
+                      : 'dark:text-zinc-500 text-zinc-400 dark:hover:text-white hover:text-zinc-800'
                   )}
                   title="Table view"
                 >
@@ -110,7 +110,7 @@ export default function ContestPage() {
                 disabled={isFetching}
                 className={cn(
                   'p-2 rounded-lg transition-colors',
-                  'bg-zinc-800/50 border border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-700/50',
+                  'dark:bg-zinc-800/50 bg-zinc-50 border dark:border-zinc-700 border-zinc-200 dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-800 dark:hover:bg-zinc-700/50 hover:bg-zinc-100',
                   isFetching && 'animate-spin'
                 )}
                 title="Refresh"
@@ -161,8 +161,8 @@ export default function ContestPage() {
             <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
               <AlertTriangle className="w-8 h-8 text-red-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Failed to load contests</h3>
-            <p className="text-zinc-400 max-w-md mb-4">
+            <h3 className="text-lg font-semibold dark:text-white text-zinc-800 mb-2">Failed to load contests</h3>
+            <p className="dark:text-zinc-400 text-zinc-500 max-w-md mb-4">
               {data?.error || (error as any)?.message || 'Something went wrong. Please try again.'}
             </p>
             <button
@@ -177,7 +177,7 @@ export default function ContestPage() {
         {/* Loading state */}
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-16">
-            <div className="w-12 h-12 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin mb-4" />
+            <div className="w-12 h-12 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin mb-4" />
             <p className="text-zinc-400">Loading contests...</p>
           </div>
         )}
@@ -185,11 +185,11 @@ export default function ContestPage() {
         {/* Empty state */}
         {!isLoading && !isError && contests.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-zinc-800 flex items-center justify-center mb-4">
-              <LayoutGrid className="w-8 h-8 text-zinc-600" />
+            <div className="w-16 h-16 rounded-full dark:bg-zinc-800 bg-zinc-100 flex items-center justify-center mb-4">
+              <LayoutGrid className="w-8 h-8 dark:text-zinc-600 text-zinc-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">No contests found</h3>
-            <p className="text-zinc-400 max-w-md">
+            <h3 className="text-lg font-semibold dark:text-white text-zinc-800 mb-2">No contests found</h3>
+            <p className="dark:text-zinc-400 text-zinc-500 max-w-md">
               {activeTab === 'ongoing'
                 ? "There are no live contests right now. Check back later!"
                 : activeTab === 'next24h'

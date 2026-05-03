@@ -13,13 +13,13 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <div
-        className="flex h-screen w-full text-slate-200 font-sans selection:bg-green-500/30 selection:text-green-200"
+        className="flex h-screen w-full dark:text-slate-200 text-zinc-800 font-sans dark:selection:bg-green-500/30 dark:selection:text-green-200 selection:bg-green-500/20 selection:text-green-700"
         style={{
-          backgroundColor: '#020202',
+          backgroundColor: 'var(--color-brand-dark)',
           backgroundImage: `
-            radial-gradient(circle at 70% -20%, rgba(34, 197, 94, 0.20), transparent 50%),
-            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px)
+            radial-gradient(circle at 70% -20%, rgba(34, 197, 94, 0.12), transparent 50%),
+            linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px),
+            linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px)
           `,
           backgroundSize: '100% 100%, 40px 40px, 40px 40px',
           backgroundAttachment: 'fixed'

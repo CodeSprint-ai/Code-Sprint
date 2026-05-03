@@ -68,7 +68,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
     }
 
     return (
-        <div className="h-[calc(100vh-4rem)] w-full flex flex-col text-zinc-100 overflow-hidden p-4 gap-4">
+        <div className="h-[calc(100vh-4rem)] w-full flex flex-col dark:text-zinc-100 text-zinc-900 overflow-hidden p-4 gap-4">
             <Split
                 sizes={[50, 50]}
                 minSize={300}
@@ -77,14 +77,14 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                 className="flex flex-1 h-full overflow-hidden split-horizontal"
             >
                 {/* Left Panel - Problem Description with Sprint Header */}
-                <div className="h-full overflow-hidden flex flex-col bg-[#09090b] rounded-xl border border-white/5">
+                <div className="h-full overflow-hidden flex flex-col dark:bg-[#09090b] bg-white rounded-xl border dark:border-white/5 border-zinc-200">
                     {/* Sprint Header Bar */}
-                    <div className="h-12 border-b border-white/5 flex items-center justify-between px-4 bg-white/[0.02] shrink-0">
+                    <div className="h-12 border-b dark:border-white/5 border-zinc-200 flex items-center justify-between px-4 dark:bg-white/[0.02] bg-zinc-50 shrink-0">
                         {/* Left: Sprint Mode Label + Timer */}
                         <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2">
                                 <Zap className="w-4 h-4 text-emerald-400" />
-                                <span className="text-xs font-bold text-white">Sprint Mode</span>
+                                <span className="text-xs font-bold dark:text-white text-zinc-900">Sprint Mode</span>
                             </div>
                             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
                                 <Clock className="w-3.5 h-3.5" />
@@ -107,7 +107,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                                                 ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
                                                 : isSolved
                                                     ? "bg-emerald-500 text-black border-emerald-400"
-                                                    : "bg-white/5 text-zinc-500 border-white/10 hover:text-white hover:bg-white/10"
+                                                    : "dark:bg-white/5 bg-zinc-100 dark:text-zinc-500 text-zinc-600 dark:border-white/10 border-zinc-200 dark:hover:text-white hover:text-zinc-900 dark:hover:bg-white/10 hover:bg-zinc-200"
                                         )}
                                     >
                                         {sp.order}
@@ -121,14 +121,14 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                             <button
                                 onClick={handlePrevProblem}
                                 disabled={activeProblemIndex === 0}
-                                className="p-1.5 hover:bg-white/10 rounded-lg text-zinc-500 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                className="p-1.5 dark:hover:bg-white/10 hover:bg-zinc-200 rounded-lg dark:text-zinc-500 text-zinc-600 dark:hover:text-white hover:text-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                             >
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
                             <button
                                 onClick={handleNextProblem}
                                 disabled={activeProblemIndex === session.sprintProblems.length - 1}
-                                className="p-1.5 hover:bg-white/10 rounded-lg text-zinc-500 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                className="p-1.5 dark:hover:bg-white/10 hover:bg-zinc-200 rounded-lg dark:text-zinc-500 text-zinc-600 dark:hover:text-white hover:text-zinc-900 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                             >
                                 <ChevronRight className="w-4 h-4" />
                             </button>
@@ -142,7 +142,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                 </div>
 
                 {/* Right Panel - Editor & Results with Finish Button */}
-                <div className="h-full overflow-hidden flex flex-col bg-[#09090b] rounded-xl border border-white/5">
+                <div className="h-full overflow-hidden flex flex-col dark:bg-[#09090b] bg-white rounded-xl border dark:border-white/5 border-zinc-200">
                     <EditorPanel
                         problem={currentProblem}
                         hideSubmit={true}
@@ -175,7 +175,7 @@ function SprintProblemContent({ problem }: { problem: any }) {
     return (
         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
             {/* Title */}
-            <h1 className="text-2xl font-bold text-white mb-4">{problem.title}</h1>
+            <h1 className="text-2xl font-bold dark:text-white text-zinc-900 mb-4">{problem.title}</h1>
 
             {/* Difficulty & Tags */}
             <div className="flex items-center gap-3 mb-6 flex-wrap">
@@ -187,7 +187,7 @@ function SprintProblemContent({ problem }: { problem: any }) {
                         {problem.tags.map((tag: string) => (
                             <span
                                 key={tag}
-                                className="px-2 py-0.5 rounded bg-white/5 text-zinc-500 text-[10px] font-mono border border-white/5"
+                                className="px-2 py-0.5 rounded dark:bg-white/5 bg-zinc-100 dark:text-zinc-500 text-zinc-600 text-[10px] font-mono border dark:border-white/5 border-zinc-200"
                             >
                                 {tag}
                             </span>
@@ -197,18 +197,18 @@ function SprintProblemContent({ problem }: { problem: any }) {
             </div>
 
             {/* Description */}
-            <div className="space-y-6 text-sm text-zinc-300 leading-relaxed mb-8">
+            <div className="space-y-6 text-sm dark:text-zinc-300 text-zinc-700 leading-relaxed mb-8">
                 <p>{problem.description}</p>
             </div>
 
             {/* Examples */}
             {Array.isArray(problem.examples) && problem.examples.length > 0 && (
                 <div className="mb-6">
-                    <h3 className="text-sm font-bold text-white mb-3">Example:</h3>
+                    <h3 className="text-sm font-bold dark:text-white text-zinc-900 mb-3">Example:</h3>
                     {problem.examples.map((example: any, idx: number) => (
-                        <div key={idx} className="bg-white/[0.02] rounded-lg p-4 border border-white/5 font-mono text-xs space-y-1">
-                            <div><span className="text-zinc-500">Input:</span> <span className="text-zinc-300">{example.input}</span></div>
-                            <div><span className="text-zinc-500">Output:</span> <span className="text-zinc-300">{example.output}</span></div>
+                        <div key={idx} className="dark:bg-white/[0.02] bg-zinc-50 rounded-lg p-4 border dark:border-white/5 border-zinc-200 font-mono text-xs space-y-1">
+                            <div><span className="dark:text-zinc-500 text-zinc-600">Input:</span> <span className="dark:text-zinc-300 text-zinc-800">{example.input}</span></div>
+                            <div><span className="dark:text-zinc-500 text-zinc-600">Output:</span> <span className="dark:text-zinc-300 text-zinc-800">{example.output}</span></div>
                         </div>
                     ))}
                 </div>
@@ -217,8 +217,8 @@ function SprintProblemContent({ problem }: { problem: any }) {
             {/* Constraints */}
             {Array.isArray(problem.constraints) && problem.constraints.length > 0 && (
                 <div className="mb-6">
-                    <h3 className="text-sm font-bold text-white mb-3">Constraints:</h3>
-                    <ul className="space-y-1 text-xs text-zinc-400">
+                    <h3 className="text-sm font-bold dark:text-white text-zinc-900 mb-3">Constraints:</h3>
+                    <ul className="space-y-1 text-xs dark:text-zinc-400 text-zinc-600">
                         {problem.constraints.map((constraint: string, idx: number) => (
                             <li key={idx} className="flex items-start gap-2">
                                 <span className="text-emerald-500">•</span>
@@ -232,12 +232,12 @@ function SprintProblemContent({ problem }: { problem: any }) {
             {/* Companies */}
             {Array.isArray(problem.companies) && problem.companies.length > 0 && (
                 <div>
-                    <h3 className="text-sm font-bold text-white mb-3">Companies:</h3>
+                    <h3 className="text-sm font-bold dark:text-white text-zinc-900 mb-3">Companies:</h3>
                     <div className="flex gap-2 flex-wrap">
                         {problem.companies.map((company: string) => (
                             <span
                                 key={company}
-                                className="px-3 py-1.5 rounded-lg bg-white/5 text-zinc-400 text-xs font-medium border border-white/5 hover:border-white/10 transition-colors"
+                                className="px-3 py-1.5 rounded-lg dark:bg-white/5 bg-zinc-100 dark:text-zinc-400 text-zinc-600 text-xs font-medium border dark:border-white/5 border-zinc-200 dark:hover:border-white/10 hover:border-zinc-300 transition-colors"
                             >
                                 {company}
                             </span>

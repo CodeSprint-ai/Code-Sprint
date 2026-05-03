@@ -27,19 +27,19 @@ export function MasteryRadarChart({ data }: Props) {
 
     if (chartData.length === 0) {
         return (
-            <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-                <h3 className="text-sm font-semibold text-slate-400 mb-3">Skill Radar</h3>
-                <p className="text-xs text-slate-500">Solve problems to see your skill radar.</p>
+            <div className="dark:bg-white/[0.03] bg-white border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-5 shadow-sm dark:shadow-none">
+                <h3 className="text-sm font-semibold dark:text-slate-400 text-zinc-500 mb-3">Skill Radar</h3>
+                <p className="text-xs dark:text-slate-500 text-zinc-500">Solve problems to see your skill radar.</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-            <h3 className="text-sm font-semibold text-slate-400 mb-3">Skill Radar</h3>
+        <div className="dark:bg-white/[0.03] bg-white border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-5 shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-semibold dark:text-slate-400 text-zinc-500 mb-3">Skill Radar</h3>
             <ResponsiveContainer width="100%" height={260}>
                 <RadarChart data={chartData}>
-                    <PolarGrid stroke="rgba(255,255,255,0.06)" />
+                    <PolarGrid className="dark:stroke-white/[0.06] stroke-zinc-200" />
                     <PolarAngleAxis
                         dataKey="subject"
                         tick={{ fill: '#94a3b8', fontSize: 10 }}

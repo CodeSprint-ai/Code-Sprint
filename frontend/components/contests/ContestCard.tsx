@@ -46,10 +46,10 @@ export function ContestCard({ contest, onRemindMe }: ContestCardProps) {
         <div
             className={cn(
                 'group relative overflow-hidden rounded-xl border transition-all duration-300',
-                'bg-gradient-to-br from-zinc-900/80 to-zinc-950/90 backdrop-blur-sm',
+                'bg-gradient-to-br dark:from-zinc-900/80 dark:to-zinc-950/90 from-white to-zinc-50 backdrop-blur-sm',
                 isOngoing
                     ? 'border-emerald-500/40 shadow-lg shadow-emerald-500/10'
-                    : 'border-zinc-700/50 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10',
+                    : 'dark:border-zinc-700/50 border-zinc-200 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10',
                 'hover:-translate-y-1'
             )}
             onMouseEnter={() => setIsHovered(true)}
@@ -76,7 +76,7 @@ export function ContestCard({ contest, onRemindMe }: ContestCardProps) {
                 {/* Header */}
                 <div className="flex items-start gap-3 mb-4">
                     {/* Platform icon */}
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg dark:bg-zinc-800 bg-zinc-100 border dark:border-zinc-700 border-zinc-200 flex items-center justify-center overflow-hidden">
                         <img
                             src={contest.platform.icon}
                             alt={contest.platform.name}
@@ -95,18 +95,18 @@ export function ContestCard({ contest, onRemindMe }: ContestCardProps) {
                             rel="noopener noreferrer"
                             className="group/link flex items-center gap-1.5"
                         >
-                            <h3 className="font-semibold text-white truncate group-hover/link:text-cyan-400 transition-colors">
+                            <h3 className="font-semibold dark:text-white text-zinc-900 truncate dark:group-hover/link:text-cyan-400 group-hover/link:text-cyan-600 transition-colors">
                                 {contest.event}
                             </h3>
                             <ExternalLink className="w-3.5 h-3.5 text-zinc-500 flex-shrink-0 opacity-0 group-hover/link:opacity-100 transition-opacity" />
                         </a>
-                        <p className="text-sm text-zinc-400">{contest.platform.name}</p>
+                        <p className="text-sm dark:text-zinc-400 text-zinc-500">{contest.platform.name}</p>
                     </div>
                 </div>
 
                 {/* Time info */}
                 <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-zinc-400">
+                    <div className="flex items-center gap-2 text-sm dark:text-zinc-400 text-zinc-500">
                         <Clock className="w-4 h-4" />
                         <span>
                             {new Date(contest.start).toLocaleString(undefined, {
@@ -118,7 +118,7 @@ export function ContestCard({ contest, onRemindMe }: ContestCardProps) {
                             })}
                         </span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-zinc-400">
+                    <div className="flex items-center gap-2 text-sm dark:text-zinc-400 text-zinc-500">
                         <Timer className="w-4 h-4" />
                         <span>Duration: {formatDuration(contest.duration)}</span>
                     </div>
@@ -139,8 +139,8 @@ export function ContestCard({ contest, onRemindMe }: ContestCardProps) {
                         onClick={handleAddToCalendar}
                         className={cn(
                             'flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                            'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white',
-                            'border border-zinc-700 hover:border-zinc-600'
+                            'dark:bg-zinc-800 bg-zinc-100 dark:hover:bg-zinc-700 hover:bg-zinc-200 dark:text-zinc-300 text-zinc-700 dark:hover:text-white hover:text-zinc-900',
+                            'border dark:border-zinc-700 border-zinc-200 dark:hover:border-zinc-600 hover:border-zinc-300'
                         )}
                     >
                         <Calendar className="w-4 h-4" />
@@ -151,8 +151,8 @@ export function ContestCard({ contest, onRemindMe }: ContestCardProps) {
                         onClick={handleGoogleCalendar}
                         className={cn(
                             'flex items-center justify-center px-3 py-2 rounded-lg text-sm transition-all',
-                            'bg-zinc-800 hover:bg-cyan-600/20 text-zinc-300 hover:text-cyan-400',
-                            'border border-zinc-700 hover:border-cyan-500/50'
+                            'dark:bg-zinc-800 bg-zinc-100 hover:bg-cyan-600/20 dark:text-zinc-300 text-zinc-700 dark:hover:text-cyan-400 hover:text-cyan-600',
+                            'border dark:border-zinc-700 border-zinc-200 hover:border-cyan-500/50'
                         )}
                         title="Add to Google Calendar"
                     >
@@ -165,8 +165,8 @@ export function ContestCard({ contest, onRemindMe }: ContestCardProps) {
                         onClick={handleRemindMe}
                         className={cn(
                             'flex items-center justify-center px-3 py-2 rounded-lg text-sm transition-all',
-                            'bg-zinc-800 hover:bg-amber-600/20 text-zinc-300 hover:text-amber-400',
-                            'border border-zinc-700 hover:border-amber-500/50'
+                            'dark:bg-zinc-800 bg-zinc-100 hover:bg-amber-600/20 dark:text-zinc-300 text-zinc-700 dark:hover:text-amber-400 hover:text-amber-600',
+                            'border dark:border-zinc-700 border-zinc-200 hover:border-amber-500/50'
                         )}
                         title="Remind me"
                     >

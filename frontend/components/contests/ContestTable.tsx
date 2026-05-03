@@ -56,23 +56,23 @@ export function ContestTable({ contests, onRemindMe }: ContestTableProps) {
     }
 
     return (
-        <div className="overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-900/50">
+        <div className="overflow-x-auto rounded-lg border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/50 bg-white">
             <table className="w-full text-sm">
                 <thead>
-                    <tr className="border-b border-zinc-800 bg-zinc-900/80">
-                        <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">Contest</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider hidden sm:table-cell">Platform</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">Start Time</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider hidden md:table-cell">Duration</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">Status</th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-zinc-400 uppercase tracking-wider">Actions</th>
+                    <tr className="border-b dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/80 bg-zinc-50">
+                        <th className="px-4 py-3 text-left text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider">Contest</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider hidden sm:table-cell">Platform</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider">Start Time</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider hidden md:table-cell">Duration</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider">Status</th>
+                        <th className="px-4 py-3 text-right text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800/50">
+                <tbody className="divide-y dark:divide-zinc-800/50 divide-zinc-200">
                     {contests.map((contest) => (
                         <tr
                             key={contest.id}
-                            className="hover:bg-zinc-800/30 transition-colors"
+                            className="dark:hover:bg-zinc-800/30 hover:bg-zinc-50 transition-colors"
                         >
                             <td className="px-4 py-3">
                                 <div className="flex items-center gap-2 min-w-0">
@@ -88,7 +88,7 @@ export function ContestTable({ contests, onRemindMe }: ContestTableProps) {
                                         href={contest.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="font-medium text-white hover:text-cyan-400 transition-colors truncate max-w-[200px] md:max-w-[300px]"
+                                        className="font-medium dark:text-white text-zinc-900 dark:hover:text-cyan-400 hover:text-cyan-600 transition-colors truncate max-w-[200px] md:max-w-[300px]"
                                         title={contest.event}
                                     >
                                         {contest.event}
@@ -105,10 +105,10 @@ export function ContestTable({ contests, onRemindMe }: ContestTableProps) {
                                             (e.target as HTMLImageElement).style.display = 'none';
                                         }}
                                     />
-                                    <span className="text-zinc-400 text-xs">{contest.platform.name}</span>
+                                    <span className="dark:text-zinc-400 text-zinc-500 text-xs">{contest.platform.name}</span>
                                 </div>
                             </td>
-                            <td className="px-4 py-3 text-zinc-300 text-xs whitespace-nowrap">
+                            <td className="px-4 py-3 dark:text-zinc-300 text-zinc-700 text-xs whitespace-nowrap">
                                 {new Date(contest.start).toLocaleString(undefined, {
                                     month: 'short',
                                     day: 'numeric',
@@ -116,7 +116,7 @@ export function ContestTable({ contests, onRemindMe }: ContestTableProps) {
                                     minute: '2-digit',
                                 })}
                             </td>
-                            <td className="px-4 py-3 text-zinc-400 text-xs hidden md:table-cell">
+                            <td className="px-4 py-3 dark:text-zinc-400 text-zinc-600 text-xs hidden md:table-cell">
                                 {formatDuration(contest.duration)}
                             </td>
                             <td className="px-4 py-3">
@@ -128,21 +128,21 @@ export function ContestTable({ contests, onRemindMe }: ContestTableProps) {
                                         href={contest.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="p-1.5 rounded hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-colors"
+                                        className="p-1.5 rounded dark:hover:bg-zinc-700/50 hover:bg-zinc-200 dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-900 transition-colors"
                                         title="Open contest"
                                     >
                                         <ExternalLink className="w-4 h-4" />
                                     </a>
                                     <button
                                         onClick={() => downloadICSFile(contest)}
-                                        className="p-1.5 rounded hover:bg-zinc-700/50 text-zinc-400 hover:text-cyan-400 transition-colors"
+                                        className="p-1.5 rounded dark:hover:bg-zinc-700/50 hover:bg-zinc-200 dark:text-zinc-400 text-zinc-500 dark:hover:text-cyan-400 hover:text-cyan-600 transition-colors"
                                         title="Download ICS"
                                     >
                                         <Calendar className="w-4 h-4" />
                                     </button>
                                     <button
                                         onClick={() => handleRemindMe(contest)}
-                                        className="p-1.5 rounded hover:bg-zinc-700/50 text-zinc-400 hover:text-amber-400 transition-colors"
+                                        className="p-1.5 rounded dark:hover:bg-zinc-700/50 hover:bg-zinc-200 dark:text-zinc-400 text-zinc-500 dark:hover:text-amber-400 hover:text-amber-600 transition-colors"
                                         title="Set reminder"
                                     >
                                         <Bell className="w-4 h-4" />

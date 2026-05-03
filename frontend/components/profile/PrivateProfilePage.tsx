@@ -137,7 +137,7 @@ export default function PrivateProfilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-2">Error Loading Profile</h1>
+          <h1 className="text-2xl font-bold dark:text-white text-zinc-900 mb-2">Error Loading Profile</h1>
           <p className="text-red-400 mb-2">{profileError?.message || 'Unknown error'}</p>
           <pre className="text-xs text-slate-500 bg-slate-900 p-4 rounded text-left max-w-lg overflow-auto">
             {JSON.stringify(profileError, null, 2)}
@@ -180,20 +180,20 @@ export default function PrivateProfilePage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto py-8 px-4 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+    <div className="h-full overflow-y-auto py-8 px-4 scrollbar-thin dark:scrollbar-thumb-zinc-800 scrollbar-thumb-zinc-200 scrollbar-track-transparent">
       <div className="max-w-7xl mx-auto space-y-8 animate-fade-in pb-10">
         {/* Profile Header */}
         <ProfileHeader profile={publicProfile} />
 
         {/* Tabs */}
-        <div className="flex items-center gap-8 border-b border-white/5 px-2 overflow-x-auto">
+        <div className="flex items-center gap-8 border-b dark:border-white/5 border-zinc-200 px-2 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 pb-4 text-sm font-bold px-4 transition-all whitespace-nowrap ${activeTab === tab.id
                 ? 'text-emerald-400 border-b-2 border-emerald-500'
-                : 'text-zinc-500 hover:text-white'
+                : 'dark:text-zinc-500 text-zinc-400 dark:hover:text-white hover:text-zinc-900'
                 }`}
             >
               <tab.icon size={16} />
@@ -209,27 +209,27 @@ export default function PrivateProfilePage() {
               <StatsCards stats={publicProfile.stats} />
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-[#09090b] border border-white/5 rounded-xl p-6 relative overflow-hidden">
+                <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-6 relative overflow-hidden">
                   <div className="flex items-center gap-2 mb-8 relative z-10">
                     <Activity className="w-4 h-4 text-emerald-400" />
-                    <h3 className="font-bold text-white text-sm">Problem Difficulty</h3>
+                    <h3 className="font-bold dark:text-white text-zinc-900 text-sm">Problem Difficulty</h3>
                   </div>
                   {stats && <DifficultyChart distribution={stats.difficultyDistribution} />}
                 </div>
-                <div className="bg-[#09090b] border border-white/5 rounded-xl p-6">
+                <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-6">
                   <div className="flex items-center gap-2 mb-8">
                     <Code2 className="w-4 h-4 text-purple-400" />
-                    <h3 className="font-bold text-white text-sm">Language Usage</h3>
+                    <h3 className="font-bold dark:text-white text-zinc-900 text-sm">Language Usage</h3>
                   </div>
                   {stats && <LanguageChart usage={stats.languageUsage} />}
                 </div>
               </div>
 
               {stats && (
-                <div className="bg-[#09090b] border border-white/5 rounded-xl p-6 overflow-hidden">
+                <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-6 overflow-hidden">
                   <div className="flex items-center gap-2 mb-8">
                     <Activity className="w-4 h-4 text-emerald-400" />
-                    <h3 className="font-bold text-white text-sm">Submission Activity</h3>
+                    <h3 className="font-bold dark:text-white text-zinc-900 text-sm">Submission Activity</h3>
                   </div>
                   <SubmissionHeatmap data={stats.submissionHeatmap} />
                 </div>
@@ -283,30 +283,30 @@ function SavedProblemsTab({ savedProblems }: { savedProblems: SavedProblem[] }) 
 
   if (savedProblems.length === 0) {
     return (
-      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-12 text-center backdrop-blur-sm">
-        <div className="w-16 h-16 rounded-full bg-zinc-800/50 flex items-center justify-center mx-auto mb-4">
+      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-12 text-center backdrop-blur-sm">
+        <div className="w-16 h-16 rounded-full dark:bg-zinc-800/50 bg-zinc-100 flex items-center justify-center mx-auto mb-4">
           <Bookmark size={32} className="text-zinc-500" />
         </div>
-        <p className="text-zinc-300 font-medium mb-1">No saved problems yet</p>
+        <p className="dark:text-zinc-300 text-zinc-700 font-medium mb-1">No saved problems yet</p>
         <p className="text-sm text-zinc-500">Bookmark problems while solving to see them here!</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 overflow-hidden backdrop-blur-sm">
-      <div className="divide-y divide-zinc-800">
+    <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 overflow-hidden backdrop-blur-sm">
+      <div className="divide-y dark:divide-zinc-800 divide-zinc-200">
         {savedProblems.map((problem) => (
           <a
             key={problem.uuid}
             href={`/problems/${problem.problemUuid}`}
-            className="flex items-center justify-between p-4 hover:bg-zinc-800/50 transition-all duration-200 group"
+            className="flex items-center justify-between p-4 dark:hover:bg-zinc-800/50 hover:bg-zinc-50 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
               <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${difficultyColors[problem.difficulty]}`}>
                 {problem.difficulty}
               </span>
-              <span className="text-zinc-200 font-medium group-hover:text-cyan-400 transition-colors">{problem.problemTitle}</span>
+              <span className="dark:text-zinc-200 text-zinc-800 font-medium dark:group-hover:text-cyan-400 group-hover:text-cyan-600 transition-colors">{problem.problemTitle}</span>
             </div>
             {problem.notes && (
               <span className="text-sm text-zinc-500 truncate max-w-xs">{problem.notes}</span>
@@ -346,10 +346,10 @@ function SessionsTab({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
+      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <h3 className="text-lg font-semibold dark:text-white text-zinc-900 flex items-center gap-2">
               <Shield size={20} className="text-emerald-400" />
               Active Sessions
             </h3>
@@ -375,11 +375,11 @@ function SessionsTab({
               key={session.id}
               className={`flex items-center justify-between p-4 rounded-lg border ${session.isCurrent
                 ? 'bg-emerald-500/5 border-emerald-500/20'
-                : 'bg-zinc-800/30 border-zinc-800'
+                : 'dark:bg-zinc-800/30 bg-zinc-50 dark:border-zinc-800 border-zinc-200'
                 }`}
             >
               <div className="flex items-center gap-4">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${session.isCurrent ? 'bg-emerald-500/10 text-emerald-400' : 'bg-zinc-800 text-zinc-400'
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${session.isCurrent ? 'bg-emerald-500/10 text-emerald-400' : 'dark:bg-zinc-800 bg-zinc-200 dark:text-zinc-400 text-zinc-500'
                   }`}>
                   {session.device?.toLowerCase().includes('mobile') ? (
                     <Smartphone size={20} />
@@ -389,7 +389,7 @@ function SessionsTab({
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">
+                    <span className="dark:text-white text-zinc-900 font-medium">
                       {session.browser || 'Unknown Browser'} on {session.os || 'Unknown OS'}
                     </span>
                     {session.isCurrent && (
@@ -511,14 +511,14 @@ function SettingsTab({
     });
   };
 
-  const inputClasses = "w-full px-4 py-2.5 rounded-lg bg-zinc-950/50 border border-zinc-800 text-white placeholder-zinc-600 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 focus:outline-none transition-all";
+  const inputClasses = "w-full px-4 py-2.5 rounded-lg dark:bg-zinc-950/50 bg-zinc-50 border dark:border-zinc-800 border-zinc-200 dark:text-white text-zinc-900 dark:placeholder-zinc-600 placeholder-zinc-400 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/10 focus:outline-none transition-all";
   const labelClasses = "block text-sm font-medium text-zinc-400 mb-1.5";
 
   return (
     <div className="space-y-6">
       {/* Profile Image Upload */}
-      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold dark:text-white text-zinc-900 mb-6 flex items-center gap-2">
           <User size={20} className="text-emerald-400" />
           Profile Picture
         </h3>
@@ -529,8 +529,8 @@ function SettingsTab({
       </div>
 
       {/* Profile Settings */}
-      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold dark:text-white text-zinc-900 mb-6 flex items-center gap-2">
           <User size={20} className="text-cyan-400" />
           Profile Information
         </h3>
@@ -609,8 +609,8 @@ function SettingsTab({
       </div>
 
       {/* Change Password */}
-      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold dark:text-white text-zinc-900 mb-6 flex items-center gap-2">
           <Lock size={20} className="text-red-400" />
           Change Password
         </h3>
@@ -662,8 +662,8 @@ function SettingsTab({
       </div>
 
       {/* Sync Stats */}
-      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold dark:text-white text-zinc-900 mb-4 flex items-center gap-2">
           <Zap size={20} className="text-amber-400" />
           Sync Statistics
         </h3>
@@ -681,8 +681,8 @@ function SettingsTab({
       </div>
 
       {/* Preferences */}
-      <div className="rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 backdrop-blur-sm">
-        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
+        <h3 className="text-lg font-semibold dark:text-white text-zinc-900 mb-6 flex items-center gap-2">
           <Settings size={20} className="text-violet-400" />
           Preferences
         </h3>
@@ -723,9 +723,9 @@ function SettingsTab({
                   onChange={(e) => setPreferences({ ...preferences, emailNotifications: e.target.checked })}
                   className="peer sr-only"
                 />
-                <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
+                <div className="w-11 h-6 dark:bg-zinc-800 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
               </div>
-              <span className="text-zinc-300 group-hover:text-white transition-colors">Email notifications</span>
+              <span className="dark:text-zinc-300 text-zinc-600 dark:group-hover:text-white group-hover:text-zinc-900 transition-colors">Email notifications</span>
             </label>
             <label className="flex items-center gap-3 cursor-pointer group">
               <div className="relative flex items-center">
@@ -735,9 +735,9 @@ function SettingsTab({
                   onChange={(e) => setPreferences({ ...preferences, marketingEmails: e.target.checked })}
                   className="peer sr-only"
                 />
-                <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
+                <div className="w-11 h-6 dark:bg-zinc-800 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
               </div>
-              <span className="text-zinc-300 group-hover:text-white transition-colors">Marketing emails</span>
+              <span className="dark:text-zinc-300 text-zinc-600 dark:group-hover:text-white group-hover:text-zinc-900 transition-colors">Marketing emails</span>
             </label>
           </div>
 

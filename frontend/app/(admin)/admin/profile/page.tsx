@@ -2,6 +2,6 @@
 
 import { PrivateProfilePage } from '@/components/profile';
 
-export default function AdminProfilePage() {
-    return <PrivateProfilePage />;
+export default function ProfilePage() {
+  return <PrivateProfilePage />;
 }

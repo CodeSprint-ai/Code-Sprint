@@ -17,7 +17,7 @@ const queryClient = new QueryClient();
 export function Provider({ children }: Props) {
   return (
     <QueryClientProvider client={queryClient}>
-      <NextThemesProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+      <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="codesprint-theme">
         <AuthInitializer>
           <Suspense fallback={null}>
             <OAuthInitializer>{children}</OAuthInitializer>

@@ -26,8 +26,8 @@ import {
 } from "lucide-react";
 import { ProblemCard } from "@/components/ProblemCard";
 import { ProblemsTable } from "@/components/ProblemsTable";
-import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/authStore";
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   const difficultyConfig: Record<Difficulty, string> = {
@@ -45,7 +45,7 @@ function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   );
 }
 
-export default function ProblemsPage() {
+export default function AdminProblemsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -107,40 +107,40 @@ export default function ProblemsPage() {
       <div className="flex w-full flex-1 min-h-0 flex-col overflow-hidden">
         <div className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-black text-white tracking-tight">
+            <h1 className="text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
               All Problems
             </h1>
-            <p className="mt-1 text-sm text-zinc-400">
-              View and filter problems from the collection.
+            <p className="mt-1 text-sm dark:text-zinc-400 text-zinc-500">
+              Browse and solve algorithm challenges.
             </p>
           </div>
           <div className="flex items-center gap-2">
             {/* View toggle */}
-            <div className="flex bg-[#09090b] p-1 rounded-xl border border-white/5 shrink-0">
-              <button
-                onClick={() => setViewMode('cards')}
-                className={cn(
-                  'p-2 rounded-lg transition-colors',
-                  viewMode === 'cards'
-                    ? 'bg-white/5 text-white shadow-sm border border-white/5'
-                    : 'text-zinc-500 hover:text-white'
-                )}
-                title="Card view"
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('table')}
-                className={cn(
-                  'p-2 rounded-lg transition-colors',
-                  viewMode === 'table'
-                    ? 'bg-white/5 text-white shadow-sm border border-white/5'
-                    : 'text-zinc-500 hover:text-white'
-                )}
-                title="Table view"
-              >
-                <List className="w-4 h-4" />
-              </button>
+            <div className="flex dark:bg-[#09090b] bg-white p-1 rounded-xl border dark:border-white/5 border-zinc-200 shrink-0">
+            <button
+              onClick={() => setViewMode('cards')}
+              className={cn(
+                'p-2 rounded-lg transition-colors',
+                viewMode === 'cards'
+                  ? 'dark:bg-white/5 bg-zinc-100 dark:text-white text-zinc-800 shadow-sm border dark:border-white/5 border-zinc-200'
+                  : 'dark:text-zinc-500 text-zinc-400 dark:hover:text-white hover:text-zinc-800'
+              )}
+              title="Card view"
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={cn(
+                'p-2 rounded-lg transition-colors',
+                viewMode === 'table'
+                  ? 'dark:bg-white/5 bg-zinc-100 dark:text-white text-zinc-800 shadow-sm border dark:border-white/5 border-zinc-200'
+                  : 'dark:text-zinc-500 text-zinc-400 dark:hover:text-white hover:text-zinc-800'
+              )}
+              title="Table view"
+            >
+              <List className="w-4 h-4" />
+            </button>
             </div>
             {user?.role === "ADMIN" && (
               <Link href="/admin/problems/add">
@@ -154,11 +154,11 @@ export default function ProblemsPage() {
         </div>
 
         {/* Filters */}
-        <div className="mb-8 p-1 rounded-2xl border border-white/5 bg-[#09090b]">
+        <div className="mb-8 p-1 rounded-2xl border dark:border-white/5 border-zinc-200 dark:bg-[#09090b] bg-white shadow-sm dark:shadow-none">
           <div className="p-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-zinc-400" />
-              <span className="text-sm font-medium text-zinc-300">Filters</span>
+              <Filter className="h-4 w-4 dark:text-zinc-400 text-zinc-500" />
+              <span className="text-sm font-medium dark:text-zinc-300 text-zinc-700">Filters</span>
             </div>
             {hasActiveFilters && (
               <Button
@@ -179,14 +179,14 @@ export default function ProblemsPage() {
                 placeholder="Search..."
                 value={filters.search ?? ""}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
-                className="border-white/5 bg-black/40 pl-10 text-white placeholder:text-zinc-600 focus:border-emerald-500/50 rounded-xl py-3"
+                className="dark:border-white/5 border-zinc-200 dark:bg-black/40 bg-zinc-50 pl-10 dark:text-white text-zinc-800 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 focus:border-emerald-500/50 rounded-xl py-3"
               />
             </div>
             <Select
               value={filters.difficulty ?? "all"}
               onValueChange={(v) => handleFilterChange("difficulty", v === "all" ? undefined : v)}
             >
-              <SelectTrigger className="border-zinc-700 bg-zinc-800/50 text-zinc-100">
+              <SelectTrigger className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-100 text-zinc-800">
                 <SelectValue placeholder="Difficulty" />
               </SelectTrigger>
               <SelectContent>
@@ -200,7 +200,7 @@ export default function ProblemsPage() {
               value={filters.pattern ?? "all"}
               onValueChange={(v) => handleFilterChange("pattern", v === "all" ? undefined : v)}
             >
-              <SelectTrigger className="border-zinc-700 bg-zinc-800/50 text-zinc-100">
+              <SelectTrigger className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-100 text-zinc-800">
                 <SelectValue placeholder="Pattern" />
               </SelectTrigger>
               <SelectContent className="max-h-[300px]">
@@ -216,20 +216,20 @@ export default function ProblemsPage() {
               placeholder="Filter by tag..."
               value={filters.tag ?? ""}
               onChange={(e) => handleFilterChange("tag", e.target.value)}
-              className="border-zinc-700 bg-zinc-800/50 text-zinc-100 placeholder:text-zinc-500"
+              className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-100 text-zinc-800 dark:placeholder:text-zinc-500 placeholder:text-zinc-400"
             />
             <div className="grid grid-cols-2 gap-2">
               <Input
                 type="date"
                 value={filters.fromDate ?? ""}
                 onChange={(e) => handleFilterChange("fromDate", e.target.value)}
-                className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-100 text-zinc-800"
               />
               <Input
                 type="date"
                 value={filters.toDate ?? ""}
                 onChange={(e) => handleFilterChange("toDate", e.target.value)}
-                className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-100 text-zinc-800"
               />
             </div>
           </div>
@@ -237,15 +237,15 @@ export default function ProblemsPage() {
 
         {paginatedProblems.isLoading && (
           <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3 text-zinc-500">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-emerald-500" />
+            <div className="flex flex-col items-center gap-3 dark:text-zinc-500 text-zinc-600">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 dark:border-zinc-600 border-zinc-200 border-t-emerald-500 dark:border-t-emerald-500" />
               <span>Loading problems...</span>
             </div>
           </div>
         )}
 
         {paginatedProblems.isError && (
-          <div className="rounded-xl border border-red-900/50 bg-red-950/20 px-6 py-8 text-center text-red-400">
+          <div className="rounded-xl border dark:border-red-900/50 border-red-200 dark:bg-red-950/20 bg-red-50 px-6 py-8 text-center dark:text-red-400 text-red-600">
             Failed to load problems. Please try again.
           </div>
         )}
@@ -254,8 +254,8 @@ export default function ProblemsPage() {
           <div className="flex min-h-0 flex-1 flex-col">
             {problems.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center py-12">
-                <LayoutGrid className="mb-3 h-12 w-12 text-zinc-600" />
-                <p className="text-zinc-500">No problems found.</p>
+                <LayoutGrid className="mb-3 h-12 w-12 dark:text-zinc-600 text-zinc-400" />
+                <p className="dark:text-zinc-500 text-zinc-600">No problems found.</p>
               </div>
             ) : (
               viewMode === 'cards' ? (
@@ -275,17 +275,17 @@ export default function ProblemsPage() {
 
             {/* Pagination: sticky at bottom */}
             {showPagination && meta && (
-              <div className="flex-shrink-0 mt-4 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-                <p className="text-sm text-zinc-400">
+              <div className="flex-shrink-0 mt-4 rounded-xl border dark:border-zinc-800/80 border-zinc-200 dark:bg-zinc-900/30 bg-white px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-sm dark:shadow-none">
+                <p className="text-sm dark:text-zinc-400 text-zinc-500">
                   Showing{" "}
-                  <span className="font-medium text-zinc-300">
+                  <span className="font-medium dark:text-zinc-300 text-zinc-700">
                     {meta.total === 0 ? 0 : (meta.page - 1) * meta.pageSize + 1}
                   </span>{" "}
                   –{" "}
-                  <span className="font-medium text-zinc-300">
+                  <span className="font-medium dark:text-zinc-300 text-zinc-700">
                     {Math.min(meta.page * meta.pageSize, meta.total)}
                   </span>{" "}
-                  of <span className="font-medium text-zinc-300">{meta.total}</span>{" "}
+                  of <span className="font-medium dark:text-zinc-300 text-zinc-700">{meta.total}</span>{" "}
                   problems
                 </p>
                 <div className="flex items-center gap-3">
@@ -299,12 +299,12 @@ export default function ProblemsPage() {
                       }))
                     }
                     disabled={meta.page <= 1}
-                    className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
+                    className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-200 text-zinc-700 dark:hover:bg-zinc-700 hover:bg-zinc-100 disabled:opacity-50"
                   >
                     <ChevronLeft className="h-4 w-4" />
                     Previous
                   </Button>
-                  <span className="min-w-[7rem] text-center text-sm text-zinc-400">
+                  <span className="min-w-[7rem] text-center text-sm dark:text-zinc-400 text-zinc-500">
                     Page {meta.page} of {Math.max(1, meta.totalPages)}
                   </span>
                   <Button
@@ -317,7 +317,7 @@ export default function ProblemsPage() {
                       }))
                     }
                     disabled={meta.page >= meta.totalPages}
-                    className="border-zinc-700 bg-zinc-800/50 text-zinc-200 hover:bg-zinc-700 disabled:opacity-50"
+                    className="dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-zinc-50 dark:text-zinc-200 text-zinc-700 dark:hover:bg-zinc-700 hover:bg-zinc-100 disabled:opacity-50"
                   >
                     Next
                     <ChevronRight className="h-4 w-4" />
@@ -328,6 +328,6 @@ export default function ProblemsPage() {
           </div>
         )}
       </div>
-    </div>
+    // </div>
   );
 }

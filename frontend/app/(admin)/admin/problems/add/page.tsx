@@ -129,15 +129,15 @@ export default function AddProblemPage() {
         <div className="mb-6">
           <Link
             href="/admin/problems"
-            className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-200 mb-4"
+            className="inline-flex items-center gap-2 text-sm dark:text-zinc-400 text-zinc-500 dark:hover:text-zinc-200 hover:text-zinc-800 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Problems
           </Link>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">
+          <h1 className="text-2xl font-semibold tracking-tight dark:text-zinc-100 text-zinc-900 sm:text-3xl">
             Create New Problem
           </h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm dark:text-zinc-500 text-zinc-600">
             Fill in the details below to create a new coding problem.
           </p>
         </div>
@@ -160,12 +160,12 @@ export default function AddProblemPage() {
                     name="title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">Title</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">Title</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Two Sum"
                             {...field}
-                            className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                           />
                         </FormControl>
                         <FormMessage />
@@ -178,13 +178,13 @@ export default function AddProblemPage() {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">Description (Markdown supported)</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">Description (Markdown supported)</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={5}
                             placeholder="Problem description..."
                             {...field}
-                            className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                           />
                         </FormControl>
                         <FormMessage />
@@ -198,10 +198,10 @@ export default function AddProblemPage() {
                       name="difficulty"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-zinc-200">Difficulty</FormLabel>
+                          <FormLabel className="dark:text-zinc-200 text-zinc-700">Difficulty</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="border-zinc-700 bg-zinc-800/50 text-zinc-100">
+                              <SelectTrigger className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900">
                                 <SelectValue placeholder="Select difficulty" />
                               </SelectTrigger>
                             </FormControl>
@@ -220,12 +220,12 @@ export default function AddProblemPage() {
                       name="tags"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-zinc-200">Tags (comma separated)</FormLabel>
+                          <FormLabel className="dark:text-zinc-200 text-zinc-700">Tags (comma separated)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="array, hash-table"
                               onChange={(e) => field.onChange(e.target.value.split(",").map((t) => t.trim()).filter(Boolean))}
-                              className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                              className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             />
                           </FormControl>
                         </FormItem>
@@ -239,12 +239,12 @@ export default function AddProblemPage() {
                       name="companies"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-zinc-200">Companies (comma separated)</FormLabel>
+                          <FormLabel className="dark:text-zinc-200 text-zinc-700">Companies (comma separated)</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Google, Amazon, Meta"
                               onChange={(e) => field.onChange(e.target.value.split(",").map((t) => t.trim()).filter(Boolean))}
-                              className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                              className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             />
                           </FormControl>
                         </FormItem>
@@ -257,13 +257,13 @@ export default function AddProblemPage() {
                         name="timeLimitSeconds"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-zinc-200">Time Limit (s)</FormLabel>
+                            <FormLabel className="dark:text-zinc-200 text-zinc-700">Time Limit (s)</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
                                 {...field}
                                 onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                                className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                                className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                               />
                             </FormControl>
                           </FormItem>
@@ -274,13 +274,13 @@ export default function AddProblemPage() {
                         name="memoryLimitMB"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-zinc-200">Memory (MB)</FormLabel>
+                            <FormLabel className="dark:text-zinc-200 text-zinc-700">Memory (MB)</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
                                 {...field}
                                 onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                                className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                                className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                               />
                             </FormControl>
                           </FormItem>
@@ -294,13 +294,13 @@ export default function AddProblemPage() {
                     name="constraints"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">Constraints</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">Constraints</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={2}
                             placeholder="2 <= nums.length <= 10^4"
                             {...field}
-                            className="border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                           />
                         </FormControl>
                       </FormItem>
@@ -310,7 +310,7 @@ export default function AddProblemPage() {
 
                 {/* Starter Code Tab */}
                 <TabsContent value="starter" className="space-y-4 mt-6">
-                  <p className="text-sm text-zinc-400">
+                  <p className="text-sm dark:text-zinc-400 text-zinc-600">
                     Starter code is what users see in the editor. Include the Solution class template.
                   </p>
 
@@ -319,11 +319,11 @@ export default function AddProblemPage() {
                     name="starterCode.java"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">Java Starter Code</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">Java Starter Code</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={8}
-                            className="font-mono text-sm border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-sm border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             {...field}
                           />
                         </FormControl>
@@ -337,11 +337,11 @@ export default function AddProblemPage() {
                     name="starterCode.python"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">Python Starter Code</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">Python Starter Code</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={6}
-                            className="font-mono text-sm border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-sm border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             {...field}
                           />
                         </FormControl>
@@ -355,11 +355,11 @@ export default function AddProblemPage() {
                     name="starterCode.cpp"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">C++ Starter Code</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">C++ Starter Code</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={8}
-                            className="font-mono text-sm border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-sm border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             {...field}
                           />
                         </FormControl>
@@ -371,7 +371,7 @@ export default function AddProblemPage() {
 
                 {/* Runner Template Tab */}
                 <TabsContent value="runner" className="space-y-4 mt-6">
-                  <p className="text-sm text-zinc-400">
+                  <p className="text-sm dark:text-zinc-400 text-zinc-600">
                     Runner templates wrap the user&apos;s code for execution. Use {`{{USER_CODE}}`} as placeholder.
                     Users never see this.
                   </p>
@@ -381,11 +381,11 @@ export default function AddProblemPage() {
                     name="runnerTemplate.java"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">Java Runner Template</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">Java Runner Template</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={10}
-                            className="font-mono text-xs border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-xs border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             {...field}
                           />
                         </FormControl>
@@ -399,11 +399,11 @@ export default function AddProblemPage() {
                     name="runnerTemplate.python"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">Python Runner Template</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">Python Runner Template</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={8}
-                            className="font-mono text-xs border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-xs border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             {...field}
                           />
                         </FormControl>
@@ -417,11 +417,11 @@ export default function AddProblemPage() {
                     name="runnerTemplate.cpp"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-zinc-200">C++ Runner Template</FormLabel>
+                        <FormLabel className="dark:text-zinc-200 text-zinc-700">C++ Runner Template</FormLabel>
                         <FormControl>
                           <Textarea
                             rows={10}
-                            className="font-mono text-xs border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-xs border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             {...field}
                           />
                         </FormControl>
@@ -433,15 +433,15 @@ export default function AddProblemPage() {
 
                 {/* Test Cases Tab */}
                 <TabsContent value="testcases" className="space-y-4 mt-6">
-                  <p className="text-sm text-zinc-400">
+                  <p className="text-sm dark:text-zinc-400 text-zinc-600">
                     Enter input as JSON object (e.g., {`{"nums": [2,7,11,15], "target": 9}`})
                     and expected output as JSON (e.g., {`[0, 1]`})
                   </p>
 
                   {fields.map((field, index) => (
-                    <div key={field.id} className="p-4 border border-zinc-800 rounded-lg space-y-3 bg-zinc-900/30">
+                    <div key={field.id} className="p-4 border dark:border-zinc-800 border-zinc-200 rounded-lg space-y-3 dark:bg-zinc-900/30 bg-zinc-50">
                       <div className="flex justify-between items-center">
-                        <h4 className="font-medium text-zinc-200">Test Case {index + 1}</h4>
+                        <h4 className="font-medium dark:text-zinc-200 text-zinc-800">Test Case {index + 1}</h4>
                         <Button
                           type="button"
                           variant="destructive"
@@ -455,20 +455,20 @@ export default function AddProblemPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <FormItem>
-                          <FormLabel className="text-zinc-200">Input (JSON)</FormLabel>
+                          <FormLabel className="dark:text-zinc-200 text-zinc-700">Input (JSON)</FormLabel>
                           <Textarea
                             rows={3}
-                            className="font-mono text-sm border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-sm border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             placeholder='{"nums": [2,7,11,15], "target": 9}'
                             {...form.register(`testCases.${index}.inputText` as any)}
                           />
                         </FormItem>
 
                         <FormItem>
-                          <FormLabel className="text-zinc-200">Expected Output (JSON)</FormLabel>
+                          <FormLabel className="dark:text-zinc-200 text-zinc-700">Expected Output (JSON)</FormLabel>
                           <Textarea
                             rows={3}
-                            className="font-mono text-sm border-zinc-700 bg-zinc-800/50 text-zinc-100"
+                            className="font-mono text-sm border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             placeholder="[0, 1]"
                             {...form.register(`testCases.${index}.expectedOutputText` as any)}
                           />
@@ -476,19 +476,19 @@ export default function AddProblemPage() {
                       </div>
 
                       <div className="flex gap-4">
-                        <label className="flex items-center gap-2 text-sm text-zinc-300">
+                        <label className="flex items-center gap-2 text-sm dark:text-zinc-300 text-zinc-700">
                           <input
                             type="checkbox"
                             {...form.register(`testCases.${index}.isSample`)}
-                            className="rounded border-zinc-600"
+                            className="rounded dark:border-zinc-600 border-zinc-300"
                           />
                           Sample (shown to users)
                         </label>
-                        <label className="flex items-center gap-2 text-sm text-zinc-300">
+                        <label className="flex items-center gap-2 text-sm dark:text-zinc-300 text-zinc-700">
                           <input
                             type="checkbox"
                             {...form.register(`testCases.${index}.isHidden`)}
-                            className="rounded border-zinc-600"
+                            className="rounded dark:border-zinc-600 border-zinc-300"
                           />
                           Hidden (for scoring only)
                         </label>
@@ -502,26 +502,26 @@ export default function AddProblemPage() {
                     onClick={() =>
                       append({ inputText: "", expectedOutputText: "", isSample: false, isHidden: false } as any)
                     }
-                    className="border-zinc-700 bg-zinc-800/50 text-zinc-200"
+                    className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-200 text-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   >
                     + Add Test Case
                   </Button>
                 </TabsContent>
               </Tabs>
 
-              <div className="flex justify-end gap-3 pt-6 border-t border-zinc-800">
+              <div className="flex justify-end gap-3 pt-6 border-t dark:border-zinc-800 border-zinc-200">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => router.push("/admin/problems")}
-                  className="border-zinc-700 bg-zinc-800/50 text-zinc-200"
+                  className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-200 text-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-sky-600 hover:bg-sky-700 text-white"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
                 >
                   {isSubmitting ? "Creating..." : "Create Problem"}
                 </Button>

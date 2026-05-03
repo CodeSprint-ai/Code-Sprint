@@ -18,9 +18,9 @@ const TOPIC_COLORS = [
 export function ProgressTimeline({ history }: Props) {
     if (!history || history.length === 0) {
         return (
-            <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-                <h3 className="text-sm font-semibold text-slate-400 mb-3">📈 Progress Timeline</h3>
-                <p className="text-xs text-slate-500">Keep solving — your mastery history will appear here.</p>
+            <div className="dark:bg-white/[0.03] bg-white border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-5 shadow-sm dark:shadow-none">
+                <h3 className="text-sm font-semibold dark:text-slate-400 text-zinc-500 mb-3">📈 Progress Timeline</h3>
+                <p className="text-xs dark:text-slate-500 text-zinc-500">Keep solving — your mastery history will appear here.</p>
             </div>
         );
     }
@@ -41,13 +41,13 @@ export function ProgressTimeline({ history }: Props) {
     }));
 
     return (
-        <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
-            <h3 className="text-sm font-semibold text-slate-400 mb-4 flex items-center gap-2">
+        <div className="dark:bg-white/[0.03] bg-white border dark:border-white/[0.06] border-zinc-200 rounded-2xl p-5 shadow-sm dark:shadow-none">
+            <h3 className="text-sm font-semibold dark:text-slate-400 text-zinc-500 mb-4 flex items-center gap-2">
                 <span>📈</span> Progress Timeline
             </h3>
             <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                    <CartesianGrid strokeDasharray="3 3" className="dark:stroke-white/[0.04] stroke-zinc-100" />
                     <XAxis
                         dataKey="date"
                         tick={{ fill: '#64748b', fontSize: 10 }}
@@ -93,7 +93,7 @@ export function ProgressTimeline({ history }: Props) {
                             className="w-2 h-2 rounded-full"
                             style={{ backgroundColor: TOPIC_COLORS[i % TOPIC_COLORS.length] }}
                         />
-                        <span className="text-[10px] text-slate-500">
+                        <span className="text-[10px] dark:text-slate-500 text-zinc-500">
                             {topic.replace(/_/g, ' ')}
                         </span>
                     </div>

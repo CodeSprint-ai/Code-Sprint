@@ -13,7 +13,7 @@ export function DashboardHero({ motivation = "Consistency is key to mastery." }:
     const { user } = useAuthStore();
 
     return (
-        <div className="relative w-full rounded-2xl bg-[#09090b] border border-white/5 overflow-hidden group">
+        <div className="relative w-full rounded-2xl dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 overflow-hidden group shadow-sm dark:shadow-none">
             {/* Subtle Background Gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-transparent pointer-events-none" />
 
@@ -32,13 +32,13 @@ export function DashboardHero({ motivation = "Consistency is key to mastery." }:
 
                     {/* Welcome Message */}
                     <div className="space-y-2">
-                        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+                        <h1 className="text-4xl md:text-5xl font-black dark:text-white text-zinc-900 tracking-tight">
                             Welcome back,{" "}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
                                 {user?.name || "Coder"}
                             </span>
                         </h1>
-                        <p className="text-zinc-400 text-sm md:text-base max-w-lg mx-auto md:mx-0">
+                        <p className="dark:text-zinc-400 text-zinc-500 text-sm md:text-base max-w-lg mx-auto md:mx-0">
                             {motivation}
                         </p>
                     </div>

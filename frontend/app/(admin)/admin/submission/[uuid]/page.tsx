@@ -78,7 +78,7 @@ export default function AdminSubmissionViewPage({
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4">
       <p className="text-red-400">Not found.</p>
       <Link href={basePath}>
-        <Button variant="outline" className="border-zinc-700 bg-zinc-800/50 text-zinc-200">
+        <Button variant="outline" className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-200 text-zinc-700">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Submissions
         </Button>
@@ -96,19 +96,19 @@ function SubmissionView({ submission }: { submission: Submission }) {
       <div className="mx-auto max-w-4xl">
         <Link
           href={basePath}
-          className="mb-6 inline-flex items-center text-sm text-zinc-400 hover:text-zinc-200"
+          className="mb-6 inline-flex items-center text-sm dark:text-zinc-400 text-zinc-500 dark:hover:text-zinc-200 hover:text-zinc-800"
         >
           <ArrowLeft className="mr-1 h-4 w-4" />
           Back to Submissions
         </Link>
 
-        <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-6">
+        <div className="rounded-xl border dark:border-zinc-800/80 border-zinc-200 dark:bg-zinc-900/30 bg-zinc-50 p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h1 className="text-xl font-semibold text-zinc-100">
+              <h1 className="text-xl font-semibold dark:text-zinc-100 text-zinc-900">
                 {submission.problemTitle ?? "Submission"}
               </h1>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm dark:text-zinc-500 text-zinc-600">
                 {submission.userName ? `by ${submission.userName} · ` : ""}
                 {new Date(submission.createdAt).toLocaleString()}
               </p>
@@ -117,18 +117,18 @@ function SubmissionView({ submission }: { submission: Submission }) {
           </div>
 
           <div className="mt-6 grid gap-4 text-sm sm:grid-cols-3">
-            <div className="flex items-center gap-2 text-zinc-400">
+            <div className="flex items-center gap-2 dark:text-zinc-400 text-zinc-500">
               <FileCode2 className="h-4 w-4" />
               {submission.language}
             </div>
             {submission.executionTime != null && (
-              <div className="flex items-center gap-2 text-zinc-400">
+              <div className="flex items-center gap-2 dark:text-zinc-400 text-zinc-500">
                 <Clock className="h-4 w-4" />
                 {submission.executionTime} ms
               </div>
             )}
             {submission.memoryUsage != null && (
-              <div className="flex items-center gap-2 text-zinc-400">
+              <div className="flex items-center gap-2 dark:text-zinc-400 text-zinc-500">
                 <Cpu className="h-4 w-4" />
                 {submission.memoryUsage} KB
               </div>
@@ -138,7 +138,7 @@ function SubmissionView({ submission }: { submission: Submission }) {
           {submission.compileOutput && (
             <div className="mt-6">
               <h3 className="mb-2 text-sm font-medium text-rose-400">Compile output</h3>
-              <pre className="overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 text-xs text-zinc-300">
+              <pre className="overflow-x-auto rounded-lg border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/50 bg-white p-4 text-xs dark:text-zinc-300 text-zinc-800">
                 {submission.compileOutput}
               </pre>
             </div>
@@ -146,12 +146,12 @@ function SubmissionView({ submission }: { submission: Submission }) {
 
           {submission.testResults && submission.testResults.length > 0 && (
             <div className="mt-6">
-              <h3 className="mb-3 text-sm font-medium text-zinc-300">Test results</h3>
+              <h3 className="mb-3 text-sm font-medium dark:text-zinc-300 text-zinc-800">Test results</h3>
               <div className="space-y-2">
                 {(submission.testResults as TestResult[]).map((tr, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-2"
+                    className="flex items-center justify-between rounded-lg border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/50 bg-white px-4 py-2"
                   >
                     <div className="flex items-center gap-2">
                       {tr.verdict === "ACCEPTED" ? (
@@ -159,11 +159,11 @@ function SubmissionView({ submission }: { submission: Submission }) {
                       ) : (
                         <XCircle className="h-4 w-4 text-rose-500" />
                       )}
-                      <span className="text-zinc-300">
+                      <span className="dark:text-zinc-300 text-zinc-800">
                         Test {i + 1} {tr.isHidden ? "(Hidden)" : tr.verdict}
                       </span>
                     </div>
-                    <span className="text-xs text-zinc-500">
+                    <span className="text-xs dark:text-zinc-500 text-zinc-600">
                       {tr.time != null ? `${tr.time.toFixed(3)}s` : "—"} /{" "}
                       {tr.memory != null ? `${tr.memory} KB` : "—"}
                     </span>
@@ -174,8 +174,8 @@ function SubmissionView({ submission }: { submission: Submission }) {
           )}
 
           <div className="mt-6">
-            <h3 className="mb-2 text-sm font-medium text-zinc-300">Code</h3>
-            <pre className="max-h-96 overflow-auto rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 text-xs text-zinc-300">
+            <h3 className="mb-2 text-sm font-medium dark:text-zinc-300 text-zinc-800">Code</h3>
+            <pre className="max-h-96 overflow-auto rounded-lg border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/50 bg-white p-4 text-xs dark:text-zinc-300 text-zinc-800">
               {submission.code}
             </pre>
           </div>

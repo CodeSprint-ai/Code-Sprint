@@ -57,10 +57,13 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="pt-20 pb-10 relative overflow-hidden">
+    <footer className="pt-20 pb-10 relative overflow-hidden dark:bg-transparent bg-zinc-50/50">
         {/* Background Gradients */}
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand-green/5 rounded-full blur-[128px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-orange/5 rounded-full blur-[128px] pointer-events-none" />
+
+        {/* Top border */}
+        <div className="absolute top-0 left-0 right-0 h-px dark:bg-white/5 bg-zinc-200" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div 
@@ -76,11 +79,11 @@ const Footer: React.FC = () => {
               <div className="bg-gradient-to-tr from-brand-green to-emerald-900 p-2 rounded-lg">
                  <Terminal className="text-white w-6 h-6" />
               </div>
-              <span className="text-2xl font-bold text-white code-font">
+              <span className="text-2xl font-bold dark:text-white text-zinc-900 code-font">
                 CodeSprint<span className="text-brand-green">AI</span>
               </span>
             </div>
-            <p className="text-gray-400 mb-8 leading-relaxed text-sm max-w-xs">
+            <p className="dark:text-gray-400 text-zinc-600 mb-8 leading-relaxed text-sm max-w-xs">
               The intelligent platform for developers to learn, practice, and get hired. Built by engineers, for engineers.
             </p>
             
@@ -90,7 +93,7 @@ const Footer: React.FC = () => {
                     key={i} 
                     href={social.href} 
                     aria-label={social.label}
-                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 transition-all duration-300 hover:scale-110 hover:border-brand-green/50 hover:text-brand-green hover:bg-brand-green/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                    className="w-10 h-10 rounded-full dark:bg-white/5 bg-zinc-100 border dark:border-white/10 border-zinc-200 flex items-center justify-center dark:text-gray-400 text-zinc-500 transition-all duration-300 hover:scale-110 hover:border-brand-green/50 hover:text-brand-green hover:bg-brand-green/5 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
                 >
                   <social.icon size={18} />
                 </a>
@@ -98,14 +101,14 @@ const Footer: React.FC = () => {
             </div>
           </motion.div>
           
-          {/* Spacer Column (Optional, or just let grid handle it) */}
+          {/* Spacer Column */}
           <div className="hidden lg:block lg:col-span-1" />
 
           {/* Links Columns */}
           {footerLinks.map((column, idx) => (
               <motion.div variants={itemVariants} key={idx} className="col-span-1">
-                  <h4 className="text-white font-bold mb-6 text-base tracking-wide">{column.title}</h4>
-                  <ul className="space-y-4 text-sm text-gray-400">
+                  <h4 className="dark:text-white text-zinc-900 font-bold mb-6 text-base tracking-wide">{column.title}</h4>
+                  <ul className="space-y-4 text-sm dark:text-gray-400 text-zinc-600">
                   {column.links.map((link, i) => (
                       <li key={i}>
                           <a href={link.href} className="hover:text-brand-green transition-colors flex items-center gap-2 group w-fit">
@@ -131,15 +134,15 @@ const Footer: React.FC = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
-            className="pt-8 flex flex-col md:flex-row justify-between items-center gap-6"
+            className="pt-8 border-t dark:border-white/5 border-zinc-200 flex flex-col md:flex-row justify-between items-center gap-6"
         >
-            <p className="text-gray-500 text-sm">
+            <p className="dark:text-gray-500 text-zinc-500 text-sm">
                 © 2024 CodeSprintAI Inc. All rights reserved.
             </p>
-            <div className="flex gap-8 text-sm text-gray-500 font-medium">
-                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                <a href="#" className="hover:text-white transition-colors">Cookie Settings</a>
+            <div className="flex gap-8 text-sm dark:text-gray-500 text-zinc-500 font-medium">
+                <a href="#" className="dark:hover:text-white hover:text-zinc-900 transition-colors">Privacy Policy</a>
+                <a href="#" className="dark:hover:text-white hover:text-zinc-900 transition-colors">Terms of Service</a>
+                <a href="#" className="dark:hover:text-white hover:text-zinc-900 transition-colors">Cookie Settings</a>
             </div>
         </motion.div>
       </div>

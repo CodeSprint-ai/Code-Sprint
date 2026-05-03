@@ -19,16 +19,16 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, colorClass, bgClass, subValue }: StatCardProps) {
     return (
-        <div className="bg-[#09090b] border border-white/5 rounded-xl p-5 hover:border-white/10 transition-colors group">
+        <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-5 dark:hover:border-white/10 hover:border-zinc-300 transition-colors group">
             <div className="flex justify-between items-start mb-3">
-                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider leading-snug max-w-[60%]">
+                <span className="text-[10px] font-bold dark:text-zinc-500 text-zinc-600 uppercase tracking-wider leading-snug max-w-[60%]">
                     {label}
                 </span>
-                <div className={`p-1.5 rounded-lg border border-white/5 ${colorClass} ${bgClass}`}>
+                <div className={`p-1.5 rounded-lg border dark:border-white/5 border-zinc-200 ${colorClass} ${bgClass}`}>
                     {React.cloneElement(icon as React.ReactElement<{ className?: string }>, { className: 'w-4 h-4' })}
                 </div>
             </div>
-            <div className="text-2xl font-black text-white tracking-tight">{value}</div>
+            <div className="text-2xl font-black dark:text-white text-zinc-900 tracking-tight">{value}</div>
             {subValue && (
                 <div className="text-[10px] text-zinc-600 font-mono mt-1 font-medium">{subValue}</div>
             )}

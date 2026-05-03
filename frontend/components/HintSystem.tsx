@@ -68,7 +68,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
 
     if (isLoadingUsage) {
         return (
-            <div className="mt-8 border-t border-white/5 pt-6">
+            <div className="mt-8 border-t dark:border-white/5 border-zinc-200 pt-6">
                 <div className="flex items-center gap-2 text-zinc-500 text-sm">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     Loading hints...
@@ -81,7 +81,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
     const nextPenalty = HINT_PENALTIES[nextLevel] || 0;
 
     return (
-        <div className="mt-8 border-t border-white/5 pt-6">
+        <div className="mt-8 border-t dark:border-white/5 border-zinc-200 pt-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-emerald-400 font-semibold text-sm flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
                         key={level}
                         className={`h-1 flex-1 rounded-full transition-all duration-500 ${level <= levelReached
                                 ? "bg-emerald-500"
-                                : "bg-white/5"
+                                : "dark:bg-white/5 bg-zinc-200"
                             }`}
                     />
                 ))}
@@ -125,7 +125,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -8 }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
-                            className="bg-black/40 border border-emerald-500/10 rounded-lg overflow-hidden"
+                            className="dark:bg-black/40 bg-zinc-50 border border-emerald-500/10 rounded-lg overflow-hidden"
                         >
                             {/* Card Header */}
                             <div className="bg-emerald-500/5 px-4 py-2 border-b border-emerald-500/10 flex justify-between items-center">
@@ -165,7 +165,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
                             </div>
 
                             {/* Card Content */}
-                            <div className="p-4 text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                            <div className="p-4 text-sm dark:text-zinc-300 text-zinc-800 leading-relaxed whitespace-pre-wrap">
                                 {hint.content}
                             </div>
                         </motion.div>
@@ -190,7 +190,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
                         disabled={isUnlocking}
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.99 }}
-                        className="w-full group relative flex flex-col items-center justify-center p-4 border-2 border-dashed border-white/5 hover:border-emerald-500/30 rounded-lg transition-all bg-transparent hover:bg-emerald-500/5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full group relative flex flex-col items-center justify-center p-4 border-2 border-dashed dark:border-white/5 border-zinc-300 hover:border-emerald-500/30 rounded-lg transition-all bg-transparent hover:bg-emerald-500/5 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <div className="flex items-center gap-2 text-zinc-500 group-hover:text-emerald-400 font-medium text-sm transition-colors">
                             {isUnlocking ? (

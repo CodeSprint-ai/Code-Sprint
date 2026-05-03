@@ -52,23 +52,23 @@ export default function EditorHeader({
   const langColor = languageColors[language.toLowerCase()] || "text-blue-400";
 
   return (
-    <div className="h-12 border-b border-white/5 flex items-center justify-between px-4 bg-white/[0.02] shrink-0">
+    <div className="h-12 border-b dark:border-white/5 border-zinc-200 flex items-center justify-between px-4 dark:bg-white/[0.02] bg-zinc-50 shrink-0">
       <div className="flex items-center gap-2">
         <div className="relative">
           <Select value={language} onValueChange={setLanguage} disabled={isDisabled}>
-            <SelectTrigger className="flex items-center gap-2 text-xs font-bold text-zinc-300 hover:text-white bg-white/5 px-3 py-1.5 h-auto rounded-lg border border-white/5 hover:border-white/20 transition-all w-[140px]">
+            <SelectTrigger className="flex items-center gap-2 text-xs font-bold dark:text-zinc-300 text-zinc-600 dark:hover:text-white hover:text-zinc-900 dark:bg-white/5 bg-zinc-100 px-3 py-1.5 h-auto rounded-lg border dark:border-white/5 border-zinc-200 dark:hover:border-white/20 hover:border-zinc-300 transition-all w-[140px]">
               <FileCode className={`w-3.5 h-3.5 ${langColor}`} />
               <SelectValue placeholder="Language" />
               <ChevronDown className="w-3 h-3 text-zinc-500 ml-auto" />
             </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-white/10">
-              <SelectItem value="python" className="text-zinc-200 focus:bg-white/10 focus:text-white">
+            <SelectContent className="dark:bg-zinc-900 bg-white border dark:border-white/10 border-zinc-200">
+              <SelectItem value="python" className="dark:text-zinc-200 text-zinc-700 dark:focus:bg-white/10 focus:bg-zinc-100 dark:focus:text-white focus:text-zinc-900">
                 Python
               </SelectItem>
-              <SelectItem value="java" className="text-zinc-200 focus:bg-white/10 focus:text-white">
+              <SelectItem value="java" className="dark:text-zinc-200 text-zinc-700 dark:focus:bg-white/10 focus:bg-zinc-100 dark:focus:text-white focus:text-zinc-900">
                 Java
               </SelectItem>
-              <SelectItem value="cpp" className="text-zinc-200 focus:bg-white/10 focus:text-white">
+              <SelectItem value="cpp" className="dark:text-zinc-200 text-zinc-700 dark:focus:bg-white/10 focus:bg-zinc-100 dark:focus:text-white focus:text-zinc-900">
                 C++
               </SelectItem>
             </SelectContent>
@@ -77,7 +77,7 @@ export default function EditorHeader({
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="p-2 hover:bg-white/10 rounded-lg text-zinc-500 hover:text-white transition-colors">
+        <button className="p-2 dark:hover:bg-white/10 hover:bg-zinc-200 rounded-lg dark:text-zinc-500 text-zinc-600 dark:hover:text-white hover:text-zinc-900 transition-colors">
           <Settings className="w-4 h-4" />
         </button>
 

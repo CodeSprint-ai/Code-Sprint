@@ -72,10 +72,10 @@ function BookmarkButton({
       onClick={handleToggle}
       disabled={isLoading}
       className={cn(
-        "p-1.5 rounded hover:bg-white/10 transition-colors z-10",
+        "p-1.5 rounded dark:hover:bg-white/10 hover:bg-zinc-100 transition-colors z-10",
         isSaved
           ? "text-emerald-400 hover:text-emerald-300"
-          : "text-zinc-500 hover:text-white"
+          : "dark:text-zinc-500 text-zinc-400 dark:hover:text-white hover:text-zinc-800"
       )}
       title={isSaved ? "Remove from saved" : "Save problem"}
     >
@@ -143,10 +143,10 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
 
   return (
     <Link href={problemUrl} className="block group">
-      <div className="bg-[#09090b] border border-white/5 rounded-xl p-6 relative hover:border-emerald-500/20 transition-all duration-300 hover:shadow-lg flex flex-col h-full">
+      <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-6 relative dark:hover:border-emerald-500/20 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg flex flex-col h-full shadow-sm dark:shadow-none">
         {/* Header Row */}
         <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-2 text-zinc-500 font-mono text-xs">
+          <div className="flex items-center gap-2 dark:text-zinc-500 text-zinc-400 font-mono text-xs">
             <span className="font-bold text-emerald-500">#{index + 1}</span>
             {starred && <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />}
           </div>
@@ -156,7 +156,7 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
               savedProblemUuid={savedProblem?.uuid}
               isSaved={isSaved}
             />
-            <div className="text-zinc-600 group-hover:text-emerald-400 transition-colors p-1.5">
+            <div className="dark:text-zinc-600 text-zinc-400 group-hover:text-emerald-400 transition-colors p-1.5">
               {type && icon[type]}
             </div>
           </div>
@@ -164,28 +164,28 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
 
         {/* Content */}
         <div className="mb-6 flex-1">
-          <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors tracking-tight">
+          <h3 className="text-lg font-bold dark:text-white text-zinc-800 mb-2 group-hover:text-emerald-400 transition-colors tracking-tight">
             {title}
           </h3>
-          <p className="text-zinc-400 text-xs leading-relaxed line-clamp-3">
+          <p className="dark:text-zinc-400 text-zinc-500 text-xs leading-relaxed line-clamp-3">
             {description}
           </p>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+        <div className="flex items-center justify-between pt-4 border-t dark:border-white/5 border-zinc-200">
           {/* Tags */}
           <div className="flex gap-2 flex-wrap">
             {tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-1 rounded-md bg-white/5 text-[10px] text-zinc-400 font-medium border border-white/5"
+                className="px-2 py-1 rounded-md dark:bg-white/5 bg-zinc-100 text-[10px] dark:text-zinc-400 text-zinc-500 font-medium border dark:border-white/5 border-zinc-200"
               >
                 {tag}
               </span>
             ))}
             {tags.length > 3 && (
-              <span className="px-2 py-1 rounded-md bg-white/5 text-[10px] text-zinc-500 font-medium border border-white/5">
+              <span className="px-2 py-1 rounded-md dark:bg-white/5 bg-zinc-100 text-[10px] dark:text-zinc-500 text-zinc-400 font-medium border dark:border-white/5 border-zinc-200">
                 +{tags.length - 3}
               </span>
             )}

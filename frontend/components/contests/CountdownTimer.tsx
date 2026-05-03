@@ -49,7 +49,7 @@ export function CountdownTimer({
             className
         )}>
             {showLabel && (
-                <span className="text-zinc-400 text-xs font-normal mr-1">Starts in</span>
+                <span className="dark:text-zinc-400 text-zinc-500 text-xs font-normal mr-1">Starts in</span>
             )}
             <span className={cn(
                 'inline-flex items-center gap-0.5',
@@ -57,19 +57,19 @@ export function CountdownTimer({
             )}>
                 {countdown.days > 0 && (
                     <>
-                        <span className="bg-zinc-800/80 rounded px-1.5 py-0.5">{countdown.days}</span>
-                        <span className="text-zinc-500">d</span>
+                        <span className="dark:bg-zinc-800/80 bg-zinc-200 rounded px-1.5 py-0.5">{countdown.days}</span>
+                        <span className="dark:text-zinc-500 text-zinc-400">d</span>
                     </>
                 )}
-                <span className="bg-zinc-800/80 rounded px-1.5 py-0.5">
+                <span className="dark:bg-zinc-800/80 bg-zinc-200 rounded px-1.5 py-0.5">
                     {countdown.hours.toString().padStart(2, '0')}
                 </span>
-                <span className="text-zinc-500">:</span>
-                <span className="bg-zinc-800/80 rounded px-1.5 py-0.5">
+                <span className="dark:text-zinc-500 text-zinc-400">:</span>
+                <span className="dark:bg-zinc-800/80 bg-zinc-200 rounded px-1.5 py-0.5">
                     {countdown.minutes.toString().padStart(2, '0')}
                 </span>
-                <span className="text-zinc-500">:</span>
-                <span className="bg-zinc-800/80 rounded px-1.5 py-0.5">
+                <span className="dark:text-zinc-500 text-zinc-400">:</span>
+                <span className="dark:bg-zinc-800/80 bg-zinc-200 rounded px-1.5 py-0.5">
                     {countdown.seconds.toString().padStart(2, '0')}
                 </span>
             </span>
