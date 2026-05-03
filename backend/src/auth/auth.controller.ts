@@ -52,7 +52,7 @@ export class AuthController {
    */
   @Public()
   @Post('register')
-  @UseGuards(RateLimiterGuard)
+  // @UseGuards(RateLimiterGuard)
   // @RateLimit({ maxAttempts: 5, windowSeconds: 3600 }) // 5 signups per hour
   async register(@Body() body: RegisterCommand) {
     const result = await this.authService.register(body);
@@ -64,7 +64,7 @@ export class AuthController {
    */
   @Public()
   @Post('login')
-  @UseGuards(RateLimiterGuard)
+  // @UseGuards(RateLimiterGuard)
   // @RateLimit({ maxAttempts: 5, windowSeconds: 900 }) // 5 attempts per 15 min
   async login(
     @Body() body: LoginCommand,
@@ -271,7 +271,7 @@ export class AuthController {
    */
   @Public()
   @Post('resend-verification')
-  @UseGuards(RateLimiterGuard)
+  // @UseGuards(RateLimiterGuard)
   // @RateLimit({ maxAttempts: 3, windowSeconds: 3600 }) // 3 requests per hour
   async resendVerification(@Body() body: { email: string; theme?: 'dark' | 'light' }) {
     const result = await this.authService.resendVerificationEmail(body.email, body.theme);
