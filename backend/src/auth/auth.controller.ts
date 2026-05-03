@@ -24,6 +24,7 @@ import { Public } from 'src/common/decorators/publicDecorator';
 import { SessionService } from './session.service';
 import { RateLimiterGuard, RateLimit } from './guards/rate-limiter.guard';
 import { JwtAuthGuard } from './guard/jwt.guard';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * DTOs for new endpoints
@@ -43,6 +44,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly sessionService: SessionService,
+    private readonly configService: ConfigService,
   ) { }
 
   /**
@@ -311,7 +313,7 @@ export class AuthController {
     });
 
     const redirectUrl = req.query.redirect || '/dashboard';
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     return res.redirect(
       `${frontendUrl}/?oauth=true&redirect=${redirectUrl}`,
     );
@@ -350,7 +352,8 @@ export class AuthController {
     });
 
     const redirectUrl = req.query.redirect || '/dashboard';
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
+
     return res.redirect(
       `${frontendUrl}/?oauth=true&redirect=${redirectUrl}`,
     );
