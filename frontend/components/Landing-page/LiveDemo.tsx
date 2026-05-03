@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, RotateCcw, Terminal, Loader2, CheckCircle2, AlertCircle, ChevronDown, Trash2, Code2, Save, Plus, Palette } from 'lucide-react';
 import Editor, { OnMount } from '@monaco-editor/react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const EXAMPLES: Record<string, { name: string; lang: string; code: string }> = {
   binarySearch: {
@@ -131,6 +135,7 @@ interface SavedSnippet {
 }
 
 const LiveDemo: React.FC = () => {
+  const { resolvedTheme } = useTheme();
   const [activeExampleId, setActiveExampleId] = useState<string>('binarySearch');
   const [activeTheme, setActiveTheme] = useState<string>('vs-dark');
   const [code, setCode] = useState(EXAMPLES.binarySearch.code);
@@ -140,6 +145,10 @@ const LiveDemo: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const [savedSnippets, setSavedSnippets] = useState<SavedSnippet[]>([]);
+  const [problems, setProblems] = useState<any[]>([]);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [snippetName, setSnippetName] = useState("My Snippet");
+  const [deleteSnippetId, setDeleteSnippetId] = useState<string | null>(null);
   
   const terminalRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
@@ -155,6 +164,38 @@ const LiveDemo: React.FC = () => {
         console.error("Failed to load snippets", e);
       }
     }
+    
+    // Fetch problems
+    const fetchProblems = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/problems`);
+        const data = await response.json();
+        if (data && data.data) {
+          const fetchedProblems = data.data;
+          setProblems(fetchedProblems);
+          if (fetchedProblems.length > 0) {
+            const firstProblem = fetchedProblems[0];
+            setActiveExampleId(firstProblem.uuid);
+            
+            let starter = '// Write your code here';
+            if (firstProblem.starterCode) {
+              if (typeof firstProblem.starterCode === 'string') {
+                try {
+                  const parsed = JSON.parse(firstProblem.starterCode);
+                  starter = parsed.javascript || starter;
+                } catch(e) {}
+              } else {
+                starter = firstProblem.starterCode.javascript || starter;
+              }
+            }
+            setCode(starter);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch problems", err);
+      }
+    };
+    fetchProblems();
   }, []);
 
   // Auto-scroll terminal
@@ -163,6 +204,15 @@ const LiveDemo: React.FC = () => {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [output, isRunning]);
+
+  // Sync theme
+  useEffect(() => {
+    if (resolvedTheme === 'light') {
+      setActiveTheme('github-light');
+    } else {
+      setActiveTheme('vs-dark');
+    }
+  }, [resolvedTheme]);
 
   const defineMonacoThemes = (monaco: any) => {
     monaco.editor.defineTheme('dracula', {
@@ -268,6 +318,52 @@ const LiveDemo: React.FC = () => {
       monacoRef.current.editor.setModelMarkers(model, 'owner', []);
     }
 
+    const isProblem = problems.some(p => p.uuid === activeExampleId);
+
+    if (isProblem) {
+       try {
+           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/problems/${activeExampleId}/run-demo`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ code, language: 'javascript' })
+           });
+           const data = await response.json();
+           
+           if (!response.ok) throw new Error(data.message || 'Execution failed');
+           
+           const result = data.data; 
+           
+           const logs: string[] = [];
+           if (result.status === 'error') {
+               logs.push(`[Error] ${result.message}`);
+               if (result.output) logs.push(result.output);
+               setStatus('error');
+           } else {
+               result.testResults.forEach((tr: any, i: number) => {
+                   logs.push(`Test Case ${i+1}: ${tr.passed ? '✅ Passed' : '❌ Failed'}`);
+                   if (!tr.passed && !tr.isHidden) {
+                       logs.push(`   Expected: ${tr.expected}`);
+                       logs.push(`   Got: ${tr.got}`);
+                   }
+               });
+               if (result.status === 'success') {
+                   logs.push('');
+                   logs.push(`> All tests passed in ${result.time || 0}s ⚡️`);
+                   setStatus('success');
+               } else {
+                   setStatus('error');
+               }
+           }
+           setOutput(logs);
+       } catch (err: any) {
+           setOutput([`[Error] ${err.message}`]);
+           setStatus('error');
+       } finally {
+           setIsRunning(false);
+       }
+       return;
+    }
+
     // Delay for realism - Keep it short for responsiveness
     await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -356,10 +452,26 @@ const LiveDemo: React.FC = () => {
     if (EXAMPLES[activeExampleId]) {
         setCode(EXAMPLES[activeExampleId].code);
     } else {
-        // If it's a saved snippet, reset to its saved state
-        const snippet = savedSnippets.find(s => s.id === activeExampleId);
-        if (snippet) {
-            setCode(snippet.code);
+        const problem = problems.find(p => p.uuid === activeExampleId);
+        if (problem) {
+            let starter = '// Write your code here';
+            if (problem.starterCode) {
+              if (typeof problem.starterCode === 'string') {
+                try {
+                  const parsed = JSON.parse(problem.starterCode);
+                  starter = parsed.javascript || starter;
+                } catch(e) {}
+              } else {
+                starter = problem.starterCode.javascript || starter;
+              }
+            }
+            setCode(starter);
+        } else {
+            // If it's a saved snippet, reset to its saved state
+            const snippet = savedSnippets.find(s => s.id === activeExampleId);
+            if (snippet) {
+                setCode(snippet.code);
+            }
         }
     }
     
@@ -381,9 +493,25 @@ const LiveDemo: React.FC = () => {
     if (EXAMPLES[key]) {
         setCode(EXAMPLES[key].code);
     } else {
-        const snippet = savedSnippets.find(s => s.id === key);
-        if (snippet) {
-            setCode(snippet.code);
+        const problem = problems.find(p => p.uuid === key);
+        if (problem) {
+            let starter = '// Write your code here';
+            if (problem.starterCode) {
+              if (typeof problem.starterCode === 'string') {
+                try {
+                  const parsed = JSON.parse(problem.starterCode);
+                  starter = parsed.javascript || starter;
+                } catch(e) {}
+              } else {
+                starter = problem.starterCode.javascript || starter;
+              }
+            }
+            setCode(starter);
+        } else {
+            const snippet = savedSnippets.find(s => s.id === key);
+            if (snippet) {
+                setCode(snippet.code);
+            }
         }
     }
 
@@ -396,12 +524,16 @@ const LiveDemo: React.FC = () => {
   };
 
   const handleSaveSnippet = () => {
-    const name = window.prompt("Save snippet as:", "My Snippet");
-    if (!name) return;
+    setSnippetName("My Snippet");
+    setIsSaveModalOpen(true);
+  };
+
+  const confirmSaveSnippet = () => {
+    if (!snippetName.trim()) return;
 
     const newSnippet: SavedSnippet = {
         id: `custom-${Date.now()}`,
-        name,
+        name: snippetName.trim(),
         code,
         lang: 'javascript'
     };
@@ -410,23 +542,31 @@ const LiveDemo: React.FC = () => {
     setSavedSnippets(updated);
     localStorage.setItem('codesprint_snippets', JSON.stringify(updated));
     setActiveExampleId(newSnippet.id);
+    setIsSaveModalOpen(false);
   };
 
   const handleDeleteSnippet = (e: React.MouseEvent, id: string) => {
       e.stopPropagation();
-      if (!window.confirm("Delete this snippet?")) return;
+      setDeleteSnippetId(id);
+  };
+
+  const confirmDeleteSnippet = () => {
+      if (!deleteSnippetId) return;
       
-      const updated = savedSnippets.filter(s => s.id !== id);
+      const updated = savedSnippets.filter(s => s.id !== deleteSnippetId);
       setSavedSnippets(updated);
       localStorage.setItem('codesprint_snippets', JSON.stringify(updated));
 
-      if (activeExampleId === id) {
+      if (activeExampleId === deleteSnippetId) {
           handleExampleChange('binarySearch');
       }
+      setDeleteSnippetId(null);
   };
 
   const getActiveName = () => {
       if (EXAMPLES[activeExampleId]) return EXAMPLES[activeExampleId].name;
+      const problem = problems.find(p => p.uuid === activeExampleId);
+      if (problem) return problem.title;
       const snippet = savedSnippets.find(s => s.id === activeExampleId);
       return snippet ? snippet.name : 'Unknown';
   };
@@ -485,13 +625,13 @@ const LiveDemo: React.FC = () => {
                 </motion.div>
             </div>
 
-            <div className="grid lg:grid-cols-5 gap-0 border border-white/10 rounded-xl overflow-hidden shadow-2xl bg-[#0F0F11] backdrop-blur-sm h-[600px] lg:h-[500px]">
+            <div className="grid lg:grid-cols-5 gap-0 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden shadow-2xl bg-white dark:bg-[#0F0F11] backdrop-blur-sm h-[600px] lg:h-[500px]">
                 
                 {/* Editor Section */}
-                <div className="lg:col-span-3 flex flex-col border-r border-white/10 h-full relative group">
+                <div className="lg:col-span-3 flex flex-col border-r border-gray-200 dark:border-white/10 h-full relative group">
                     {/* Editor Toolbar */}
-                    <div className="bg-[#18181B] p-3 flex items-center justify-between border-b border-white/5 z-20 relative">
-                        <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto scrollbar-hide">
+                    <div className="bg-gray-50 dark:bg-[#18181B] p-3 flex items-center justify-between border-b border-gray-200 dark:border-white/5 z-20 relative">
+                        <div className="flex items-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
                              <div className="flex gap-1.5 hidden sm:flex shrink-0">
                                 <div className="w-3 h-3 rounded-full bg-red-500/80" />
                                 <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
@@ -505,7 +645,7 @@ const LiveDemo: React.FC = () => {
                                         setIsDropdownOpen(!isDropdownOpen);
                                         setIsThemeDropdownOpen(false);
                                     }}
-                                    className="flex items-center gap-2 text-xs font-mono text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded transition-colors border border-white/5"
+                                    className="flex items-center gap-2 text-xs font-mono text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white bg-gray-200 dark:bg-white/5 hover:bg-gray-300 dark:hover:bg-white/10 px-3 py-1.5 rounded transition-colors border border-gray-300 dark:border-white/5"
                                 >
                                     <Code2 size={12} className="text-blue-400" />
                                     <span className="max-w-[100px] sm:max-w-[150px] truncate">{getActiveName()}</span>
@@ -518,20 +658,38 @@ const LiveDemo: React.FC = () => {
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: 5 }}
-                                            className="absolute top-full left-0 mt-1 w-56 bg-[#1F1F22] border border-white/10 rounded-lg shadow-xl overflow-hidden z-50 max-h-80 overflow-y-auto"
+                                            className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-white/10 rounded-lg shadow-xl overflow-hidden z-50 max-h-80 overflow-y-auto"
                                         >
                                             <div className="px-3 py-2 text-[10px] uppercase text-gray-500 font-bold tracking-wider">Examples</div>
                                             {Object.entries(EXAMPLES).map(([key, example]) => (
                                                 <button
                                                     key={key}
                                                     onClick={() => handleExampleChange(key)}
-                                                    className={`w-full text-left px-4 py-2 text-xs font-mono hover:bg-white/5 transition-colors flex items-center justify-between group ${
-                                                        activeExampleId === key ? 'text-brand-green bg-brand-green/5' : 'text-gray-400'
+                                                    className={`w-full text-left px-4 py-2 text-xs font-mono hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-between group ${
+                                                        activeExampleId === key ? 'text-brand-green bg-brand-green/5' : 'text-gray-600 dark:text-gray-400'
                                                     }`}
                                                 >
                                                     {example.name}
                                                 </button>
                                             ))}
+                                            
+                                            {problems.length > 0 && (
+                                                <>
+                                                    <div className="border-t border-white/10 my-1" />
+                                                    <div className="px-3 py-2 text-[10px] uppercase text-gray-500 font-bold tracking-wider">Coding Problems</div>
+                                                    {problems.map((problem) => (
+                                                        <button
+                                                            key={problem.uuid}
+                                                            onClick={() => handleExampleChange(problem.uuid)}
+                                                            className={`w-full text-left px-4 py-2 text-xs font-mono hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-between group ${
+                                                                activeExampleId === problem.uuid ? 'text-brand-green bg-brand-green/5' : 'text-gray-600 dark:text-gray-400'
+                                                            }`}
+                                                        >
+                                                            {problem.title}
+                                                        </button>
+                                                    ))}
+                                                </>
+                                            )}
                                             
                                             {savedSnippets.length > 0 && (
                                                 <>
@@ -575,7 +733,7 @@ const LiveDemo: React.FC = () => {
                                         setIsThemeDropdownOpen(!isThemeDropdownOpen);
                                         setIsDropdownOpen(false);
                                     }}
-                                    className="flex items-center gap-2 text-xs font-mono text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded transition-colors border border-white/5"
+                                    className="flex items-center gap-2 text-xs font-mono text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white bg-gray-200 dark:bg-white/5 hover:bg-gray-300 dark:hover:bg-white/10 px-3 py-1.5 rounded transition-colors border border-gray-300 dark:border-white/5"
                                     title="Select Theme"
                                 >
                                     <Palette size={12} className="text-purple-400" />
@@ -589,7 +747,7 @@ const LiveDemo: React.FC = () => {
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: 5 }}
-                                            className="absolute top-full left-0 mt-1 w-40 bg-[#1F1F22] border border-white/10 rounded-lg shadow-xl overflow-hidden z-50"
+                                            className="absolute top-full left-0 mt-1 w-40 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-white/10 rounded-lg shadow-xl overflow-hidden z-50"
                                         >
                                             <div className="px-3 py-2 text-[10px] uppercase text-gray-500 font-bold tracking-wider">Editor Theme</div>
                                             {THEMES.map((theme) => (
@@ -599,8 +757,8 @@ const LiveDemo: React.FC = () => {
                                                         setActiveTheme(theme.id);
                                                         setIsThemeDropdownOpen(false);
                                                     }}
-                                                    className={`w-full text-left px-4 py-2 text-xs font-mono hover:bg-white/5 transition-colors flex items-center justify-between ${
-                                                        activeTheme === theme.id ? 'text-purple-400 bg-purple-500/10' : 'text-gray-400'
+                                                    className={`w-full text-left px-4 py-2 text-xs font-mono hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-between ${
+                                                        activeTheme === theme.id ? 'text-purple-500 dark:text-purple-400 bg-purple-500/10' : 'text-gray-600 dark:text-gray-400'
                                                     }`}
                                                 >
                                                     {theme.name}
@@ -616,14 +774,14 @@ const LiveDemo: React.FC = () => {
                         <div className="flex items-center gap-2 shrink-0">
                              <button 
                                 onClick={handleSaveSnippet}
-                                className="p-1.5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors flex items-center gap-1"
+                                className="p-1.5 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors flex items-center gap-1"
                                 title="Save Snippet (Ctrl + S)"
                              >
                                  <Save size={14} />
                              </button>
                              <button 
                                 onClick={handleReset}
-                                className="p-1.5 hover:bg-white/10 rounded text-gray-400 hover:text-white transition-colors"
+                                className="p-1.5 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
                                 title="Reset Code (Ctrl + R)"
                              >
                                  <RotateCcw size={14} />
@@ -634,7 +792,7 @@ const LiveDemo: React.FC = () => {
                                 title="Run Code (Ctrl + Enter)"
                                 className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold transition-all ${
                                     isRunning 
-                                        ? 'bg-white/10 text-gray-400 cursor-not-allowed'
+                                        ? 'bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                                         : 'bg-brand-green text-black hover:bg-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
                                 }`}
                              >
@@ -680,7 +838,7 @@ const LiveDemo: React.FC = () => {
 
                 {/* Terminal/Output Section */}
                 <div 
-                    className={`lg:col-span-2 bg-[#0c0c0e] flex flex-col h-full border-t lg:border-t-0 relative group transition-all duration-500 ${
+                    className={`lg:col-span-2 bg-gray-100 dark:bg-[#0c0c0e] flex flex-col h-full border-t lg:border-t-0 relative group transition-all duration-500 ${
                         status === 'success' ? 'shadow-[inset_0_0_50px_rgba(16,185,129,0.05)]' : 
                         status === 'error' ? 'shadow-[inset_0_0_50px_rgba(239,68,68,0.05)]' : ''
                     }`}
@@ -704,15 +862,15 @@ const LiveDemo: React.FC = () => {
                         )}
                      </AnimatePresence>
 
-                     <div className="bg-[#121214] p-3 flex items-center justify-between border-b border-white/5 z-10 relative">
+                     <div className="bg-gray-50 dark:bg-[#121214] p-3 flex items-center justify-between border-b border-gray-200 dark:border-white/5 z-10 relative">
                         <div className="flex items-center gap-2">
-                            <Terminal size={14} className="text-gray-400" />
-                            <span className="text-xs text-gray-400 font-mono uppercase tracking-wider">Console</span>
+                            <Terminal size={14} className="text-gray-500 dark:text-gray-400" />
+                            <span className="text-xs text-gray-500 dark:text-gray-400 font-mono uppercase tracking-wider">Console</span>
                         </div>
                         <div className="flex items-center gap-2">
                              <button 
                                 onClick={handleClearTerminal}
-                                className="p-1 hover:bg-white/10 rounded text-gray-500 hover:text-gray-300 transition-colors"
+                                className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
                                 title="Clear Console"
                              >
                                  <Trash2 size={12} />
@@ -746,10 +904,10 @@ const LiveDemo: React.FC = () => {
                      
                      <div 
                         ref={terminalRef}
-                        className="flex-1 font-mono text-sm overflow-y-auto scroll-smooth bg-[#0c0c0e] relative"
+                        className="flex-1 font-mono text-sm overflow-y-auto scroll-smooth bg-gray-100 dark:bg-[#0c0c0e] relative"
                      >
                         {output.length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-gray-700 opacity-50 p-4">
+                            <div className="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-700 opacity-50 p-4">
                                 <Terminal size={24} className="mb-2" />
                                 <span className="text-xs">No output</span>
                             </div>
@@ -760,17 +918,17 @@ const LiveDemo: React.FC = () => {
                                         key={i}
                                         initial={{ opacity: 0, x: -5 }}
                                         animate={{ opacity: 1, x: 0 }}
-                                        className="flex gap-3 py-2 border-b border-white/5 last:border-0 hover:bg-white/5 -mx-4 px-4 transition-colors group/line"
+                                        className="flex gap-3 py-2 border-b border-gray-200 dark:border-white/5 last:border-0 hover:bg-gray-200 dark:hover:bg-white/5 -mx-4 px-4 transition-colors group/line"
                                     >
-                                        <span className="text-gray-600 select-none shrink-0 w-4 text-right pt-0.5">
+                                        <span className="text-gray-400 dark:text-gray-600 select-none shrink-0 w-4 text-right pt-0.5">
                                             {line.startsWith('>') ? '$' : (i + 1)}
                                         </span>
                                         <span className={
-                                            line.includes('[Error]') || line.includes('Runtime Error') ? 'text-red-400' :
+                                            line.includes('[Error]') || line.includes('Runtime Error') ? 'text-red-500 dark:text-red-400' :
                                             line.includes('Found') || line.includes('✅') ? 'text-brand-green' :
-                                            line.includes('Execution time') ? 'text-brand-green/70 text-xs italic mt-1 block border-t border-white/5 pt-1 w-full' : 
+                                            line.includes('Execution time') ? 'text-brand-green/70 text-xs italic mt-1 block border-t border-gray-300 dark:border-white/5 pt-1 w-full' : 
                                             line.startsWith('>') ? 'text-gray-500 italic' :
-                                            'text-gray-300 whitespace-pre-wrap leading-relaxed'
+                                            'text-gray-800 dark:text-gray-300 whitespace-pre-wrap leading-relaxed'
                                         }>
                                             {line}
                                         </span>
@@ -780,7 +938,7 @@ const LiveDemo: React.FC = () => {
                                      <motion.div 
                                         initial={{ opacity: 0 }} 
                                         animate={{ opacity: 1 }} 
-                                        className="flex items-center gap-2 text-gray-500 text-xs py-3 pl-4 border-t border-white/5 mt-2 bg-white/[0.02]" 
+                                        className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs py-3 pl-4 border-t border-gray-200 dark:border-white/5 mt-2 bg-gray-200/50 dark:bg-white/[0.02]" 
                                      >
                                         <Loader2 size={12} className="animate-spin text-brand-green" />
                                         <span className="font-mono animate-pulse">Running execution...</span>
@@ -790,8 +948,51 @@ const LiveDemo: React.FC = () => {
                         )}
                      </div>
                 </div>
-            </div>
+             </div>
         </div>
+
+        {/* Modals */}
+        <Dialog open={isSaveModalOpen} onOpenChange={setIsSaveModalOpen}>
+            <DialogContent className="sm:max-w-md bg-white dark:bg-[#18181B] border-gray-200 dark:border-white/10">
+                <DialogHeader>
+                    <DialogTitle className="text-gray-900 dark:text-white">Save Snippet</DialogTitle>
+                    <DialogDescription className="text-gray-500 dark:text-gray-400">
+                        Give your code snippet a name to save it locally.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                    <Input 
+                        value={snippetName}
+                        onChange={(e) => setSnippetName(e.target.value)}
+                        placeholder="My Snippet"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') confirmSaveSnippet();
+                        }}
+                        autoFocus
+                        className="bg-white dark:bg-[#0F0F11] border-gray-300 dark:border-white/10 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus-visible:ring-brand-green"
+                    />
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsSaveModalOpen(false)} className="dark:text-white dark:border-white/20 dark:hover:bg-white/10">Cancel</Button>
+                    <Button onClick={confirmSaveSnippet} className="bg-brand-green text-black hover:bg-brand-green/90">Save</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
+        <Dialog open={!!deleteSnippetId} onOpenChange={(open) => !open && setDeleteSnippetId(null)}>
+            <DialogContent className="sm:max-w-md bg-white dark:bg-[#18181B] border-gray-200 dark:border-white/10">
+                <DialogHeader>
+                    <DialogTitle className="text-gray-900 dark:text-white">Delete Snippet</DialogTitle>
+                    <DialogDescription className="text-gray-500 dark:text-gray-400">
+                        Are you sure you want to delete this snippet? This action cannot be undone.
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="mt-4">
+                    <Button variant="outline" onClick={() => setDeleteSnippetId(null)} className="dark:text-white dark:border-white/20 dark:hover:bg-white/10">Cancel</Button>
+                    <Button variant="destructive" onClick={confirmDeleteSnippet}>Delete</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </section>
   );
 };

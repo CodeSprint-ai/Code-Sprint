@@ -126,6 +126,22 @@ export class ProblemController {
     return ResponseWrapper.success(ProblemDto.toDto(problem), 'Problem fetched successfully');
   }
 
+  @Post(':uuid/run-demo')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: 200,
+    description: 'Runs code against a problem immediately (for landing page demo).',
+  })
+  async runDemo(
+    @Param('uuid', ParseUUIDPipe) uuid: string,
+    @Body() body: { code: string; language: string }
+  ) {
+    if (!body.code || !body.language) {
+      return ResponseWrapper.error(null, 'Code and language are required', HttpStatus.BAD_REQUEST);
+    }
+    const result = await this.problemService.runDemo(uuid, body.code, body.language);
+    return ResponseWrapper.success(result, 'Demo execution completed');
+  }
 
 
   @Post('/update')

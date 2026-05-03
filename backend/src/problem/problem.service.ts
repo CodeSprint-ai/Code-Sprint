@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,11 +17,15 @@ import { TestCase } from './entities/TestCase';
 import { CreateTestCaseCommand } from './command/CreateTestCaseCommand';
 import { ProblemDto } from './dto/ProblemDto';
 import { AuthGuard } from '@nestjs/passport';
-
-
+import { Judge0Service } from '../judge/judge.service';
+import { RunnerFactory } from '../judge/runners/runner.factory';
+import { LanguageId, normalizeLanguage } from '../judge/enums/language.enum';
+import { SubmissionStatus } from '../submission/enum/SubmissionStatus';
 
 @Injectable()
 export class ProblemService {
+  private readonly logger = new Logger(ProblemService.name);
+
   constructor(
     @InjectRepository(Problem)
     private problemRepository: Repository<Problem>,
@@ -28,6 +33,8 @@ export class ProblemService {
     private testCaseRepository: Repository<TestCase>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly judge0: Judge0Service,
+    private readonly runnerFactory: RunnerFactory,
   ) { }
 
   /**
@@ -271,5 +278,88 @@ export class ProblemService {
       lower: true,
       strict: true,
     });
+  }
+
+  /**
+   * Run code immediately (for landing page demo)
+   */
+  async runDemo(uuid: string, code: string, language: string) {
+    const problem = await this.findOneByUuid(uuid);
+    if (!problem.executionConfig) {
+      throw new BadRequestException('Problem missing execution configuration');
+    }
+
+    const normalizedLang = normalizeLanguage(language);
+    const runner = this.runnerFactory.getRunner(normalizedLang);
+    const languageId = LanguageId[normalizedLang];
+    
+    const finalCode = runner.build(code, problem.executionConfig);
+    const encode = (str: string) => Buffer.from(str).toString('base64');
+    const decode = (str: string | null) => str ? Buffer.from(str, 'base64').toString('utf-8') : null;
+
+    const stdinPayload = JSON.stringify({
+      executionConfig: problem.executionConfig,
+      tests: problem.testCases.map((tc) => ({
+        input: tc.getInput(),
+        expectedOutput: tc.getExpectedOutput(),
+      })),
+    });
+
+    const items = [{
+      language_id: languageId,
+      source_code: encode(finalCode),
+      stdin: encode(stdinPayload),
+      cpu_time_limit: problem.timeLimitSeconds ?? 5,
+      memory_limit: (problem.memoryLimitMB ?? 128) * 1024,
+    }];
+
+    const tokensResp = await this.judge0.submitBatch(items);
+    if (!tokensResp?.length) throw new Error('Judge0 submission failed');
+
+    const tokens = tokensResp.map((t: any) => t.token).filter((t: any) => !!t);
+    const results = (await this.judge0.pollBatchUntilDone(tokens, 30_000, 800)) || [];
+    const judgeResponse = results[0];
+
+    if (!judgeResponse) throw new Error('No response from Judge0');
+
+    const statusId = judgeResponse.status?.id ?? judgeResponse.status_id ?? 13;
+    if (statusId >= 5) {
+      return {
+        status: 'error',
+        message: 'Compilation or Runtime Error',
+        output: decode(judgeResponse.stderr) || decode(judgeResponse.compile_output) || decode(judgeResponse.stdout) || '',
+        time: judgeResponse.time,
+        memory: judgeResponse.memory,
+      };
+    }
+
+    const stdout = decode(judgeResponse.stdout) ?? '';
+    try {
+      const judgeResults = JSON.parse(stdout.trim());
+      
+      const allPassed = judgeResults.every((r: any) => r.ok);
+      return {
+        status: allPassed ? 'success' : 'failed',
+        testResults: judgeResults.map((r: any, i: number) => {
+          const isHidden = problem.testCases[i].isHidden;
+          return {
+            passed: r.ok,
+            expected: isHidden ? 'Hidden' : (r.expected ?? problem.testCases[i].getExpectedOutput()),
+            got: isHidden ? 'Hidden' : (r.error ?? r.output),
+            isHidden
+          };
+        }),
+        time: judgeResponse.time,
+        memory: judgeResponse.memory,
+      };
+    } catch (e) {
+      return {
+        status: 'error',
+        message: 'Failed to parse runner output',
+        output: stdout,
+        time: judgeResponse.time,
+        memory: judgeResponse.memory,
+      };
+    }
   }
 }
