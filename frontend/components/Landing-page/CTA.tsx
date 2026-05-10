@@ -34,14 +34,14 @@ const CTA: React.FC = () => {
                     className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-green/5 border border-brand-green/10 mb-8"
                 >
                     <div className="w-2 h-2 rounded-full bg-brand-green shadow-[0_0_10px_#10B981] animate-pulse" />
-                    <span className="text-xs font-bold text-brand-green tracking-widest uppercase">Accepting New Developers</span>
+                    <span className="text-xs font-bold text-brand-green tracking-widest uppercase">Start Your Coding Sprint Today</span>
                 </motion.div>
 
                 {/* Heading */}
                 <h2 className="text-4xl md:text-6xl font-bold dark:text-white text-zinc-900 mb-6 tracking-tight leading-tight">
                     Ready to 
                     <span className="mx-3 inline-block relative">
-                         <span className="relative z-10 text-black px-4 font-extrabold">build</span>
+                         <span className="relative z-10 text-black px-4 font-extrabold">master</span>
                          <motion.span 
                             initial={{ width: "0%" }}
                             whileInView={{ width: "100%" }}
@@ -49,12 +49,12 @@ const CTA: React.FC = () => {
                             className="absolute inset-0 bg-brand-green skew-x-[-6deg] rounded-sm"
                          />
                     </span> 
-                    your <br className="hidden md:block" />
-                    dream career?
+                    competitive <br className="hidden md:block" />
+                    programming?
                 </h2>
                 
                 <p className="dark:text-gray-400 text-zinc-600 text-lg mb-10 max-w-xl leading-relaxed">
-                    Join the platform where 26 million developers master new skills, debug their careers, and deploy their potential.
+                    Join CodeSprint to access curated problem banks, real-time Judge0 evaluation, and your personalized AI learning roadmap.
                 </p>
 
                 {/* Buttons */}
@@ -66,7 +66,7 @@ const CTA: React.FC = () => {
                     
                     <button className="w-full sm:w-auto px-8 py-4 dark:bg-white/5 bg-zinc-100 dark:text-white text-zinc-800 border dark:border-white/10 border-zinc-200 font-bold rounded-xl dark:hover:bg-white/10 hover:bg-zinc-200 transition-all flex items-center justify-center gap-2">
                         <Terminal className="w-4 h-4 dark:text-gray-400 text-zinc-500" />
-                        View Enterprise Plans
+                        Browse Problem Bank
                     </button>
                 </div>
 

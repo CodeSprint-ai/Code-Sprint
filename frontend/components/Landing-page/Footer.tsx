@@ -30,19 +30,18 @@ const Footer: React.FC = () => {
     {
       title: "Platform",
       links: [
-        { label: "Assessments", href: "#" },
-        { label: "Live Interview", href: "#" },
-        { label: "Learning Paths", href: "#" },
-        { label: "IDE Features", href: "#" },
+        { label: "Problem Bank", href: "/problems" },
+        { label: "Coding Workspace", href: "/workspace" },
+        { label: "AI Analysis", href: "/ai-analysis" },
+        { label: "Learning Roadmap", href: "/roadmap" },
       ]
     },
     {
-      title: "Resources",
+      title: "Gamification & Events",
       links: [
-        { label: "Documentation", href: "#" },
-        { label: "API Reference", href: "#" },
-        { label: "Community Hub", href: "#" },
-        { label: "Blog", href: "#" },
+        { label: "Global Calendar", href: "/events" },
+        { label: "Leaderboards", href: "/leaderboard" },
+        { label: "Badges", href: "/badges" },
       ]
     },
     {
@@ -80,7 +79,7 @@ const Footer: React.FC = () => {
                  <Terminal className="text-white w-6 h-6" />
               </div>
               <span className="text-2xl font-bold dark:text-white text-zinc-900 code-font">
-                CodeSprint<span className="text-brand-green">AI</span>
+                CodeSprint<span className="text-brand-green"></span>
               </span>
             </div>
             <p className="dark:text-gray-400 text-zinc-600 mb-8 leading-relaxed text-sm max-w-xs">
@@ -137,7 +136,7 @@ const Footer: React.FC = () => {
             className="pt-8 border-t dark:border-white/5 border-zinc-200 flex flex-col md:flex-row justify-between items-center gap-6"
         >
             <p className="dark:text-gray-500 text-zinc-500 text-sm">
-                © 2024 CodeSprintAI Inc. All rights reserved.
+                © 2026 CodeSprint Inc. All rights reserved.
             </p>
             <div className="flex gap-8 text-sm dark:text-gray-500 text-zinc-500 font-medium">
                 <a href="#" className="dark:hover:text-white hover:text-zinc-900 transition-colors">Privacy Policy</a>

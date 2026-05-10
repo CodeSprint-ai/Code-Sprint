@@ -27,19 +27,19 @@ const Showcase: React.FC = () => {
               </div>
 
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold dark:text-white text-zinc-900 mb-6 leading-[1.1] tracking-tight">
-                An Editor That <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r dark:from-white dark:via-gray-200 dark:to-gray-500 from-zinc-700 via-zinc-500 to-zinc-400">Thinks Ahead.</span>
+                An AI Tutor That <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r dark:from-white dark:via-gray-200 dark:to-gray-500 from-zinc-700 via-zinc-500 to-zinc-400">Explains Why You Failed.</span>
               </h2>
               
               <p className="dark:text-gray-400 text-zinc-600 text-lg mb-10 leading-relaxed max-w-xl">
-                Stop switching tabs for documentation. Our IDE anticipates your logic, offering inline explanations, complexity analysis, and one-click refactoring.
+                Go beyond simple 'Wrong Answer' alerts. Get intelligent insights into your code's complexity, edge cases, and algorithmic approach.
               </p>
 
               <div className="space-y-4">
                 {[
-                  { title: "Context-Aware Autocomplete", desc: "It doesn't just finish your line; it predicts your entire function based on variable context and best practices." },
-                  { title: "Predictive Runtime Analysis", desc: "Catch infinite loops and memory leaks in real-time before you even hit 'Run'." },
-                  { title: "Instant Refactoring", desc: "Transform messy O(n²) brute force solutions into optimized O(n log n) algorithms with a single click." }
+                  { title: "Approach Detection", desc: "Identifies your algorithmic approach (e.g., two-pointer, DP) and explains its trade-offs." },
+                  { title: "Complexity Analysis", desc: "Calculates the exact time and space complexity of your submitted code." },
+                  { title: "Optimization Suggestions", desc: "Provides specific recommendations to improve your efficiency." }
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4 p-4 rounded-2xl dark:bg-white/[0.02] bg-zinc-50 border dark:border-white/5 border-zinc-200 dark:hover:bg-white/[0.05] hover:bg-zinc-100 dark:hover:border-brand-green/20 hover:border-brand-green/30 transition-all duration-300 group cursor-default">
                     <div className="mt-1 w-10 h-10 rounded-full bg-brand-green/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">

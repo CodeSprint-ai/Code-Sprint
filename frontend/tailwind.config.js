@@ -13,7 +13,7 @@ module.exports = {
       },
       colors: {
         brand: {
-          dark: "#1B1B1B",
+          dark: "#09090B",
           surface: "#121214",
           card: "#18181B",
           border: "#27272A",

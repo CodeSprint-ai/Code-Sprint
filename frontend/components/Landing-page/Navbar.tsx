@@ -8,39 +8,30 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 
 const NAV_ITEMS = [
   {
-    label: 'Products',
-    href: '#products',
+    label: 'Platform',
+    href: '#platform',
     children: [
-      { label: 'Smart IDE', desc: 'AI-assisted coding environment', icon: Code, href: '#ide' },
-      { label: 'Interview Prep', desc: 'Mock interviews with AI agents', icon: Users, href: '#interview' },
-      { label: 'Skill Assessment', desc: 'Ranked coding challenges', icon: BarChart, href: '#assess' },
-      { label: 'Proctoring', desc: 'Anti-cheat exam environment', icon: ShieldCheck, href: '#proctor' },
+      { label: 'Problem Bank', desc: 'Categorized challenges across all difficulties', icon: Code, href: '/problems' },
+      { label: 'Coding Workspace', desc: 'Real-time execution via Judge0', icon: Terminal, href: '/workspace' },
+      { label: 'AI Tutor', desc: 'Post-submission analysis & smart hints', icon: Cpu, href: '/ai-analysis' },
+      { label: 'Learning Roadmap', desc: 'Adaptive paths based on your performance', icon: Layout, href: '/roadmap' },
     ]
   },
   {
-    label: 'Solutions',
-    href: '#solutions',
+    label: 'Gamification & Events',
+    href: '#gamification',
     children: [
-      { label: 'For Developers', desc: 'Upskill and land jobs', icon: Terminal, href: '#devs' },
-      { label: 'For Teams', desc: 'Hire and train talent', icon: Briefcase, href: '#teams' },
-      { label: 'For Education', desc: 'Classroom management', icon: BookOpen, href: '#edu' },
-    ]
-  },
-  {
-    label: 'Resources',
-    href: '#resources',
-    children: [
-      { label: 'Documentation', desc: 'Guides and API references', icon: FileText, href: '#docs' },
-      { label: 'Blog', desc: 'Latest tech trends', icon: Layout, href: '#blog' },
-      { label: 'Community', desc: 'Join the discord', icon: MessageSquare, href: '#community' },
+      { label: 'Leaderboard', desc: 'Global ranking and daily streaks', icon: BarChart, href: '/leaderboard' },
+      { label: 'Contest Calendar', desc: 'Global competitive programming events', icon: Globe, href: '/events' },
+      { label: 'Badges', desc: 'Earn achievements based on mastery', icon: ShieldCheck, href: '/badges' },
     ]
   },
   {
     label: 'Pricing',
     href: '#pricing',
     children: [
-      { label: 'Individual', desc: 'Free for developers', icon: Zap, href: '#individual' },
-      { label: 'Enterprise', desc: 'Custom scale', icon: Globe, href: '#enterprise' },
+      { label: 'Freemium', desc: 'Free basic access & problems', icon: Zap, href: '/pricing#freemium' },
+      { label: 'Premium SaaS', desc: 'Unlimited AI generation & deep analysis', icon: Users, href: '/pricing#premium' },
     ]
   },
 ];
@@ -132,7 +123,7 @@ const Navbar: React.FC = () => {
             <Terminal className="text-white w-5 h-5" />
           </div>
           <span className="text-lg font-bold tracking-tight dark:text-white text-zinc-900 code-font">
-            CodeSprint<span className="text-brand-green">AI</span>
+            CodeSprint<span className="text-brand-green"></span>
           </span>
         </div>
 
