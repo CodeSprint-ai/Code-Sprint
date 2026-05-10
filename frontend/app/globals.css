@@ -170,8 +170,8 @@
 *::before,
 *::after {
   transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-  transition-duration: 0.2s;
-  transition-timing-function: ease;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
 }
 
 /* Exclude transitions from code editors, animations, and SVGs */
