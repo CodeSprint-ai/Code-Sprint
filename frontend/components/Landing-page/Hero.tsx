@@ -4,7 +4,7 @@ import { ArrowRight, Code, Play } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden overflow-x-hidden">
       {/* Background Gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-brand-green/20 rounded-full blur-[120px] -z-10 opacity-20" />
       <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-brand-orange/10 rounded-full blur-[120px] -z-10 opacity-20" />
@@ -26,7 +26,7 @@ const Hero: React.FC = () => {
               <span className="text-xs font-medium text-brand-orange tracking-wide uppercase">New AI Features</span>
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight dark:text-white text-zinc-900 mb-6 leading-[1.1]">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight dark:text-white text-zinc-900 mb-6 leading-[1.1]">
               Code Smarter. <br />
               Interview Better. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-emerald-300">

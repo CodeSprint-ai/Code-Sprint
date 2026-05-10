@@ -160,7 +160,7 @@ const Features: React.FC = () => {
                          <motion.div 
                             initial={{ height: 0 }}
                             whileInView={{ height: `${h}%` }}
-                            transition={{ duration: 1, delay: i * 0.1, ease: "easeOut" }}
+                            transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
                             className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-brand-green/10 to-brand-green w-full rounded-t-sm opacity-60 group-hover/bar:opacity-100 transition-opacity"
                          >
                             <div className="w-full h-[1px] dark:bg-white/50 bg-black/10 absolute top-0" />
