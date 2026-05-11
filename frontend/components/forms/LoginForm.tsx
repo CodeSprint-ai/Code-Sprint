@@ -49,13 +49,17 @@ const LoginForm: React.FC = () => {
       toast.success("Login successful 🎉", { description: "Welcome back!" });
       router.push(redirect);
     } catch (err: any) {
-      const errorMessage = err?.response?.data?.message || err?.message || "Invalid credentials";
+      let errorMessage = "Incorrect email or password. Please try again.";
+      const status = err?.response?.status;
+      const apiMessage = (err?.response?.data?.message || err?.message || "").toLowerCase();
 
       // Check if error is about email verification
-      if (errorMessage.toLowerCase().includes("verify your email") ||
-        errorMessage.toLowerCase().includes("email not verified")) {
+      if (apiMessage.includes("verify your email") || apiMessage.includes("email not verified")) {
+        errorMessage = err?.response?.data?.message || "Please verify your email.";
         setShowResendVerification(true);
         setResendEmail(values.email);
+      } else if (status === 404 || apiMessage.includes("not found") || apiMessage.includes("does not exist")) {
+        errorMessage = "Account does not exist. Please sign up first.";
       }
 
       toast.error("Login failed", { description: errorMessage });
@@ -181,7 +185,17 @@ const LoginForm: React.FC = () => {
             {/* Error Message */}
             {error && (
               <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium animate-in zoom-in-95 fade-in">
-                {error.message}
+                {(() => {
+                  const status = (error as any)?.response?.status;
+                  const apiMessage = ((error as any)?.response?.data?.message || error.message || "").toLowerCase();
+                  if (status === 404 || apiMessage.includes("not found") || apiMessage.includes("does not exist")) {
+                    return "Account does not exist. Please sign up first.";
+                  }
+                  if (apiMessage.includes("verify your email") || apiMessage.includes("email not verified")) {
+                    return (error as any)?.response?.data?.message || error.message;
+                  }
+                  return "Incorrect email or password. Please try again.";
+                })()}
               </div>
             )}
 
