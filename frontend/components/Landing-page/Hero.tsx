@@ -1,9 +1,42 @@
-  import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Code, Play } from 'lucide-react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Code, Play, X } from 'lucide-react';
+import Link from 'next/link';
 
 const Hero: React.FC = () => {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isVideoOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isVideoOpen]);
+
+  const openVideo = useCallback(() => setIsVideoOpen(true), []);
+  const closeVideo = useCallback(() => {
+    setIsVideoOpen(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, []);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isVideoOpen) closeVideo();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isVideoOpen, closeVideo]);
+
   return (
+    <>
     <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden overflow-x-hidden">
       {/* Background Gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-brand-green/20 rounded-full blur-[120px] -z-10 opacity-20" />
@@ -39,12 +72,19 @@ const Hero: React.FC = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <button className="w-full sm:w-auto px-8 py-4 bg-brand-green text-black font-bold rounded-lg hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 group">
+              <Link href="/auth/login?redirect=%2Fdashboard" className="w-full sm:w-auto px-8 py-4 bg-brand-green text-black font-bold rounded-lg hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 group">
                 Start Coding for Free
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button className="w-full sm:w-auto px-8 py-4 bg-transparent border dark:border-white/20 border-zinc-300 dark:text-white text-zinc-800 font-medium rounded-lg dark:hover:border-brand-orange hover:border-brand-orange dark:hover:text-brand-orange hover:text-brand-orange transition-colors flex items-center justify-center gap-2">
-                <Play className="w-4 h-4" />
+              </Link>
+              
+              <button
+                onClick={openVideo}
+                className="w-full sm:w-auto px-8 py-4 bg-transparent border dark:border-white/20 border-zinc-300 dark:text-white text-zinc-800 font-medium rounded-lg dark:hover:border-brand-orange hover:border-brand-orange dark:hover:text-brand-orange hover:text-brand-orange transition-all flex items-center justify-center gap-3 group"
+              >
+                <span className="relative flex items-center justify-center w-8 h-8 rounded-full bg-brand-orange/10 group-hover:bg-brand-orange/20 transition-colors">
+                  <Play className="w-3.5 h-3.5 text-brand-orange fill-brand-orange ml-0.5" />
+                  <span className="absolute inset-0 rounded-full border-2 border-brand-orange/30 group-hover:border-brand-orange/60 group-hover:scale-125 transition-all duration-500 opacity-0 group-hover:opacity-100" />
+                </span>
                 Watch Demo
               </button>
             </div>
@@ -142,7 +182,7 @@ const Hero: React.FC = () => {
             <div className="dark:bg-[#0A0A0A] bg-zinc-50 p-4 border-t dark:border-white/5 border-zinc-200 font-mono text-xs">
               <div className="flex gap-2 mb-2">
                 <span className="text-brand-green">➜</span>
-                <span className="dark:text-gray-300 text-zinc-600">Running tests & AI analysis...</span>
+                <span className="dark:text-gray-300 text-zinc-600">Running tests &amp; AI analysis...</span>
               </div>
               <div className="text-brand-green">
                 PASSED: All test cases (24ms) | AI: O(n) Time Complexity detected
@@ -151,7 +191,101 @@ const Hero: React.FC = () => {
           </div>
         </motion.div>
       </div>
+
     </section>
+
+      {/* ─── Cinema-Grade Video Modal (Portal) ─── */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isVideoOpen && (
+            <motion.div
+              className="fixed inset-0 z-[9999] flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Backdrop */}
+              <motion.div
+                className="absolute inset-0 bg-black/85 backdrop-blur-xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={closeVideo}
+              />
+
+              {/* Close Button */}
+              <motion.button
+                onClick={closeVideo}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: 0.2 }}
+                className="absolute top-6 right-6 z-[10000] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:rotate-90"
+              >
+                <X size={18} />
+              </motion.button>
+
+              {/* Video Container */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.85, y: 30 }}
+                transition={{ type: "spring", stiffness: 260, damping: 25, delay: 0.05 }}
+                className="relative z-[10000] w-[95vw] max-w-6xl mx-auto"
+              >
+                {/* Glow Effect Behind Video */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-brand-green/30 via-brand-orange/20 to-brand-green/30 rounded-2xl blur-xl opacity-60 pointer-events-none" />
+                
+                {/* Video Frame */}
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black shadow-[0_0_80px_rgba(0,0,0,0.8)]">
+                  {/* Window Chrome */}
+                  <div className="bg-[#0a0a0a] px-4 py-3 flex items-center justify-between border-b border-white/5">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-[#FF5F56] cursor-pointer hover:brightness-125 transition" onClick={closeVideo} />
+                      <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                      <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
+                    </div>
+                    <div className="text-xs text-zinc-500 font-mono flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                      CodeSprint — Platform Demo
+                    </div>
+                    <div className="w-16" />
+                  </div>
+
+                  {/* Video Element */}
+                  <div className="aspect-video bg-black">
+                    <video
+                      ref={videoRef}
+                      src="/videos/demo.mp4"
+                      controls
+                      autoPlay
+                      playsInline
+                      className="w-full h-full object-contain"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Bottom Hint */}
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.4 }}
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[10000] text-xs text-zinc-500 flex items-center gap-2"
+              >
+                <kbd className="px-1.5 py-0.5 rounded bg-white/10 border border-white/10 text-[10px] font-mono text-zinc-400">ESC</kbd>
+                to close
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 };
 
