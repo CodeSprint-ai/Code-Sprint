@@ -46,7 +46,7 @@ const SignUpForm: React.FC = () => {
       router.push("/auth/login");
     } catch (err: any) {
       toast.error("Sign up failed", {
-        description: err?.response?.data?.message || err?.message || "Something went wrong",
+        description: err?.response?.data?.devMessage || err?.response?.data?.message || err?.message || "Something went wrong",
       });
     }
   };
@@ -193,7 +193,7 @@ const SignUpForm: React.FC = () => {
               {/* Error Message */}
               {error && (
                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium animate-in zoom-in-95 fade-in">
-                  {error.message}
+                  {(error as any)?.response?.data?.devMessage || (error as any)?.response?.data?.message || error.message}
                 </div>
               )}
 
