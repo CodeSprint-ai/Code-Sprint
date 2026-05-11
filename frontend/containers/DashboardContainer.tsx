@@ -96,6 +96,7 @@ const DashboardContainer = () => {
           <RankPanel
             totalSolved={stats?.totalSolved ?? 0}
             currentStreak={stats?.currentStreak ?? 0}
+            rating={stats?.rating ?? 0}
           />
 
           {/* Recent Activity */}

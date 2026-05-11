@@ -14,6 +14,7 @@ export interface DashboardStats {
     maxStreak: number;
     totalSubmissions: number;
     acceptedSubmissions: number;
+    rating: number;
 }
 
 export interface WeeklyActivityEntry {
@@ -47,6 +48,7 @@ export const getDashboardStats = async (): Promise<DashboardStats> => {
             maxStreak: profile.stats?.maxStreak ?? 0,
             totalSubmissions: profile.stats?.totalSubmissions ?? 0,
             acceptedSubmissions: profile.stats?.acceptedSubmissions ?? 0,
+            rating: profile.stats?.rating ?? 0,
         };
     } catch (error) {
         console.error('Failed to fetch dashboard stats:', error);
@@ -59,6 +61,7 @@ export const getDashboardStats = async (): Promise<DashboardStats> => {
             maxStreak: 0,
             totalSubmissions: 0,
             acceptedSubmissions: 0,
+            rating: 0,
         };
     }
 };

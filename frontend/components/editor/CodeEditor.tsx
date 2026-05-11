@@ -15,28 +15,53 @@ interface Props {
 }
 
 export default function CodeEditor({ language, code, setCode }: Props) {
-  const { theme, systemTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Determine the current effective theme
-  const currentTheme = theme === "system" ? systemTheme : theme;
-  const editorTheme = currentTheme === "light" ? "vs" : "vs-dark";
+  // resolvedTheme is the final computed theme (handles "system" internally)
+  const editorTheme = resolvedTheme === "light" ? "github-light" : "vs-dark";
 
-  // Prevent hydration mismatch by rendering a skeleton or waiting for mount
+  const handleEditorBeforeMount = (monaco: any) => {
+    // Define github-light theme
+    monaco.editor.defineTheme('github-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6a737d' },
+        { token: 'keyword', foreground: 'd73a49' },
+        { token: 'identifier', foreground: '6f42c1' },
+        { token: 'string', foreground: '032f62' },
+        { token: 'number', foreground: '005cc5' },
+        { token: 'type', foreground: '005cc5' },
+      ],
+      colors: {
+        'editor.background': '#ffffff',
+        'editor.foreground': '#24292e',
+        'editor.lineHighlightBackground': '#f6f8fa',
+        'editorCursor.foreground': '#24292e',
+        'editorIndentGuide.background': '#d1d5da',
+        'editor.selectionBackground': '#0366d625',
+        'editor.inactiveSelectionBackground': '#0366d615',
+      }
+    });
+  };
+
   if (!mounted) {
-    return <div className="h-full w-full dark:bg-[#1e1e1e] bg-white" />;
+    return <div className="h-full w-full bg-white dark:bg-[#1e1e1e]" />;
   }
 
   return (
     <div className="h-full w-full">
       <MonacoEditor
+        key={editorTheme}
         language={language}
         value={code}
         theme={editorTheme}
+        beforeMount={handleEditorBeforeMount}
         onChange={(val) => setCode(val ?? "")}
         options={{
           minimap: { enabled: false },

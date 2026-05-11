@@ -77,9 +77,9 @@ export default function EditorHeader({
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="p-2 dark:hover:bg-white/10 hover:bg-zinc-200 rounded-lg dark:text-zinc-500 text-zinc-600 dark:hover:text-white hover:text-zinc-900 transition-colors">
+        {/* <button className="p-2 dark:hover:bg-white/10 hover:bg-zinc-200 rounded-lg dark:text-zinc-500 text-zinc-600 dark:hover:text-white hover:text-zinc-900 transition-colors">
           <Settings className="w-4 h-4" />
-        </button>
+        </button> */}
 
         {!hideSubmit && (
           <Button

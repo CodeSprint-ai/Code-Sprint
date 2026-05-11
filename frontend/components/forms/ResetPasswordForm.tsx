@@ -44,7 +44,7 @@ const ResetPasswordForm: React.FC = () => {
         setIsLoading(true);
         setError(null);
         try {
-            await api.post("/auth/reset-password", {
+            await api.patch("/auth/reset-password", {
                 token,
                 newPassword: values.newPassword
             });

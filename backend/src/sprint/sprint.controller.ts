@@ -1,10 +1,12 @@
-import { Controller, Post, Param, UseGuards, Req, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Param, UseGuards, Req, Body, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { SprintService } from './sprint.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { ResponseWrapper } from '../common/dtos/ResponseWrapper';
 import { CreateSprintCommand } from './command/CreateSprintCommand';
 import { SprintDto } from './dto/SprintDto';
+import { SprintCompletionDto } from './dto/SprintCompletionDto';
+import { FinishSprintDto } from './dto/FinishSprintDto';
 
 @ApiTags('sprint')
 @Controller('sprint')
@@ -34,10 +36,33 @@ export class SprintController {
     @ApiResponse({
         status: 200,
         description: 'The sprint has been successfully finished.',
-        type: SprintDto,
+        type: SprintCompletionDto,
     })
-    async finishSprint(@Param('id') id: string): Promise<ReturnType<typeof ResponseWrapper.success>> {
-        const sprint = await this.sprintService.finishSprint(id);
-        return ResponseWrapper.success(sprint, 'Sprint finished successfully');
+    async finishSprint(
+        @Param('id') id: string,
+        @Body() dto: FinishSprintDto,
+        @Req() req,
+    ): Promise<ReturnType<typeof ResponseWrapper.success>> {
+        // userId extracted from JWT — never trusted from request body
+        const result = await this.sprintService.finishSprint(id, req.user.uuid, dto);
+        return ResponseWrapper.success(result, 'Sprint finished successfully');
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('recent')
+    @HttpCode(HttpStatus.OK)
+    @ApiBearerAuth()
+    @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Number of recent sprints (default 5)' })
+    @ApiResponse({
+        status: 200,
+        description: 'Recent sprint history.',
+        type: [SprintDto],
+    })
+    async getRecentSprints(
+        @Req() req,
+        @Query('limit') limit?: number,
+    ): Promise<ReturnType<typeof ResponseWrapper.success>> {
+        const sprints = await this.sprintService.getRecentSprints(req.user.uuid, limit || 5);
+        return ResponseWrapper.success(sprints, 'Recent sprints retrieved');
     }
 }

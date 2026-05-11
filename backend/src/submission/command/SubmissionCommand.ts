@@ -21,4 +21,8 @@ export class SubmissionCommand {
   @IsOptional()
   @IsInt()
   timeSpentMs?: number;
+
+  @IsOptional()
+  @IsUUID()
+  sprintSessionId?: string;
 }

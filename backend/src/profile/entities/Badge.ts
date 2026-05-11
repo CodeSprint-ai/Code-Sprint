@@ -22,6 +22,12 @@ export enum BadgeCriteriaType {
     CONTEST_PARTICIPATION = 'CONTEST_PARTICIPATION',
     RATING_THRESHOLD = 'RATING_THRESHOLD',
     LANGUAGE_MASTERY = 'LANGUAGE_MASTERY',
+    // Sprint-specific criteria
+    SPRINT_HARD_IN_SESSION = 'SPRINT_HARD_IN_SESSION',   // Hard solved in a single sprint session
+    SPRINT_MEDIUM_CUMULATIVE = 'SPRINT_MEDIUM_CUMULATIVE', // Medium solved across all sprints (cumulative)
+    SPRINT_HARD_CUMULATIVE = 'SPRINT_HARD_CUMULATIVE',     // Hard solved across all sprints (cumulative)
+    POINTS_MILESTONE = 'POINTS_MILESTONE',                 // Total rating crosses a threshold
+    FIRST_SPRINT = 'FIRST_SPRINT',                         // First sprint completed
 }
 
 export interface BadgeCriteria {

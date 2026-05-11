@@ -50,6 +50,10 @@ interface EditorPanelProps {
   isLastQuestion?: boolean;
   sprintMode?: boolean;
   onFinishSprint?: () => void;
+  initialCode?: string;
+  onCodeChange?: (code: string) => void;
+  sprintSessionId?: string;
+  onLanguageChange?: (language: string) => void;
 }
 
 export default function EditorPanel({
@@ -59,6 +63,10 @@ export default function EditorPanel({
   isLastQuestion = false,
   sprintMode = false,
   onFinishSprint,
+  initialCode,
+  onCodeChange,
+  sprintSessionId,
+  onLanguageChange,
 }: EditorPanelProps) {
   // Fetch user's preferred language from settings
   const { data: userSettings } = useQuery({
@@ -71,6 +79,12 @@ export default function EditorPanel({
   const defaultLang = userSettings?.defaultLanguage || "python";
   const [language, setLanguage] = useState<string>(defaultLang);
   const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Wrap setLanguage to also notify parent
+  const handleSetLanguage = useCallback((lang: string) => {
+    setLanguage(lang);
+    onLanguageChange?.(lang);
+  }, [onLanguageChange]);
 
   // Update language when user settings are loaded (only once)
   useEffect(() => {
@@ -93,12 +107,29 @@ export default function EditorPanel({
     return defaultStarterCode[langKey];
   }, [problem?.starterCode]);
 
-  const [code, setCode] = useState(() => getStarterCode(defaultLang));
+  const [code, setCode] = useState(() => initialCode || getStarterCode(defaultLang));
 
-  // Update code when language changes
+  // Notify parent of code changes (for sprint mode persistence)
+  const handleCodeChange = useCallback((newCode: string) => {
+    setCode(newCode);
+    onCodeChange?.(newCode);
+  }, [onCodeChange]);
+
+  // Update code when language changes (only if no initialCode, i.e. not in sprint restore)
   useEffect(() => {
-    setCode(getStarterCode(language));
+    if (!initialCode) {
+      setCode(getStarterCode(language));
+    }
   }, [language, getStarterCode]);
+
+  // When problem changes in sprint mode, restore initialCode or reset to starter
+  useEffect(() => {
+    if (initialCode !== undefined) {
+      setCode(initialCode);
+    } else {
+      setCode(getStarterCode(language));
+    }
+  }, [problem?.uuid]);
 
   // State for submission/run status
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,6 +172,7 @@ export default function EditorPanel({
         problemUuid: problem.uuid,
         slug: problem.slug,
         timeSpentMs: getElapsedMs(),
+        ...(sprintSessionId ? { sprintSessionId } : {}),
       });
 
       console.log("Submission created:", resp);
@@ -156,7 +188,7 @@ export default function EditorPanel({
       {/* Header */}
       <EditorHeader
         language={language}
-        setLanguage={setLanguage}
+        setLanguage={handleSetLanguage}
         problem={problem}
         code={code}
         onRun={handleRunCode}
@@ -183,7 +215,7 @@ export default function EditorPanel({
           <CodeEditor
             language={monacoLanguageMap[language] || language}
             code={code}
-            setCode={setCode}
+            setCode={handleCodeChange}
           />
         </div>
 

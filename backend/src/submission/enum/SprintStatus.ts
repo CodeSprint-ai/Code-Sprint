@@ -1,5 +1,5 @@
-export enum SprintStatus {
-  PENDING = 'PENDING',
-  ACTIVE = 'ACTIVE',
-  COMPLETED = 'COMPLETED',
-}
+/**
+ * @deprecated Import SprintStatus from 'src/sprint/enum/SprintStatus' instead.
+ * This re-export exists for backward compatibility.
+ */
+export { SprintStatus } from '../../sprint/enum/SprintStatus';

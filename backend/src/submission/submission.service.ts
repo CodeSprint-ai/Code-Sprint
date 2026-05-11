@@ -8,6 +8,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { SubmissionCommand } from './command/SubmissionCommand';
 import { SubmissionStatus } from './enum/SubmissionStatus';
+import { SprintSession } from '../sprint/entities/SprintSession';
 import { SubmissionDto } from './dto/SubmissionDto';
 import { GetSubmissionsQueryDto } from './dto/GetSubmissionsQueryDto';
 
@@ -33,6 +34,15 @@ export class SubmissionService {
       status: SubmissionStatus.PENDING,
       timeSpentMs: command.timeSpentMs,
     });
+
+    // Link to sprint session if submitting during an active sprint
+    if (command.sprintSessionId) {
+      console.log('[SUB FIX] Linking submission to sprint:', command.sprintSessionId);
+      submission.sprintSession = { uuid: command.sprintSessionId } as SprintSession;
+    } else {
+      console.log('[SUB DEBUG] No sprintSessionId provided in submission');
+    }
+
     await this.repo.save(submission);
 
     // enqueue

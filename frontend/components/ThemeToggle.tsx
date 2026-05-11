@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Monitor } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
@@ -12,8 +12,10 @@ export function ThemeToggle() {
   if (!mounted) return null;
 
   const toggleTheme = (e: React.MouseEvent) => {
-    const isDark = theme === "dark";
-    const nextTheme = isDark ? "light" : "dark";
+    let nextTheme = "system";
+    if (theme === "system") nextTheme = "light";
+    else if (theme === "light") nextTheme = "dark";
+    else if (theme === "dark") nextTheme = "system";
 
     // @ts-ignore - View Transitions API
     if (!document.startViewTransition) {
@@ -41,12 +43,12 @@ export function ThemeToggle() {
 
       document.documentElement.animate(
         {
-          clipPath: isDark ? [...clipPath].reverse() : clipPath,
+          clipPath: theme === "dark" ? [...clipPath].reverse() : clipPath,
         },
         {
           duration: 1000,
           easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-          pseudoElement: isDark
+          pseudoElement: theme === "dark"
             ? "::view-transition-old(root)"
             : "::view-transition-new(root)",
         }
@@ -63,8 +65,10 @@ export function ThemeToggle() {
     >
       {theme === "dark" ? (
         <Sun className="h-4 w-4 text-foreground" />
-      ) : (
+      ) : theme === "light" ? (
         <Moon className="h-4 w-4 text-foreground" />
+      ) : (
+        <Monitor className="h-4 w-4 text-foreground" />
       )}
     </button>
   );

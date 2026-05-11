@@ -82,6 +82,7 @@ export interface CreateSubmissionInput {
   problemUuid?: string;
   slug?: string;
   timeSpentMs?: number;
+  sprintSessionId?: string;
 }
 
 /**

@@ -7,12 +7,20 @@ import {
   UpdateDateColumn,
   OneToMany,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from '../../user/entities/user.model';
-import { SprintStatus } from '../../submission/enum/SprintStatus';
+import { SprintStatus } from '../enum/SprintStatus';
 import { SprintProblem } from './SprintProblem';
 
+export interface DifficultyBreakdown {
+  easy: number;
+  medium: number;
+  hard: number;
+}
+
 @Entity('sprint_sessions')
+@Index(['user'])
 export class SprintSession {
   @PrimaryGeneratedColumn('uuid', { name: 'uuid' })
   uuid: string;
@@ -35,6 +43,15 @@ export class SprintSession {
 
   @Column({ name: 'score', default: 0 })
   score: number;
+
+  @Column({ name: 'correct_answers', type: 'int', default: 0 })
+  correctAnswers: number;
+
+  @Column({ name: 'total_questions', type: 'int', default: 0 })
+  totalQuestions: number;
+
+  @Column({ name: 'difficulty_breakdown', type: 'jsonb', nullable: true })
+  difficultyBreakdown: DifficultyBreakdown | null;
 
   @Column({ name: 'completed_at', nullable: true })
   completedAt: Date;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,8 @@ const DEFAULT_CODE: Record<string, string> = {
 };
 
 export default function SubmissionEditor({ problem }: any) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState(DEFAULT_CODE["python"]);
   // const socket = initSocket();
@@ -30,8 +33,44 @@ export default function SubmissionEditor({ problem }: any) {
   const { createSubmission } = useSubmission(problem?.uuid);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     setCode(DEFAULT_CODE[language] ?? "");
   }, [language]);
+
+  // Use resolvedTheme with a fallback check for the .dark class
+  const isDark = mounted 
+    ? (resolvedTheme === 'dark' || (resolvedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches))
+    : true; // Default to dark during SSR/initial mount
+
+  const editorTheme = isDark ? "vs-dark" : "vs";
+
+  const handleEditorBeforeMount = (monaco: any) => {
+    // Re-define github-light just in case we want it
+    monaco.editor.defineTheme('github-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6a737d' },
+        { token: 'keyword', foreground: 'd73a49' },
+        { token: 'identifier', foreground: '6f42c1' },
+        { token: 'string', foreground: '032f62' },
+        { token: 'number', foreground: '005cc5' },
+        { token: 'type', foreground: '005cc5' },
+      ],
+      colors: {
+        'editor.background': '#ffffff',
+        'editor.foreground': '#24292e',
+        'editor.lineHighlightBackground': '#f6f8fa',
+        'editorCursor.foreground': '#24292e',
+        'editorIndentGuide.background': '#d1d5da',
+        'editor.selectionBackground': '#0366d625',
+        'editor.inactiveSelectionBackground': '#0366d615',
+      }
+    });
+  };
 
   const handleSubmit = async () => {
     try {
@@ -46,6 +85,10 @@ export default function SubmissionEditor({ problem }: any) {
       console.error("❌ Submission failed:", error);
     }
   };
+
+  if (!mounted) {
+    return <div className="h-[520px] w-full dark:bg-[#1e1e1e] bg-white border rounded-md" />;
+  }
 
   return (
     <div className="space-y-3">
@@ -81,10 +124,13 @@ export default function SubmissionEditor({ problem }: any) {
 
       <div className="h-[520px] border rounded-md overflow-hidden">
         <MonacoEditor
+          key={editorTheme}
           height="100%"
           defaultLanguage={language}
           language={language}
           value={code}
+          theme={editorTheme}
+          beforeMount={handleEditorBeforeMount}
           onChange={(val) => setCode(val ?? "")}
           options={{ minimap: { enabled: false }, fontSize: 14 }}
         />

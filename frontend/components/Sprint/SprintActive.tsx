@@ -1,16 +1,16 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Split from "react-split";
 import ProblemPanel from "@/components/layout/ProblemPanel";
 import EditorPanel from "@/components/layout/EditorPanel";
-import { SprintSession } from "@/hooks/useSprint";
+import { SprintSession, SprintSolution } from "@/hooks/useSprint";
 import { Clock, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface SprintActiveProps {
     session: SprintSession;
-    onFinish: () => void;
+    onFinish: (solutions: SprintSolution[]) => void;
 }
 
 export default function SprintActive({ session, onFinish }: SprintActiveProps) {
@@ -18,9 +18,35 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
     const [timeLeft, setTimeLeft] = useState<number>(0);
     const [solvedProblems, setSolvedProblems] = useState<Set<string>>(new Set());
 
+    // Persist code and language per problem UUID across navigation
+    const codeMapRef = useRef<Map<string, string>>(new Map());
+    const langMapRef = useRef<Map<string, string>>(new Map());
+
     // Current problem
     const currentSprintProblem = session.sprintProblems[activeProblemIndex];
     const currentProblem = currentSprintProblem?.problem;
+
+    /** Collect all solutions from refs and call parent onFinish */
+    const collectAndFinish = useCallback(() => {
+        const solutions: SprintSolution[] = [];
+
+        for (const sp of session.sprintProblems) {
+            const problem = sp.problem;
+            if (!problem) continue;
+
+            const code = codeMapRef.current.get(problem.uuid);
+            if (!code || code.trim() === '') continue; // Skip problems with no code
+
+            solutions.push({
+                problemId: problem.uuid,
+                code,
+                language: langMapRef.current.get(problem.uuid) || 'python',
+            });
+        }
+
+        console.log(`[SPRINT] Finishing with ${solutions.length} solutions`);
+        onFinish(solutions);
+    }, [session, onFinish]);
 
     useEffect(() => {
         // Timer Logic
@@ -31,13 +57,13 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
             if (diff <= 0) {
                 setTimeLeft(0);
                 clearInterval(interval);
-                onFinish(); // Auto finish
+                collectAndFinish(); // Auto finish with solutions
             } else {
                 setTimeLeft(Math.floor(diff / 1000));
             }
         }, 1000);
         return () => clearInterval(interval);
-    }, [session, onFinish]);
+    }, [session, collectAndFinish]);
 
     const formatTime = (seconds: number) => {
         const m = Math.floor(seconds / 60);
@@ -55,6 +81,21 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
         if (activeProblemIndex < session.sprintProblems.length - 1) {
             setActiveProblemIndex(activeProblemIndex + 1);
         }
+    };
+
+    // Save code for the current problem
+    const handleCodeChange = useCallback((problemUuid: string, code: string) => {
+        codeMapRef.current.set(problemUuid, code);
+    }, []);
+
+    // Save language for the current problem
+    const handleLanguageChange = useCallback((problemUuid: string, language: string) => {
+        langMapRef.current.set(problemUuid, language);
+    }, []);
+
+    // Get saved code for a problem (undefined if none saved yet)
+    const getSavedCode = (problemUuid: string): string | undefined => {
+        return codeMapRef.current.get(problemUuid);
     };
 
     if (!currentProblem) {
@@ -142,6 +183,10 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                     <EditorPanel
                         problem={currentProblem}
                         hideSubmit={true}
+                        initialCode={getSavedCode(currentProblem.uuid)}
+                        onCodeChange={(code) => handleCodeChange(currentProblem.uuid, code)}
+                        onLanguageChange={(lang) => handleLanguageChange(currentProblem.uuid, lang)}
+                        sprintSessionId={session.uuid}
                         onNext={() => {
                             if (activeProblemIndex < session.sprintProblems.length - 1) {
                                 setActiveProblemIndex(activeProblemIndex + 1);
@@ -149,7 +194,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                         }}
                         isLastQuestion={activeProblemIndex === session.sprintProblems.length - 1}
                         sprintMode={true}
-                        onFinishSprint={onFinish}
+                        onFinishSprint={collectAndFinish}
                     />
                 </div>
             </div>
@@ -178,6 +223,10 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                         <EditorPanel
                             problem={currentProblem}
                             hideSubmit={true}
+                            initialCode={getSavedCode(currentProblem.uuid)}
+                            onCodeChange={(code) => handleCodeChange(currentProblem.uuid, code)}
+                            onLanguageChange={(lang) => handleLanguageChange(currentProblem.uuid, lang)}
+                            sprintSessionId={session.uuid}
                             onNext={() => {
                                 if (activeProblemIndex < session.sprintProblems.length - 1) {
                                     setActiveProblemIndex(activeProblemIndex + 1);
@@ -185,7 +234,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
                             }}
                             isLastQuestion={activeProblemIndex === session.sprintProblems.length - 1}
                             sprintMode={true}
-                            onFinishSprint={onFinish}
+                            onFinishSprint={collectAndFinish}
                         />
                     </div>
                 </Split>

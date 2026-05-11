@@ -1,19 +1,20 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useSprint, SprintSession } from "@/hooks/useSprint";
+import { useSprint, SprintSession, SprintCompletionResult } from "@/hooks/useSprint";
 import SprintActive from "./SprintActive";
+import SprintCompletionModal from "./SprintCompletionModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Rocket, Trophy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/store/authStore";
-import { toast } from "sonner"; // Assuming sonner
+import { toast } from "sonner";
 
 export default function SprintDashboardContainer() {
     const { user } = useAuthStore();
     const { createSprint, finishSprint, isCreating, isFinishing } = useSprint();
     const [activeSession, setActiveSession] = useState<SprintSession | null>(null);
-    const [lastResult, setLastResult] = useState<SprintSession | null>(null);
+    const [completionResult, setCompletionResult] = useState<SprintCompletionResult | null>(null);
 
     const handleStart = async () => {
         try {
@@ -25,12 +26,12 @@ export default function SprintDashboardContainer() {
         }
     };
 
-    const handleFinish = async () => {
+    const handleFinish = async (solutions: import("@/hooks/useSprint").SprintSolution[] = []) => {
         if (!activeSession) return;
         try {
-            const result = await finishSprint({ sprintId: activeSession.uuid });
+            const result = await finishSprint({ sprintId: activeSession.uuid, solutions });
             setActiveSession(null);
-            setLastResult(result);
+            setCompletionResult(result);
         } catch (e) {
             toast.error("Failed to finish sprint");
         }
@@ -42,6 +43,14 @@ export default function SprintDashboardContainer() {
 
     return (
         <div className="max-w-4xl mx-auto py-12 space-y-8">
+            {/* Sprint Completion Modal */}
+            {completionResult && (
+                <SprintCompletionModal
+                    result={completionResult}
+                    onClose={() => setCompletionResult(null)}
+                />
+            )}
+
             {/* Intro / Start Screen */}
             <div className="text-center space-y-4">
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
@@ -86,14 +95,19 @@ export default function SprintDashboardContainer() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {lastResult ? (
+                        {completionResult ? (
                             <div className="space-y-2">
                                 <div className="text-2xl font-bold text-white">
-                                    Score: {lastResult.score}
+                                    Score: +{completionResult.pointsEarned}
                                 </div>
                                 <p className="text-gray-400">
-                                    Sprint Completed at {new Date(lastResult.endTime).toLocaleDateString()}
+                                    {completionResult.correctAnswers}/{completionResult.totalQuestions} solved • Streak: {completionResult.updatedStreak}🔥
                                 </p>
+                                {completionResult.newLevel && (
+                                    <p className="text-emerald-400 font-bold">
+                                        🎉 Leveled up to {completionResult.newLevel}!
+                                    </p>
+                                )}
                             </div>
                         ) : (
                             <p className="text-gray-500">

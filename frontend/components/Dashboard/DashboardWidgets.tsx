@@ -24,6 +24,7 @@ import Link from "next/link";
 interface RankPanelProps {
     totalSolved?: number;
     currentStreak?: number;
+    rating?: number;
 }
 
 interface RecentActivityItem {
@@ -62,8 +63,8 @@ interface ChallengeCardProps {
     };
 }
 
-// Rank Panel Component - Shows streak instead of rank for now
-export function RankPanel({ totalSolved = 0, currentStreak = 0 }: RankPanelProps) {
+// Rank Panel Component
+export function RankPanel({ totalSolved = 0, currentStreak = 0, rating = 0 }: RankPanelProps) {
     return (
         <div className="bg-gradient-to-b dark:from-[#09090b] dark:to-black from-white to-zinc-50 border dark:border-white/5 border-zinc-200 rounded-xl p-6 relative overflow-hidden group shadow-sm dark:shadow-none">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -75,9 +76,13 @@ export function RankPanel({ totalSolved = 0, currentStreak = 0 }: RankPanelProps
                 <div className="text-5xl font-black dark:text-white text-zinc-900 tracking-tight mb-2">
                     {currentStreak} <span className="text-2xl dark:text-zinc-500 text-zinc-400">days</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between mt-4">
                     <div className="text-xs dark:text-zinc-500 text-zinc-500">
                         Total Solved: <span className="text-emerald-400 font-bold">{totalSolved}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
+                        <Trophy className="w-3.5 h-3.5 text-amber-500" />
+                        <span className="text-xs font-bold text-amber-500">{rating} pts</span>
                     </div>
                 </div>
             </div>

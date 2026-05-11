@@ -10,7 +10,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.model';
 import { ProblemModule } from './problem/problem.module';
 import { SubmissionModule } from './submission/submission.module';
-import { SprintService } from './sprint/sprint.service';
 import { SprintModule } from './sprint/sprint.module';
 import { ProfileModule } from './profile/profile.module';
 import { ContestModule } from './contest/contest.module';

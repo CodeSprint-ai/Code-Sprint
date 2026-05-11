@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { PublicProfile } from '@/types/profile';
-import { MapPin, Calendar, Github, Linkedin, Twitter, Globe, CheckCircle2 } from 'lucide-react';
+import { MapPin, Calendar, Github, Linkedin, Twitter, Globe, CheckCircle2, Trophy } from 'lucide-react';
 
 interface ProfileHeaderProps {
     profile: PublicProfile;
@@ -71,6 +71,10 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                             <div className="flex items-center gap-1.5 text-emerald-500">
                                 <CheckCircle2 className="w-3.5 h-3.5" />
                                 Verified Developer
+                            </div>
+                            <div className="flex items-center gap-1.5 text-amber-500">
+                                <Trophy className="w-3.5 h-3.5" />
+                                {profile.stats?.rating ?? 0} Points
                             </div>
                         </div>
                     </div>
