@@ -62,7 +62,7 @@ export default function AdminSubmissionViewPage({
   // If both are loading, show loading
   if (singleSubmission.isLoading || singleProblem.isLoading) {
     return (
-      <div className="h-[calc(100vh-4rem)] w-full flex flex-col gap-4 p-4 overflow-hidden">
+      <div className="h-[calc(100vh-4rem)] w-full flex flex-col gap-4 p-4 overflow-hidden dark:bg-zinc-950 bg-zinc-50">
         <div className="flex-1 flex gap-4 overflow-hidden">
           <Skeleton className="flex-1 h-full rounded-xl" />
           <Skeleton className="flex-1 h-full rounded-xl" />
@@ -76,7 +76,7 @@ export default function AdminSubmissionViewPage({
   const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 dark:bg-zinc-950 bg-zinc-50 px-4">
       <p className="text-red-400">Not found.</p>
       <Link href={basePath}>
         <Button variant="outline" className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-200 text-zinc-700">
@@ -93,7 +93,7 @@ function SubmissionView({ submission }: { submission: Submission }) {
   const basePath = pathname?.startsWith("/admin") ? "/admin/submission" : "/submission";
 
   return (
-    <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen dark:bg-[#0c0c0e] bg-zinc-50 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <Link
           href={basePath}
@@ -188,10 +188,10 @@ function SubmissionView({ submission }: { submission: Submission }) {
 
 function ProblemSolveView({ problem }: { problem: Problem }) {
   return (
-    <main className="h-[calc(100vh-4rem)] lg:h-screen w-full flex flex-col text-zinc-100">
+    <main className="h-[calc(100vh-4rem)] lg:h-screen w-full flex flex-col dark:bg-zinc-950 bg-zinc-50 dark:text-zinc-100 text-zinc-900">
       <section className="flex flex-1 flex-col lg:flex-row overflow-y-auto lg:overflow-hidden pb-4 lg:pb-0">
         {/* Left panel - Problem Description */}
-        <div className="lg:w-1/2 min-h-[50vh] lg:min-h-0 border-b lg:border-b-0 lg:border-r border-zinc-800 overflow-y-auto h-full shrink-0 lg:shrink">
+        <div className="lg:w-1/2 min-h-[50vh] lg:min-h-0 border-b lg:border-b-0 lg:border-r dark:border-zinc-800 border-zinc-200 overflow-y-auto h-full shrink-0 lg:shrink">
           <ProblemPanel problem={problem} />
         </div>
 
