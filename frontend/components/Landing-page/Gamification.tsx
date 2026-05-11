@@ -124,7 +124,7 @@ const Gamification: React.FC = () => {
                             <div>
                                 <h3 className="dark:text-white text-zinc-800 font-bold flex items-center gap-2 text-lg">
                                     <Crown size={20} className="text-yellow-500" />
-                                    Global League
+                                    Global Leaderboard
                                 </h3>
                                 <p className="text-xs dark:text-gray-500 text-zinc-500 mt-1">Season 4 ends in 2 days</p>
                             </div>

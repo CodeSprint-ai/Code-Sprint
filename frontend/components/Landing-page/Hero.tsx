@@ -1,10 +1,10 @@
-import React from 'react';
+  import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Code, Play } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden overflow-x-hidden">
       {/* Background Gradients */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-brand-green/20 rounded-full blur-[120px] -z-10 opacity-20" />
       <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-brand-orange/10 rounded-full blur-[120px] -z-10 opacity-20" />
@@ -26,16 +26,16 @@ const Hero: React.FC = () => {
               <span className="text-xs font-medium text-brand-orange tracking-wide uppercase">New AI Features</span>
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight dark:text-white text-zinc-900 mb-6 leading-[1.1]">
-              Code Smarter. <br />
-              Interview Better. <br />
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight dark:text-white text-zinc-900 mb-6 leading-[1.1]">
+              Master Algorithms. <br />
+              Understand Failures. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-emerald-300">
-                Get Hired Faster.
+                Learn Faster.
               </span>
             </h1>
             
             <p className="text-lg dark:text-gray-400 text-zinc-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Stop grinding LeetCode in isolation. Practice with intelligent AI mentors, collaborate in real-time, and get deep analytics on your coding efficiency. The world's most advanced developer playground is here.
+              Stop struggling with fragmented resources. CodeSprint gives you adaptive learning paths, real-time code execution, and a personalized AI mentor to explain every failure and optimize every success.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
@@ -50,12 +50,12 @@ const Hero: React.FC = () => {
             </div>
             
             <div className="mt-10 flex items-center justify-center lg:justify-start gap-8 dark:text-gray-500 text-zinc-500 text-sm font-medium">
-              <span>Trusted by engineers at:</span>
+              <span>Empowering Computer Science Students Worldwide</span>
               <div className="flex gap-4 opacity-70 grayscale">
-                <span className="font-bold text-lg">Google</span>
-                <span className="font-bold text-lg">Meta</span>
-                <span className="font-bold text-lg">Amazon</span>
-                <span className="font-bold text-lg">Stripe</span>
+                <span className="font-bold text-lg">SSUET</span>
+                <span className="font-bold text-lg">FAST</span>
+                <span className="font-bold text-lg">NUST</span>
+                <span className="font-bold text-lg">NED</span>
               </div>
             </div>
           </motion.div>
@@ -142,10 +142,10 @@ const Hero: React.FC = () => {
             <div className="dark:bg-[#0A0A0A] bg-zinc-50 p-4 border-t dark:border-white/5 border-zinc-200 font-mono text-xs">
               <div className="flex gap-2 mb-2">
                 <span className="text-brand-green">➜</span>
-                <span className="dark:text-gray-300 text-zinc-600">Running tests...</span>
+                <span className="dark:text-gray-300 text-zinc-600">Running tests & AI analysis...</span>
               </div>
               <div className="text-brand-green">
-                PASSED: All test cases passed (24ms)
+                PASSED: All test cases (24ms) | AI: O(n) Time Complexity detected
               </div>
             </div>
           </div>

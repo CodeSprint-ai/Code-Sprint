@@ -11,9 +11,52 @@ export function ThemeToggle() {
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
+  const toggleTheme = (e: React.MouseEvent) => {
+    const isDark = theme === "dark";
+    const nextTheme = isDark ? "light" : "dark";
+
+    // @ts-ignore - View Transitions API
+    if (!document.startViewTransition) {
+      setTheme(nextTheme);
+      return;
+    }
+
+    const x = e.clientX;
+    const y = e.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    // @ts-ignore
+    const transition = document.startViewTransition(() => {
+      setTheme(nextTheme);
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+
+      document.documentElement.animate(
+        {
+          clipPath: isDark ? [...clipPath].reverse() : clipPath,
+        },
+        {
+          duration: 1000,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+          pseudoElement: isDark
+            ? "::view-transition-old(root)"
+            : "::view-transition-new(root)",
+        }
+      );
+    });
+  };
+
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={toggleTheme}
       className="rounded-full border border-border p-2 hover:bg-accent transition-colors cursor-pointer"
       aria-label="Toggle theme"
       id="theme-toggle"

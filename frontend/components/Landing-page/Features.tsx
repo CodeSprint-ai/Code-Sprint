@@ -74,8 +74,8 @@ const Features: React.FC = () => {
           {/* Card 1: AI Pair Programming (Large) */}
           <BentoCard 
             colSpan="md:col-span-2"
-            title="AI Pair Programmer"
-            description="Stuck on logic? Your AI companion suggests optimizations, writes unit tests, and explains complex algorithms in plain English—live."
+            title="Post-Submission AI Analysis"
+            description="Detects your algorithmic approach, analyzes time/space complexity, and reviews edge cases."
             icon={<Cpu size={20} />}
           >
              <div className="absolute top-4 left-8 right-8 bottom-0 dark:bg-[#151516] bg-zinc-50 rounded-t-xl border dark:border-white/10 border-zinc-200 p-5 border-b-0 shadow-2xl transform group-hover:translate-y-2 transition-transform duration-500">
@@ -105,8 +105,8 @@ const Features: React.FC = () => {
 
           {/* Card 2: Ironclad Proctoring (Small) */}
           <BentoCard 
-            title="Ironclad Proctoring"
-            description="Advanced browser lockdown and behavioral analysis ensure assessment integrity for universities and hiring managers."
+            title="Smart Multi-Level Hints"
+            description="Get 4 levels of graduated hints: from thinking direction to structured pseudocode, without giving away the full answer."
             icon={<ShieldCheck size={20} />}
           >
              <div className="absolute inset-0 flex items-center justify-center">
@@ -126,8 +126,8 @@ const Features: React.FC = () => {
           {/* Card 3: Multiplayer Collaboration */}
           <BentoCard 
             colSpan="md:col-span-2"
-            title="Multiplayer Collaboration"
-            description="Code with teammates or interviewers in a low-latency environment with integrated video and cursor tracking."
+            title="Personalized Learning Roadmap"
+            description="Generates weekly adaptive roadmaps based on your accuracy, time tracked, and identified weak areas."
             icon={<Users size={20} />}
           >
             <div className="absolute inset-x-6 top-4 bottom-0 dark:bg-[#151516] bg-zinc-50 rounded-t-xl border dark:border-white/10 border-zinc-200 overflow-hidden flex items-center justify-center">
@@ -150,8 +150,8 @@ const Features: React.FC = () => {
 
           {/* Card 4: Deep Skill Forensics (Small) */}
           <BentoCard 
-            title="Deep Skill Forensics"
-            description="Visualize your growth. Track algorithm efficiency, bug fix rates, and code quality trends over time."
+            title="Real-Time Execution"
+            description="Secure, isolated code execution powered by Judge0 for instant, reliable feedback across Python, Java, and C++."
             icon={<BarChart size={20} />}
           >
              <div className="absolute bottom-0 left-0 right-0 h-32 px-6 flex items-end justify-between pb-0 gap-2">
@@ -160,7 +160,7 @@ const Features: React.FC = () => {
                          <motion.div 
                             initial={{ height: 0 }}
                             whileInView={{ height: `${h}%` }}
-                            transition={{ duration: 1, delay: i * 0.1, ease: "easeOut" }}
+                            transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
                             className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-brand-green/10 to-brand-green w-full rounded-t-sm opacity-60 group-hover/bar:opacity-100 transition-opacity"
                          >
                             <div className="w-full h-[1px] dark:bg-white/50 bg-black/10 absolute top-0" />
@@ -182,9 +182,9 @@ const Features: React.FC = () => {
                   <div className="w-10 h-10 rounded-lg dark:bg-white/5 bg-emerald-50 dark:border-white/10 border-emerald-200 border flex items-center justify-center text-brand-green mb-4 shadow-inner">
                     <Globe size={20} />
                   </div>
-                  <h3 className="text-xl font-bold dark:text-white text-zinc-900 mb-2">Global Edge Execution</h3>
+                  <h3 className="text-xl font-bold dark:text-white text-zinc-900 mb-2">Global Contest Calendar</h3>
                   <p className="dark:text-gray-400 text-zinc-600 text-sm leading-relaxed max-w-lg">
-                    Run your code instantly on our distributed edge network. 45ms global latency means zero waiting.
+                    Never miss a competition. Aggregate upcoming events from Codeforces, HackerRank, and LeetCode with automated email reminders.
                   </p>
                </div>
                

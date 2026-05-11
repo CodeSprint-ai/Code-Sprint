@@ -1,69 +1,120 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Menu, X, Terminal, ChevronDown, Code, Cpu, BookOpen, Users, Zap, Globe, FileText, Layout, MessageSquare, Briefcase, BarChart, ShieldCheck } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const NAV_ITEMS = [
   {
-    label: 'Products',
-    href: '#products',
+    label: 'Platform',
+    href: '#platform',
     children: [
-      { label: 'Smart IDE', desc: 'AI-assisted coding environment', icon: Code, href: '#ide' },
-      { label: 'Interview Prep', desc: 'Mock interviews with AI agents', icon: Users, href: '#interview' },
-      { label: 'Skill Assessment', desc: 'Ranked coding challenges', icon: BarChart, href: '#assess' },
-      { label: 'Proctoring', desc: 'Anti-cheat exam environment', icon: ShieldCheck, href: '#proctor' },
+      { label: 'Problem Bank', desc: 'Categorized challenges across all difficulties', icon: Code, href: '/problems' },
+      { label: 'Coding Workspace', desc: 'Real-time execution via Judge0', icon: Terminal, href: '/workspace' },
+      { label: 'AI Tutor', desc: 'Post-submission analysis & smart hints', icon: Cpu, href: '/ai-analysis' },
+      { label: 'Learning Roadmap', desc: 'Adaptive paths based on your performance', icon: Layout, href: '/roadmap' },
     ]
   },
   {
-    label: 'Solutions',
-    href: '#solutions',
+    label: 'Gamification & Events',
+    href: '#gamification',
     children: [
-      { label: 'For Developers', desc: 'Upskill and land jobs', icon: Terminal, href: '#devs' },
-      { label: 'For Teams', desc: 'Hire and train talent', icon: Briefcase, href: '#teams' },
-      { label: 'For Education', desc: 'Classroom management', icon: BookOpen, href: '#edu' },
-    ]
-  },
-  {
-    label: 'Resources',
-    href: '#resources',
-    children: [
-      { label: 'Documentation', desc: 'Guides and API references', icon: FileText, href: '#docs' },
-      { label: 'Blog', desc: 'Latest tech trends', icon: Layout, href: '#blog' },
-      { label: 'Community', desc: 'Join the discord', icon: MessageSquare, href: '#community' },
+      { label: 'Leaderboard', desc: 'Global ranking and daily streaks', icon: BarChart, href: '/leaderboard' },
+      { label: 'Contest Calendar', desc: 'Global competitive programming events', icon: Globe, href: '/events' },
+      { label: 'Badges', desc: 'Earn achievements based on mastery', icon: ShieldCheck, href: '/badges' },
     ]
   },
   {
     label: 'Pricing',
     href: '#pricing',
     children: [
-      { label: 'Individual', desc: 'Free for developers', icon: Zap, href: '#individual' },
-      { label: 'Enterprise', desc: 'Custom scale', icon: Globe, href: '#enterprise' },
+      { label: 'Freemium', desc: 'Free basic access & problems', icon: Zap, href: '/pricing#freemium' },
+      { label: 'Premium SaaS', desc: 'Unlimited AI generation & deep analysis', icon: Users, href: '/pricing#premium' },
     ]
   },
 ];
 
+// Extracted NavItem component to prevent parent re-renders
+const NavItem = ({ item }: { item: typeof NAV_ITEMS[0] }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      className="relative px-3 py-2 group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <a
+        href={item.href}
+        className={`flex items-center gap-1.5 text-sm font-medium transition-all duration-300 ${isHovered
+          ? 'dark:text-white text-zinc-900'
+          : 'dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-zinc-900'
+          }`}
+      >
+        {item.label}
+        <ChevronDown
+          size={12}
+          className={`transition-transform duration-300 opacity-50 group-hover:opacity-100 ${isHovered ? 'rotate-180 text-brand-green' : ''}`}
+        />
+      </a>
+
+      {/* Dropdown Menu */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 15, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 15, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="absolute top-full left-1/2 -translate-x-1/2 pt-6 w-[320px]"
+          >
+            <div className="dark:bg-[#0c0c0e] bg-white backdrop-blur-2xl dark:border-white/10 border-zinc-200 border rounded-2xl p-2 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_40px_-15px_rgba(0,0,0,1)] overflow-hidden dark:ring-1 dark:ring-white/5 ring-1 ring-zinc-100">
+              <div className="flex flex-col gap-1">
+                {item.children.map((child, idx) => (
+                  <a
+                    key={idx}
+                    href={child.href}
+                    className="flex items-start gap-3 p-3 rounded-xl dark:hover:bg-white/5 hover:bg-zinc-50 transition-colors group/item"
+                  >
+                    <div className="mt-1 w-8 h-8 rounded-lg dark:bg-white/5 bg-zinc-100 flex items-center justify-center dark:text-zinc-400 text-zinc-500 group-hover/item:text-brand-green group-hover/item:bg-brand-green/10 transition-colors dark:border-white/5 border-zinc-200 border group-hover/item:border-brand-green/20">
+                      <child.icon size={16} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold dark:text-zinc-200 text-zinc-800 dark:group-hover/item:text-white group-hover/item:text-zinc-900 mb-0.5 flex items-center gap-2">
+                        {child.label}
+                      </div>
+                      <div className="text-xs dark:text-zinc-500 text-zinc-500 dark:group-hover/item:text-zinc-400 group-hover/item:text-zinc-600 leading-relaxed">
+                        {child.desc}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 20);
+  });
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
         ? 'dark:bg-[#09090B]/80 bg-white/80 backdrop-blur-lg py-4 shadow-sm dark:shadow-none'
         : 'bg-transparent py-6'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
@@ -72,70 +123,14 @@ const Navbar: React.FC = () => {
             <Terminal className="text-white w-5 h-5" />
           </div>
           <span className="text-lg font-bold tracking-tight dark:text-white text-zinc-900 code-font">
-            CodeSprint<span className="text-brand-green">AI</span>
+            CodeSprint<span className="text-brand-green"></span>
           </span>
         </div>
 
         {/* Desktop Links with Dropdowns */}
         <div className="hidden md:flex items-center gap-1">
           {NAV_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              className="relative px-3 py-2 group"
-              onMouseEnter={() => setHoveredNav(item.label)}
-              onMouseLeave={() => setHoveredNav(null)}
-            >
-              <a
-                href={item.href}
-                className={`flex items-center gap-1.5 text-sm font-medium transition-all duration-300 ${hoveredNav === item.label
-                  ? 'dark:text-white text-zinc-900'
-                  : 'dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-zinc-900'
-                }`}
-              >
-                {item.label}
-                <ChevronDown
-                  size={12}
-                  className={`transition-transform duration-300 opacity-50 group-hover:opacity-100 ${hoveredNav === item.label ? 'rotate-180 text-brand-green' : ''}`}
-                />
-              </a>
-
-              {/* Dropdown Menu */}
-              <AnimatePresence>
-                {hoveredNav === item.label && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                    transition={{ duration: 0.15, ease: "easeOut" }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 pt-6 w-[320px]"
-                  >
-                    <div className="dark:bg-[#0c0c0e] bg-white backdrop-blur-2xl dark:border-white/10 border-zinc-200 border rounded-2xl p-2 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_40px_-15px_rgba(0,0,0,1)] overflow-hidden dark:ring-1 dark:ring-white/5 ring-1 ring-zinc-100">
-                      <div className="flex flex-col gap-1">
-                        {item.children.map((child, idx) => (
-                          <a
-                            key={idx}
-                            href={child.href}
-                            className="flex items-start gap-3 p-3 rounded-xl dark:hover:bg-white/5 hover:bg-zinc-50 transition-colors group/item"
-                          >
-                            <div className="mt-1 w-8 h-8 rounded-lg dark:bg-white/5 bg-zinc-100 flex items-center justify-center dark:text-zinc-400 text-zinc-500 group-hover/item:text-brand-green group-hover/item:bg-brand-green/10 transition-colors dark:border-white/5 border-zinc-200 border group-hover/item:border-brand-green/20">
-                              <child.icon size={16} />
-                            </div>
-                            <div>
-                              <div className="text-sm font-semibold dark:text-zinc-200 text-zinc-800 dark:group-hover/item:text-white group-hover/item:text-zinc-900 mb-0.5 flex items-center gap-2">
-                                {child.label}
-                              </div>
-                              <div className="text-xs dark:text-zinc-500 text-zinc-500 dark:group-hover/item:text-zinc-400 group-hover/item:text-zinc-600 leading-relaxed">
-                                {child.desc}
-                              </div>
-                            </div>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+            <NavItem key={item.label} item={item} />
           ))}
         </div>
 
@@ -176,7 +171,7 @@ const Navbar: React.FC = () => {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden dark:bg-[#09090B] bg-white fixed inset-0 top-[72px] z-40 overflow-y-auto"
           >
-            <div className="p-6 flex flex-col gap-6 min-h-full pb-32">
+            <div className="p-6 flex flex-col gap-6 min-h-full pb-32 pb-[calc(8rem+env(safe-area-inset-bottom))]">
               {NAV_ITEMS.map((item) => (
                 <div key={item.label}>
                   <div className="dark:text-white text-zinc-900 text-lg font-bold mb-4 flex items-center gap-2">

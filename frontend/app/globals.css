@@ -170,8 +170,8 @@
 *::before,
 *::after {
   transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-  transition-duration: 0.2s;
-  transition-timing-function: ease;
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Exclude transitions from code editors, animations, and SVGs */
@@ -428,4 +428,25 @@ html:not(.dark) .shiny-card {
 [data-keep-dark] {
   background-color: #0a0a0a !important;
   color: #e4e4e7 !important;
+}
+
+/* ===== VIEW TRANSITION API (Water Ripple Effect) ===== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 2;
+}
+.dark::view-transition-new(root) {
+  z-index: 1;
 }

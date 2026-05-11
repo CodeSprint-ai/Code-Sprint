@@ -13,7 +13,7 @@ const fira = Fira_Code({
 });
 
 export const metadata = {
-  title: "CodeSprintAI - Master the Code",
+  title: "CodeSprint - Master the Code",
   description: "Master the Code",
 };
 
