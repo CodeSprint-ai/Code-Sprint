@@ -33,6 +33,7 @@ const SignUpForm: React.FC = () => {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -45,7 +46,7 @@ const SignUpForm: React.FC = () => {
       router.push("/auth/login");
     } catch (err: any) {
       toast.error("Sign up failed", {
-        description: err?.response?.data?.message || err?.message || "Something went wrong",
+        description: err?.response?.data?.devMessage || err?.response?.data?.message || err?.message || "Something went wrong",
       });
     }
   };
@@ -165,10 +166,34 @@ const SignUpForm: React.FC = () => {
                 )}
               />
 
+              {/* Confirm Password */}
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem className="space-y-1.5">
+                    <FormLabel className="text-sm font-medium dark:text-zinc-300 text-zinc-700 ml-1">Confirm Password</FormLabel>
+                    <FormControl>
+                      <div className="relative group">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          {...field}
+                          className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
+                        />
+                      </div>
+                    </FormControl>
+                    <div className="flex gap-1 mt-1">
+                      <FormMessage className="text-xs text-red-500 ml-1 font-medium animate-in slide-in-from-top-1 fade-in" />
+                    </div>
+                  </FormItem>
+                )}
+              />
+
               {/* Error Message */}
               {error && (
                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium animate-in zoom-in-95 fade-in">
-                  {error.message}
+                  {(error as any)?.response?.data?.devMessage || (error as any)?.response?.data?.message || error.message}
                 </div>
               )}
 
