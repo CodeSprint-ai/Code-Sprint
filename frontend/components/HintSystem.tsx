@@ -9,8 +9,8 @@ import {
     ThumbsDown,
     AlertCircle,
     Check,
-    Loader2,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useHints } from "@/hooks/useHints";
 import { toast } from "sonner";
 
@@ -70,7 +70,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
         return (
             <div className="mt-8 border-t dark:border-white/5 border-zinc-200 pt-6">
                 <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Skeleton className="w-4 h-4 rounded-full" />
                     Loading hints...
                 </div>
             </div>
@@ -194,7 +194,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
                     >
                         <div className="flex items-center gap-2 text-zinc-500 group-hover:text-emerald-400 font-medium text-sm transition-colors">
                             {isUnlocking ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <Skeleton className="w-4 h-4 rounded-full bg-emerald-500/20" />
                             ) : (
                                 <>
                                     <Lock className="w-3.5 h-3.5" />

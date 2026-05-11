@@ -12,7 +12,7 @@ import {
     BadgesGrid,
     LanguageChart,
 } from '@/components/profile';
-import { Loader2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PublicProfilePage() {
     const params = useParams();
@@ -38,8 +38,18 @@ export default function PublicProfilePage() {
 
     if (profileLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+            <div className="max-w-6xl mx-auto space-y-6 py-8 px-4">
+                <Skeleton className="h-48 w-full rounded-2xl" />
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <Skeleton className="h-24 rounded-xl" />
+                    <Skeleton className="h-24 rounded-xl" />
+                    <Skeleton className="h-24 rounded-xl" />
+                    <Skeleton className="h-24 rounded-xl" />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Skeleton className="h-64 rounded-2xl" />
+                    <Skeleton className="h-64 rounded-2xl" />
+                </div>
             </div>
         );
     }

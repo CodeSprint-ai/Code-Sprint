@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Loader2, Clock, Cpu, Play, CheckCircle2, AlertCircle } from "lucide-react";
+import { Clock, Cpu, Play, CheckCircle2, AlertCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SubmissionPhase, getPhaseLabel } from "@/types/realtime";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +34,7 @@ export default function SubmissionProgress({
       case "error":
         return <AlertCircle className="h-4 w-4 text-red-500" />;
       default:
-        return <Loader2 className="h-4 w-4 animate-spin" />;
+        return <Skeleton className="h-4 w-4 rounded-full" />;
     }
   };
 

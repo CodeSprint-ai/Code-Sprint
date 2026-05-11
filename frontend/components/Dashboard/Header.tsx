@@ -95,10 +95,10 @@ const Header = () => {
           <ThemeToggle />
 
           {/* Notification Bell */}
-          <button className="relative dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-800 transition-colors p-2 dark:hover:bg-white/5 hover:bg-zinc-100 rounded-full">
+          {/* <button className="relative dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-800 transition-colors p-2 dark:hover:bg-white/5 hover:bg-zinc-100 rounded-full">
             <Bell className="w-5 h-5" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full border-2 dark:border-black border-white shadow-[0_0_8px_#22c55e]" />
-          </button>
+          </button> */}
 
           {/* User Avatar with Dropdown */}
           <DropdownMenu>

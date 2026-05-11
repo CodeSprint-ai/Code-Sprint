@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Submission } from "@/types/submission";
 import { useSubmissionSocket } from "@/hooks/useSubmissionSocket";
 
@@ -43,7 +43,7 @@ export default function ResultTabs({ initialResult, isLoading }: ResultTabsProps
       <TabsContent className="flex-1 overflow-auto p-3 text-sm text-gray-300" value="console">
         {isLoading && (
           <div className="flex items-center space-x-2 text-primary">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Skeleton className="h-4 w-4 rounded-full" />
             <span>Processing code...</span>
           </div>
         )}

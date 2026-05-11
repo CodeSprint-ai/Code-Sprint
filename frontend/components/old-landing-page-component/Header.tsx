@@ -128,7 +128,7 @@ export default function Header() {
       <div className="container mx-auto flex  items-center justify-between ">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold text-green-500 ">
-          CodeSprintAI
+          CodeSprint
         </Link>
 
         {/* Navigation */}

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { LayoutGrid, List, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ContestCard } from '@/components/contests/ContestCard';
 import { ContestTable } from '@/components/contests/ContestTable';
 import { ContestTabs } from '@/components/contests/ContestTabs';
@@ -109,13 +110,16 @@ export default function ContestPage() {
                 onClick={() => refetch()}
                 disabled={isFetching}
                 className={cn(
-                  'p-2 rounded-lg transition-colors',
+                  'p-2 rounded-lg transition-colors flex items-center justify-center min-w-[36px] h-[36px]',
                   'dark:bg-zinc-800/50 bg-zinc-50 border dark:border-zinc-700 border-zinc-200 dark:text-zinc-400 text-zinc-500 dark:hover:text-white hover:text-zinc-800 dark:hover:bg-zinc-700/50 hover:bg-zinc-100',
-                  isFetching && 'animate-spin'
                 )}
                 title="Refresh"
               >
-                <RefreshCw className="w-4 h-4" />
+                {isFetching ? (
+                  <Skeleton className="w-4 h-4 rounded-full bg-cyan-500/20" />
+                ) : (
+                  <RefreshCw className="w-4 h-4" />
+                )}
               </button>
             </div>
           </div>
@@ -176,9 +180,10 @@ export default function ContestPage() {
 
         {/* Loading state */}
         {isLoading && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="w-12 h-12 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin mb-4" />
-            <p className="text-zinc-400">Loading contests...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} className="h-48 rounded-xl" />
+            ))}
           </div>
         )}
 

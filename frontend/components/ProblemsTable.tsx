@@ -2,7 +2,8 @@
 
 import { Problem, Difficulty } from '@/types/problems';
 import Link from 'next/link';
-import { ExternalLink, Eye, Bookmark, Loader2 } from 'lucide-react';
+import { ExternalLink, Eye, Bookmark } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getMySavedProblems, saveProblem, removeSavedProblem } from '@/services/profileApi';
@@ -96,7 +97,7 @@ function BookmarkButton({
             title={isSaved ? "Remove from saved" : "Save problem"}
         >
             {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Skeleton className="w-4 h-4 rounded-full" />
             ) : (
                 <Bookmark
                     className={cn("w-4 h-4", isSaved && "fill-current")}

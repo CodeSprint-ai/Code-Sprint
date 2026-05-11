@@ -11,27 +11,27 @@ const NAV_ITEMS = [
     label: 'Platform',
     href: '#platform',
     children: [
-      { label: 'Problem Bank', desc: 'Categorized challenges across all difficulties', icon: Code, href: '/problems' },
-      { label: 'Coding Workspace', desc: 'Real-time execution via Judge0', icon: Terminal, href: '/workspace' },
-      { label: 'AI Tutor', desc: 'Post-submission analysis & smart hints', icon: Cpu, href: '/ai-analysis' },
-      { label: 'Learning Roadmap', desc: 'Adaptive paths based on your performance', icon: Layout, href: '/roadmap' },
+      { label: 'Problem Bank', desc: 'Categorized challenges across all difficulties', icon: Code, href: '#' },
+      { label: 'Coding Workspace', desc: 'Real-time execution via Judge0', icon: Terminal, href: '#' },
+      { label: 'AI Tutor', desc: 'Post-submission analysis & smart hints', icon: Cpu, href: '#' },
+      { label: 'Learning Roadmap', desc: 'Adaptive paths based on your performance', icon: Layout, href: '#' },
     ]
   },
   {
     label: 'Gamification & Events',
     href: '#gamification',
     children: [
-      { label: 'Leaderboard', desc: 'Global ranking and daily streaks', icon: BarChart, href: '/leaderboard' },
-      { label: 'Contest Calendar', desc: 'Global competitive programming events', icon: Globe, href: '/events' },
-      { label: 'Badges', desc: 'Earn achievements based on mastery', icon: ShieldCheck, href: '/badges' },
+      { label: 'Leaderboard', desc: 'Global ranking and daily streaks', icon: BarChart, href: '#' },
+      { label: 'Contest Calendar', desc: 'Global competitive programming events', icon: Globe, href: '#' },
+      { label: 'Badges', desc: 'Earn achievements based on mastery', icon: ShieldCheck, href: '#' },
     ]
   },
   {
     label: 'Pricing',
     href: '#pricing',
     children: [
-      { label: 'Freemium', desc: 'Free basic access & problems', icon: Zap, href: '/pricing#freemium' },
-      { label: 'Premium SaaS', desc: 'Unlimited AI generation & deep analysis', icon: Users, href: '/pricing#premium' },
+      { label: 'Freemium', desc: 'Free basic access & problems', icon: Zap, href: '#' },
+      { label: 'Premium SaaS', desc: 'Unlimited AI generation & deep analysis', icon: Users, href: '#' },
     ]
   },
 ];
@@ -123,7 +123,7 @@ const Navbar: React.FC = () => {
             <Terminal className="text-white w-5 h-5" />
           </div>
           <span className="text-lg font-bold tracking-tight dark:text-white text-zinc-900 code-font">
-            CodeSprint<span className="text-brand-green"></span>
+            CodeSprint
           </span>
         </div>
 

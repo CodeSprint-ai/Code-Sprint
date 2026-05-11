@@ -37,14 +37,14 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                         {(() => {
                             const level = profile.level || 'BEGINNER';
                             const levelStyles: Record<string, string> = {
-                                BEGINNER: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-                                INTERMEDIATE: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-                                ADVANCED: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-                                EXPERT: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+                                BEGINNER: 'dark:bg-zinc-500/10 dark:text-zinc-400 dark:border-zinc-500/20 bg-zinc-100 text-zinc-600 border-zinc-200',
+                                INTERMEDIATE: 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 bg-blue-50 text-blue-600 border-blue-200',
+                                ADVANCED: 'dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20 bg-purple-50 text-purple-600 border-purple-200',
+                                EXPERT: 'dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20 bg-amber-50 text-amber-600 border-amber-200',
                             };
                             const style = levelStyles[level] || levelStyles.BEGINNER;
                             return (
-                                <div className={`absolute -bottom-3 left-1/2 -translate-x-1/2 ${style} text-[10px] font-bold px-2 py-0.5 rounded border backdrop-blur-md uppercase tracking-wide`}>
+                                <div className={`absolute -bottom-3 left-1/2 -translate-x-1/2 ${style} text-[10px] font-bold px-2 py-0.5 rounded border backdrop-blur-md uppercase tracking-wide shadow-sm`}>
                                     {level}
                                 </div>
                             );
@@ -57,9 +57,9 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                             <h1 className="text-3xl font-black dark:text-white text-zinc-900 tracking-tight">
                                 {profile.name || profile.username}
                             </h1>
-                            <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wider">
+                            {/* <span className="dark:bg-emerald-500/10 dark:text-emerald-400 bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded border dark:border-emerald-500/20 border-emerald-200 uppercase tracking-wider">
                                 PRO
-                            </span>
+                            </span> */}
                         </div>
                         <div className="text-zinc-500 text-sm font-medium">@{profile.username}</div>
 

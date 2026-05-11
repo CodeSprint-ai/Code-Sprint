@@ -1,5 +1,5 @@
-// src/services/api.ts
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useAuthStore } from "../store/authStore";
 import { AuthResponse } from "../types/auth";
 
@@ -99,7 +99,8 @@ api.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         authStore.clearAuth();
-        window.location.href = "/";
+        Cookies.remove("is_authenticated");
+        window.location.href = "/auth/login";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

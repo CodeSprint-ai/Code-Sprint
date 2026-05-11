@@ -26,9 +26,9 @@ export function LanguageChart({ usage }: LanguageChartProps) {
 
     if (languages.length === 0) {
         return (
-            <div className="bg-[#111] rounded-xl p-6 border border-white/5">
-                <h4 className="text-xs font-bold text-white mb-6">Language Usage</h4>
-                <p className="text-zinc-500 text-center py-8">No submissions yet</p>
+            <div className="dark:bg-[#09090b] bg-white rounded-xl p-6 border dark:border-white/5 border-zinc-200">
+                <h4 className="text-xs font-bold dark:text-white text-zinc-900 mb-6 uppercase tracking-wider">Language Usage</h4>
+                <p className="text-zinc-500 text-center py-8 text-sm">No submissions yet</p>
             </div>
         );
     }
@@ -37,11 +37,11 @@ export function LanguageChart({ usage }: LanguageChartProps) {
     const dominantColor = languageColors[languages[0]?.[0]?.toLowerCase()] || '#2563eb';
 
     return (
-        <div className="dark:bg-[#111] bg-white rounded-xl p-6 border dark:border-white/5 border-zinc-200">
-            <h4 className="text-xs font-bold dark:text-white text-zinc-900 mb-6">Language Usage</h4>
+        <div className="dark:bg-[#09090b] bg-white rounded-xl p-6 border dark:border-white/5 border-zinc-200 shadow-sm dark:shadow-none">
+            <h4 className="text-xs font-bold dark:text-white text-zinc-900 mb-6 uppercase tracking-wider">Language Usage</h4>
 
             {/* Bar composition */}
-            <div className="h-2 w-full dark:bg-zinc-800 bg-zinc-200 rounded-full overflow-hidden flex mb-4">
+            <div className="h-2 w-full dark:bg-zinc-800 bg-zinc-100 rounded-full overflow-hidden flex mb-4">
                 {languages.map(([lang, percentage]) => {
                     const color = languageColors[lang.toLowerCase()] || '#6366F1';
                     return (

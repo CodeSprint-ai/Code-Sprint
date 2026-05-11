@@ -187,21 +187,22 @@ export function Sidebar() {
       <SidebarFooter className="p-4">
         {/* Pro Plan Card */}
         {isExpanded && (
-          <div className="dark:bg-gradient-to-br dark:from-zinc-900 dark:to-black bg-gradient-to-br from-zinc-50 to-white rounded-xl p-4 border dark:border-white/10 border-zinc-200 mb-4 group dark:hover:border-green-500/30 hover:border-green-300 transition-all cursor-pointer relative overflow-hidden shadow-lg animate-fade-in">
-            <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            {/* Shine line */}
-            <div className="absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-10 group-hover:animate-shine" />
+          <div></div>
+          // <div className="dark:bg-gradient-to-br dark:from-zinc-900 dark:to-black bg-gradient-to-br from-zinc-50 to-white rounded-xl p-4 border dark:border-white/10 border-zinc-200 mb-4 group dark:hover:border-green-500/30 hover:border-green-300 transition-all cursor-pointer relative overflow-hidden shadow-lg animate-fade-in">
+          //   <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          //   {/* Shine line */}
+          //   <div className="absolute -inset-full top-0 block h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-10 group-hover:animate-shine" />
 
-            <h4 className="text-xs font-bold dark:text-white text-zinc-800 mb-1 relative z-10 drop-shadow-md">
-              Pro Plan
-            </h4>
-            <p className="text-[10px] dark:text-zinc-500 text-zinc-500 mb-3 relative z-10">
-              Unlock advanced AI analysis
-            </p>
-            <div className="w-full h-1 dark:bg-zinc-800 bg-zinc-200 rounded-full overflow-hidden shadow-inner">
-              <div className="w-3/4 h-full bg-green-500 shadow-[0_0_10px_#22c55e]" />
-            </div>
-          </div>
+          //   <h4 className="text-xs font-bold dark:text-white text-zinc-800 mb-1 relative z-10 drop-shadow-md">
+          //     Pro Plan
+          //   </h4>
+          //   <p className="text-[10px] dark:text-zinc-500 text-zinc-500 mb-3 relative z-10">
+          //     Unlock advanced AI analysis
+          //   </p>
+          //   <div className="w-full h-1 dark:bg-zinc-800 bg-zinc-200 rounded-full overflow-hidden shadow-inner">
+          //     <div className="w-3/4 h-full bg-green-500 shadow-[0_0_10px_#22c55e]" />
+          //   </div>
+          // </div>
         )}
 
         {/* Logout Button */}

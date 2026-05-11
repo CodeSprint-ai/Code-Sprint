@@ -3,7 +3,8 @@
 import * as React from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Terminal, ArrowRight, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Terminal, ArrowRight, CheckCircle, XCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import api from "@/services/api";
 
@@ -85,7 +86,7 @@ const VerifyEmailContent: React.FC = () => {
                             className="text-center space-y-6"
                         >
                             <div className="w-16 h-16 mx-auto bg-brand-green/20 rounded-full flex items-center justify-center">
-                                <Loader2 className="w-8 h-8 text-brand-green animate-spin" />
+                                <Skeleton className="w-8 h-8 rounded-full" />
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-white mb-2">Verifying Email</h1>

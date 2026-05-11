@@ -18,21 +18,21 @@ export default function Footer() {
 
         {/* For Developers */}
         <div
-  className={`relative p-8 md:p-16 transition-all duration-500 overflow-hidden
+          className={`relative p-8 md:p-16 transition-all duration-500 overflow-hidden
     ${hoveredSection === "developers"
-      ? "bg-black/60"
-      : "bg-black/50"}`}
-  onMouseEnter={() => setHoveredSection("developers")}
-  onMouseLeave={() => setHoveredSection(null)}
->
-  {/* Aurora background */}
-  <div
-    className={`absolute inset-0 pointer-events-none transition-opacity duration-500
+              ? "bg-black/60"
+              : "bg-black/50"}`}
+          onMouseEnter={() => setHoveredSection("developers")}
+          onMouseLeave={() => setHoveredSection(null)}
+        >
+          {/* Aurora background */}
+          <div
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-500
       ${hoveredSection === "developers" ? "opacity-100" : "opacity-0"}`}
-  >
-    <div className="absolute -top-20 -left-20 w-72 h-72 bg-emerald-400/30 rounded-full mix-blend-screen filter blur-3xl animate-pulse"></div>
-    <div className="absolute bottom-0 right-0 w-64 h-64 bg-green-500/20 rounded-full mix-blend-screen filter blur-2xl animate-spin-slow"></div>
-  </div>
+          >
+            <div className="absolute -top-20 -left-20 w-72 h-72 bg-emerald-400/30 rounded-full mix-blend-screen filter blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-0 w-64 h-64 bg-green-500/20 rounded-full mix-blend-screen filter blur-2xl animate-spin-slow"></div>
+          </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">For Developers</h2>
           <p className="text-gray-300 text-base md:text-lg mb-8 max-w-md">
             Over 26 million developers have joined the HackerRank Community to
@@ -41,11 +41,10 @@ export default function Footer() {
           </p>
           <Link
             href="/developers"
-            className={`inline-block px-8 py-3 rounded transition-all duration-300 font-medium text-center w-full sm:w-auto ${
-              hoveredSection === "developers"
+            className={`inline-block px-8 py-3 rounded transition-all duration-300 font-medium text-center w-full sm:w-auto ${hoveredSection === "developers"
                 ? "bg-green-500 text-black hover:bg-green-400"
                 : "border-1 border-white text-white hover:bg-white hover:text-black"
-            }`}
+              }`}
           >
             Join the Community
           </Link>
@@ -56,21 +55,21 @@ export default function Footer() {
 
         {/* For Companies */}
         <div
-  className={`relative p-8 md:p-16 transition-all duration-500 overflow-hidden
+          className={`relative p-8 md:p-16 transition-all duration-500 overflow-hidden
     ${hoveredSection === "companies"
-      ? "bg-black/60"
-      : "bg-black/50"}`}
-  onMouseEnter={() => setHoveredSection("companies")}
-  onMouseLeave={() => setHoveredSection(null)}
->
-  {/* Aurora background */}
-  <div
-    className={`absolute inset-0 pointer-events-none transition-opacity duration-500
+              ? "bg-black/60"
+              : "bg-black/50"}`}
+          onMouseEnter={() => setHoveredSection("companies")}
+          onMouseLeave={() => setHoveredSection(null)}
+        >
+          {/* Aurora background */}
+          <div
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-500
       ${hoveredSection === "companies" ? "opacity-100" : "opacity-0"}`}
-  >
-    <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-400/30 rounded-full mix-blend-screen filter blur-3xl animate-pulse"></div>
-    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-green-500/20 rounded-full mix-blend-screen filter blur-2xl animate-spin-slow"></div>
-  </div>
+          >
+            <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-400/30 rounded-full mix-blend-screen filter blur-3xl animate-pulse"></div>
+            <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-green-500/20 rounded-full mix-blend-screen filter blur-2xl animate-spin-slow"></div>
+          </div>
           <h3 className="text-2xl md:text-3xl font-bold mb-4">For Companies</h3>
           <p className="text-gray-300 text-base md:text-lg mb-8 max-w-md">
             Thousands of companies have embraced the new way to hire and upskill
@@ -78,11 +77,10 @@ export default function Footer() {
           </p>
           <Link
             href="/companies"
-            className={`inline-block px-8 py-3 rounded transition-all duration-300 font-medium text-center w-full sm:w-auto ${
-              hoveredSection === "companies"
+            className={`inline-block px-8 py-3 rounded transition-all duration-300 font-medium text-center w-full sm:w-auto ${hoveredSection === "companies"
                 ? "bg-green-500 text-black hover:bg-green-400"
                 : "border-1 border-white text-white hover:bg-white hover:text-black"
-            }`}
+              }`}
           >
             Start a Free Trial
           </Link>
@@ -344,8 +342,8 @@ export default function Footer() {
               <div className="flex items-center space-x-1">
               </div>
               <Link href="/" className="text-2xl font-bold text-green-500 ">
-          CodeSprintAI <br /> <span className="text-gray-500 text-sm">© CodeSprintAI 2025 All Rights Reserved.</span>
-        </Link>
+                CodeSprint <br /> <span className="text-gray-500 text-sm">© CodeSprint 2025 All Rights Reserved.</span>
+              </Link>
             </div>
 
             {/* Links */}

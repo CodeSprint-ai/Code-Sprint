@@ -4,7 +4,8 @@ import Split from "react-split";
 import ProblemPanel from "@/components/layout/ProblemPanel";
 import EditorPanel from "@/components/layout/EditorPanel";
 import { SprintSession } from "@/hooks/useSprint";
-import { Clock, Zap, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Clock, Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface SprintActiveProps {
@@ -58,10 +59,11 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
 
     if (!currentProblem) {
         return (
-            <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
-                <div className="flex flex-col items-center gap-3 text-zinc-500">
-                    <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-                    <span className="text-sm font-medium">Loading sprint...</span>
+            <div className="h-[calc(100vh-4rem)] w-full flex flex-col gap-4 p-4 overflow-hidden">
+                <Skeleton className="h-12 w-full rounded-xl" />
+                <div className="flex-1 flex gap-4 overflow-hidden">
+                    <Skeleton className="flex-1 h-full rounded-xl" />
+                    <Skeleton className="flex-1 h-full rounded-xl" />
                 </div>
             </div>
         );

@@ -8,11 +8,11 @@ interface SubmissionHeatmapProps {
 }
 
 function getColor(count: number): string {
-    if (count === 0) return 'dark:bg-slate-800 bg-slate-200';
-    if (count <= 2) return 'bg-green-900';
-    if (count <= 5) return 'bg-green-700';
-    if (count <= 10) return 'bg-green-500';
-    return 'bg-green-400';
+    if (count === 0) return 'dark:bg-slate-800 bg-zinc-100';
+    if (count <= 2) return 'dark:bg-green-900 bg-emerald-100';
+    if (count <= 5) return 'dark:bg-green-700 bg-emerald-300';
+    if (count <= 10) return 'dark:bg-green-500 bg-emerald-500';
+    return 'dark:bg-green-400 bg-emerald-600';
 }
 
 function getTooltipText(date: string, count: number): string {
@@ -81,11 +81,11 @@ export function SubmissionHeatmap({ data }: SubmissionHeatmapProps) {
     const days = ['Sun', '', 'Tue', '', 'Thu', '', 'Sat'];
 
     return (
-        <div className="rounded-xl dark:bg-slate-900/50 bg-white border dark:border-slate-700/50 border-slate-200 p-6">
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold dark:text-white text-slate-900">Submission Activity</h3>
-                <span className="text-sm text-slate-400">
-                    <span className="dark:text-white text-slate-900 font-semibold">{totalSubmissions}</span> submissions in the last year
+        <div className="rounded-xl dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 p-6 shadow-sm dark:shadow-none">
+            <div className="flex justify-between items-center mb-6">
+                <h3 className="text-sm font-bold dark:text-white text-zinc-900 uppercase tracking-wider">Submission Activity</h3>
+                <span className="text-xs font-medium dark:text-zinc-500 text-zinc-400 uppercase tracking-widest">
+                    <span className="dark:text-white text-zinc-900 font-bold">{totalSubmissions}</span> total
                 </span>
             </div>
 
@@ -144,14 +144,14 @@ export function SubmissionHeatmap({ data }: SubmissionHeatmapProps) {
             </div>
 
             {/* Legend */}
-            <div className="flex items-center justify-end gap-2 mt-4 text-xs text-slate-400">
+            <div className="flex items-center justify-end gap-2 mt-6 text-[10px] font-bold dark:text-zinc-500 text-zinc-400 uppercase tracking-widest">
                 <span>Less</span>
                 <div className="flex gap-1">
-                    <div className="w-3 h-3 rounded-sm dark:bg-slate-800 bg-slate-200" />
-                    <div className="w-3 h-3 rounded-sm bg-green-900" />
-                    <div className="w-3 h-3 rounded-sm bg-green-700" />
-                    <div className="w-3 h-3 rounded-sm bg-green-500" />
-                    <div className="w-3 h-3 rounded-sm bg-green-400" />
+                    <div className="w-3 h-3 rounded-sm dark:bg-slate-800 bg-zinc-100 border dark:border-white/5 border-zinc-200" />
+                    <div className="w-3 h-3 rounded-sm dark:bg-green-900 bg-emerald-100" />
+                    <div className="w-3 h-3 rounded-sm dark:bg-green-700 bg-emerald-300" />
+                    <div className="w-3 h-3 rounded-sm dark:bg-green-500 bg-emerald-500" />
+                    <div className="w-3 h-3 rounded-sm dark:bg-green-400 bg-emerald-600" />
                 </div>
                 <span>More</span>
             </div>

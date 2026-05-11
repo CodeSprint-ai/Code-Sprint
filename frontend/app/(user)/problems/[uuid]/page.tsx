@@ -5,7 +5,7 @@ import Split from "react-split";
 import { useProblem } from "@/hooks/useProblems";
 import ProblemPanel from "@/components/layout/ProblemPanel";
 import EditorPanel from "@/components/layout/EditorPanel";
-import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -23,10 +23,10 @@ export default function ProblemPage({
 
     if (singleProblem.isLoading) {
         return (
-            <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
-                <div className="flex flex-col items-center gap-3 text-zinc-500">
-                    <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-                    <span className="text-sm font-medium">Loading problem...</span>
+            <div className="h-[calc(100vh-4rem)] w-full flex flex-col gap-4 p-4 overflow-hidden">
+                <div className="flex-1 flex gap-4 overflow-hidden">
+                    <Skeleton className="flex-1 h-full rounded-xl" />
+                    <Skeleton className="flex-1 h-full rounded-xl" />
                 </div>
             </div>
         );

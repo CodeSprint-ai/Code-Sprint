@@ -11,8 +11,8 @@ import {
   Eye,
   EyeOff,
   Filter,
-  Loader2,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TestCaseResult, getStatusColorClass } from "@/types/realtime";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -146,7 +146,7 @@ export default function TestCasesTab({
         {/* Show loading placeholder for remaining tests */}
         {isLoading && currentTestCase < testResults.length && (
           <div className="flex items-center gap-2 p-3 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Skeleton className="h-4 w-4 rounded-full" />
             <span>Running remaining test cases...</span>
           </div>
         )}
@@ -191,7 +191,7 @@ function TestCaseCard({
       >
         <div className="flex items-center gap-3">
           {isRunning ? (
-            <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+            <Skeleton className="h-5 w-5 rounded-full" />
           ) : passed ? (
             <CheckCircle2 className="h-5 w-5 text-green-500" />
           ) : (

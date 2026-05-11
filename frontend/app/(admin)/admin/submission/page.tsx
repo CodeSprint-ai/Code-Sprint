@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 
 import { SubmissionsTable } from "@/components/SubmissionsTable";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 function StatusBadge({ status }: { status: string }) {
@@ -331,10 +332,11 @@ export default function SubmissionsPage() {
         </div>
 
         {paginatedSubmissions.isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3 text-zinc-500">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-sky-500" />
-              <span>Loading submissions...</span>
+          <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-48 rounded-2xl" />
+              ))}
             </div>
           </div>
         )}

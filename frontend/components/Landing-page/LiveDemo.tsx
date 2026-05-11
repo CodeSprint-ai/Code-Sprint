@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, RotateCcw, Terminal, Loader2, CheckCircle2, AlertCircle, ChevronDown, Trash2, Code2, Save, Plus, Palette } from 'lucide-react';
+import { Play, RotateCcw, Terminal, CheckCircle2, AlertCircle, ChevronDown, Trash2, Code2, Save, Plus, Palette } from 'lucide-react';
+import { Skeleton } from "@/components/ui/skeleton";
 import Editor, { OnMount } from '@monaco-editor/react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -796,7 +797,7 @@ const LiveDemo: React.FC = () => {
                                         : 'bg-brand-green text-black hover:bg-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
                                 }`}
                              >
-                                 {isRunning ? <Loader2 size={12} className="animate-spin" /> : <Play size={12} fill="currentColor" />}
+                                 {isRunning ? <Skeleton className="w-[12px] h-[12px] rounded-full" /> : <Play size={12} fill="currentColor" />}
                                  {isRunning ? 'Run' : 'Run Code'}
                              </button>
                         </div>
@@ -940,7 +941,7 @@ const LiveDemo: React.FC = () => {
                                         animate={{ opacity: 1 }} 
                                         className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs py-3 pl-4 border-t border-gray-200 dark:border-white/5 mt-2 bg-gray-200/50 dark:bg-white/[0.02]" 
                                      >
-                                        <Loader2 size={12} className="animate-spin text-brand-green" />
+                                        <Skeleton className="w-[12px] h-[12px] rounded-full" />
                                         <span className="font-mono animate-pulse">Running execution...</span>
                                      </motion.div>
                                 )}

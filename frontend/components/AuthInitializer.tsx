@@ -30,10 +30,12 @@ export function AuthInitializer({ children }: { children: React.ReactNode }) {
   const { token, clearAuth } = useAuthStore();
 
   useEffect(() => {
-    if (token && isJwtExpired(token)) {
-      clearAuth();
-    }
-  }, [token, clearAuth]);
+    // If the token is expired, we should NOT clearAuth() here because the refresh token
+    // might still be valid. The axios response interceptor in api.ts will handle 
+    // catching the 401 Unauthorized error and automatically refreshing the token.
+    // If we clearAuth() here, 'user' becomes null, and protected pages won't even 
+    // attempt to make API calls, preventing the refresh token flow from starting.
+  }, [token]);
 
   return <>{children}</>;
 }

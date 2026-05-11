@@ -51,6 +51,16 @@
   --background-image-grid-pattern: linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
   --background-image-radial-glow: radial-gradient(circle at center, var(--gradient-stops));
   --animate-blob: blob 7s infinite;
+  --animate-shimmer: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes blob {

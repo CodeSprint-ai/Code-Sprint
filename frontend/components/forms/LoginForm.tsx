@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Terminal, ArrowRight, Loader2, ArrowLeft, Mail } from "lucide-react";
+import { Terminal, ArrowRight, ArrowLeft, Mail, Eye, EyeOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
@@ -29,6 +30,7 @@ const LoginForm: React.FC = () => {
   const [showResendVerification, setShowResendVerification] = React.useState(false);
   const [resendEmail, setResendEmail] = React.useState("");
   const [isResending, setIsResending] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const {
     register,
@@ -117,7 +119,7 @@ const LoginForm: React.FC = () => {
                 <Terminal className="text-white w-6 h-6" />
               </div>
               <span className="text-2xl font-bold tracking-tight dark:text-white text-zinc-900 code-font">
-                CodeSprint<span className="text-brand-green">AI</span>
+                CodeSprint
               </span>
             </Link>
             <h1 className="text-2xl font-bold dark:text-white text-zinc-900 mb-2">Welcome back</h1>
@@ -154,11 +156,22 @@ const LoginForm: React.FC = () => {
               </div>
               <div className="relative group">
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   {...register("password")}
-                  className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
+                  className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 pr-10 h-11 transition-all duration-300"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-brand-green transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
               {errors.password && (
                 <p className="text-xs text-red-500 ml-1 font-medium animate-in slide-in-from-top-1 fade-in">{errors.password.message}</p>
@@ -187,7 +200,7 @@ const LoginForm: React.FC = () => {
                 >
                   {isResending ? (
                     <span className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Skeleton className="w-4 h-4 rounded-full bg-amber-400/20" />
                       Sending...
                     </span>
                   ) : (
@@ -208,7 +221,7 @@ const LoginForm: React.FC = () => {
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Skeleton className="w-4 h-4 rounded-full bg-white/20" />
                   Logging in...
                 </span>
               ) : (

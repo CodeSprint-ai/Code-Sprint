@@ -1,7 +1,8 @@
 // components/ProblemCard.tsx
 "use client";
 
-import { ArrowUpRight, Star, Clock, Code, Bookmark, Loader2 } from "lucide-react";
+import { ArrowUpRight, Star, Clock, Code, Bookmark } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Difficulty, ProblemCardProps } from "@/types/problems";
 import { formatDifficulty } from "@/lib/helperFunctions";
 import Link from "next/link";
@@ -80,7 +81,7 @@ function BookmarkButton({
       title={isSaved ? "Remove from saved" : "Save problem"}
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Skeleton className="w-4 h-4 rounded-full" />
       ) : (
         <Bookmark
           className={cn("w-4 h-4", isSaved && "fill-current")}

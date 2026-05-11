@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Terminal, ArrowRight, Loader2, UserPlus, ArrowLeft } from "lucide-react";
+import { Terminal, ArrowRight, UserPlus, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ import { signupSchema, SignupFormValues } from "@/validations/authForm";
 
 const SignUpForm: React.FC = () => {
   const { signup, isLoading, error } = useAuth();
+  const [showPassword, setShowPassword] = React.useState(false);
   const router = useRouter();
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -80,7 +82,7 @@ const SignUpForm: React.FC = () => {
                 <Terminal className="text-white w-6 h-6" />
               </div>
               <span className="text-2xl font-bold tracking-tight dark:text-white text-zinc-900 code-font">
-                CodeSprint<span className="text-brand-green">AI</span>
+                CodeSprint
               </span>
             </Link>
             <h1 className="text-2xl font-bold dark:text-white text-zinc-900 mb-2">Create an account</h1>
@@ -136,12 +138,25 @@ const SignUpForm: React.FC = () => {
                   <FormItem className="space-y-1.5">
                     <FormLabel className="text-sm font-medium dark:text-zinc-300 text-zinc-700 ml-1">Password</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        {...field}
-                        className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 h-11 transition-all duration-300"
-                      />
+                      <div className="relative group">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          {...field}
+                          className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-4 pr-10 h-11 transition-all duration-300"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-brand-green transition-colors"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
                     </FormControl>
                     <div className="flex gap-1 mt-1">
                       <FormMessage className="text-xs text-red-500 ml-1 font-medium animate-in slide-in-from-top-1 fade-in" />
@@ -164,7 +179,7 @@ const SignUpForm: React.FC = () => {
               >
                 {isLoading ? (
                   <span className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Skeleton className="w-4 h-4 rounded-full bg-white/20" />
                     Creating account...
                   </span>
                 ) : (

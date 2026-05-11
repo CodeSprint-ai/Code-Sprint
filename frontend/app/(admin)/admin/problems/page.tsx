@@ -29,6 +29,7 @@ import { ProblemCard } from "@/components/ProblemCard";
 import { ProblemsTable } from "@/components/ProblemsTable";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   const difficultyConfig: Record<Difficulty, string> = {
@@ -255,10 +256,11 @@ export default function AdminProblemsPage() {
         </div>
 
         {paginatedProblems.isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3 dark:text-zinc-500 text-zinc-600">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 dark:border-zinc-600 border-zinc-200 border-t-emerald-500 dark:border-t-emerald-500" />
-              <span>Loading problems...</span>
+          <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pb-4">
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-48 rounded-2xl" />
+              ))}
             </div>
           </div>
         )}

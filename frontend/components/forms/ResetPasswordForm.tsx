@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Terminal, ArrowRight, Loader2, ArrowLeft, Lock, CheckCircle, XCircle } from "lucide-react";
+import { Terminal, ArrowRight, ArrowLeft, Lock, CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,8 @@ const ResetPasswordForm: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isSuccess, setIsSuccess] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
+    const [showNewPassword, setShowNewPassword] = React.useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
     const {
         register,
@@ -122,11 +125,11 @@ const ResetPasswordForm: React.FC = () => {
                             <div className="bg-gradient-to-tr from-brand-green to-emerald-900 p-2 rounded-lg shadow-lg group-hover:shadow-brand-green/20 transition-all duration-300">
                                 <Terminal className="text-white w-6 h-6" />
                             </div>
-                            <span className="text-2xl font-bold tracking-tight text-white code-font">
-                                CodeSprint<span className="text-brand-green">AI</span>
+                            <span className="text-2xl font-bold tracking-tight dark:text-white text-zinc-900 code-font">
+                                CodeSprint
                             </span>
                         </Link>
-                        <h1 className="text-2xl font-bold text-white mb-2">Reset Password</h1>
+                        <h1 className="text-2xl font-bold dark:text-white text-zinc-900 mb-2">Reset Password</h1>
                         <p className="text-zinc-400">
                             {isSuccess
                                 ? "Your password has been reset successfully"
@@ -144,16 +147,16 @@ const ResetPasswordForm: React.FC = () => {
                                 <CheckCircle className="w-8 h-8 text-brand-green" />
                             </div>
                             <div className="space-y-2">
-                                <p className="text-zinc-300">
+                                <p className="dark:text-zinc-300 text-zinc-700">
                                     Your password has been reset successfully!
                                 </p>
-                                <p className="text-zinc-500 text-sm">
+                                <p className="dark:text-zinc-500 text-zinc-400 text-sm">
                                     Redirecting you to login...
                                 </p>
                             </div>
                             <Link
                                 href="/auth/login"
-                                className="inline-flex items-center gap-2 text-brand-green hover:text-brand-greenGlow transition-colors font-medium"
+                                className="inline-flex items-center gap-2 dark:text-brand-green text-brand-green/50 hover:text-brand-greenGlow transition-colors font-medium"
                             >
                                 Go to Login <ArrowRight className="w-4 h-4" />
                             </Link>
@@ -162,15 +165,26 @@ const ResetPasswordForm: React.FC = () => {
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                             {/* New Password */}
                             <div className="space-y-1.5">
-                                <label className="text-sm font-medium text-zinc-300 ml-1">New Password</label>
+                                <label className="text-sm font-medium dark:text-zinc-300 text-zinc-700 ml-1">New Password</label>
                                 <div className="relative group">
                                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-brand-green transition-colors" />
                                     <Input
-                                        type="password"
+                                        type={showNewPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         {...register("newPassword")}
-                                        className="bg-brand-surface/50 border-white/10 text-zinc-100 focus:border-brand-green/50 focus:ring-brand-green/20 placeholder:text-zinc-600 pl-10 h-11 transition-all duration-300"
+                                        className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-10 pr-10 h-11 transition-all duration-300"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowNewPassword(!showNewPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-brand-green transition-colors"
+                                    >
+                                        {showNewPassword ? (
+                                            <EyeOff className="w-4 h-4" />
+                                        ) : (
+                                            <Eye className="w-4 h-4" />
+                                        )}
+                                    </button>
                                 </div>
                                 {errors.newPassword && (
                                     <p className="text-xs text-red-500 ml-1 font-medium animate-in slide-in-from-top-1 fade-in">{errors.newPassword.message}</p>
@@ -183,11 +197,22 @@ const ResetPasswordForm: React.FC = () => {
                                 <div className="relative group">
                                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-brand-green transition-colors" />
                                     <Input
-                                        type="password"
+                                        type={showConfirmPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         {...register("confirmPassword")}
-                                        className="bg-brand-surface/50 border-white/10 text-zinc-100 focus:border-brand-green/50 focus:ring-brand-green/20 placeholder:text-zinc-600 pl-10 h-11 transition-all duration-300"
+                                        className="dark:bg-brand-surface/50 bg-black/5 dark:border-white/10 border-black/10 dark:text-zinc-100 text-zinc-900 focus:border-brand-green/50 focus:ring-brand-green/20 dark:placeholder:text-zinc-600 placeholder:text-zinc-400 pl-10 pr-10 h-11 transition-all duration-300"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-brand-green transition-colors"
+                                    >
+                                        {showConfirmPassword ? (
+                                            <EyeOff className="w-4 h-4" />
+                                        ) : (
+                                            <Eye className="w-4 h-4" />
+                                        )}
+                                    </button>
                                 </div>
                                 {errors.confirmPassword && (
                                     <p className="text-xs text-red-500 ml-1 font-medium animate-in slide-in-from-top-1 fade-in">{errors.confirmPassword.message}</p>
@@ -209,7 +234,7 @@ const ResetPasswordForm: React.FC = () => {
                             >
                                 {isLoading ? (
                                     <span className="flex items-center gap-2">
-                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <Skeleton className="w-4 h-4 rounded-full bg-white/20" />
                                         Resetting...
                                     </span>
                                 ) : (
@@ -223,11 +248,11 @@ const ResetPasswordForm: React.FC = () => {
 
                     {/* Footer */}
                     {!isSuccess && (
-                        <p className="mt-8 text-center text-sm text-zinc-500">
+                        <p className="mt-8 text-center text-sm dark:text-zinc-400 text-zinc-500">
                             Remember your password?{" "}
                             <Link
                                 href="/auth/login"
-                                className="font-medium text-brand-green hover:text-brand-greenGlow transition-colors hover:underline underline-offset-4"
+                                className="font-medium dark:text-brand-green text-brand-green/50 hover:text-brand-greenGlow transition-colors hover:underline underline-offset-4"
                             >
                                 Sign in
                             </Link>

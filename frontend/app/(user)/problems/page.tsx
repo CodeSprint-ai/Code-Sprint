@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { ProblemCard } from "@/components/ProblemCard";
 import { ProblemsTable } from "@/components/ProblemsTable";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
@@ -242,10 +243,14 @@ export default function ProblemsPage() {
         </div>
 
         {paginatedProblems.isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3 text-zinc-500">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-emerald-500" />
-              <span>Loading problems...</span>
+          <div className="flex-1 overflow-y-auto pr-2">
+            <div className={cn(
+              "grid gap-3 sm:gap-4 pb-4",
+              viewMode === 'cards' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
+            )}>
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className={cn("w-full", viewMode === 'cards' ? "h-48" : "h-16")} />
+              ))}
             </div>
           </div>
         )}

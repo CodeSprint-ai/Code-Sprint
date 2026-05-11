@@ -5,6 +5,7 @@ import { Zap, Play, Terminal, Lock, Activity, Database, Clock } from "lucide-rea
 import { useSprint, SprintSession } from "@/hooks/useSprint";
 import { useAuthStore } from "@/store/authStore";
 import SprintActive from "@/components/Sprint/SprintActive";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner"; // Assuming sonner is used for toasts, similar to container
 
 export default function AdminSprintPage() {
@@ -117,7 +118,7 @@ export default function AdminSprintPage() {
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000" />
                             <Play className="w-5 h-5 fill-black" />
                             <span className="tracking-widest uppercase text-sm font-mono">
-                                {isCreating ? "INITIALIZING..." : "EXECUTE"}
+                                {isCreating ? <Skeleton className="w-24 h-4 rounded-full bg-black/20" /> : "EXECUTE"}
                             </span>
                         </button>
                     </div>

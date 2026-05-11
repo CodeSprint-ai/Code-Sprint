@@ -17,6 +17,7 @@ import {
     Flame,
 } from "lucide-react";
 import { ActivityChart, DifficultyChart, ActivityChartData } from "./StatsCharts";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
 // Types for widget props
@@ -96,8 +97,16 @@ export function RecentActivity({ activities = [], isLoading = false }: RecentAct
             </div>
             <div className="divide-y dark:divide-white/5 divide-zinc-100">
                 {isLoading ? (
-                    <div className="px-5 py-8 text-center dark:text-zinc-500 text-zinc-400 text-sm">
-                        Loading...
+                    <div className="p-5 space-y-4">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="flex justify-between items-center">
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-32" />
+                                    <Skeleton className="h-3 w-16" />
+                                </div>
+                                <Skeleton className="h-5 w-12 rounded-full" />
+                            </div>
+                        ))}
                     </div>
                 ) : activities.length === 0 ? (
                     <div className="px-5 py-8 text-center dark:text-zinc-500 text-zinc-400 text-sm">
@@ -221,8 +230,8 @@ export function WeeklyVelocityCard({
 
             <div className="p-6 h-[300px]">
                 {isLoading ? (
-                    <div className="flex items-center justify-center h-full dark:text-zinc-500 text-zinc-400">
-                        Loading chart...
+                    <div className="flex items-center justify-center h-full">
+                        <Skeleton className="h-full w-full rounded-lg" />
                     </div>
                 ) : (
                     <ActivityChart data={weeklyData.length > 0 ? weeklyData : undefined} />
@@ -247,8 +256,8 @@ export function MasteryCard({ easy = 0, medium = 0, hard = 0, isLoading = false 
             <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="w-48 h-48 relative">
                     {isLoading ? (
-                        <div className="flex items-center justify-center h-full dark:text-zinc-500 text-zinc-400 text-sm">
-                            Loading...
+                        <div className="flex items-center justify-center h-full">
+                            <Skeleton className="w-40 h-40 rounded-full" />
                         </div>
                     ) : (
                         <DifficultyChart easy={easy} medium={medium} hard={hard} />

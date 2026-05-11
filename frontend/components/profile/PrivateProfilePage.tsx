@@ -21,9 +21,18 @@ import DifficultyChart from './DifficultyChart';
 import SubmissionHeatmap from './SubmissionHeatmap';
 import BadgesGrid from './BadgesGrid';
 import LanguageChart from './LanguageChart';
-import { Loader2, Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap, Shield, Smartphone, Globe, Monitor, Trash2, Lock } from 'lucide-react';
+import { Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap, Shield, Smartphone, Globe, Monitor, Trash2, Lock, Eye, EyeOff } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { PrivateProfile, SavedProblem, UserPreferences, Session } from '@/types/profile';
 import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ProfileImageUpload from './ProfileImageUpload';
 
 type TabId = 'overview' | 'badges' | 'saved' | 'settings' | 'sessions';
@@ -127,8 +136,23 @@ export default function PrivateProfilePage() {
 
   if (profileLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      <div className="h-full overflow-y-auto py-8 px-4">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <Skeleton className="h-48 w-full rounded-2xl" />
+          <div className="flex gap-4">
+            <Skeleton className="h-32 w-32 rounded-2xl" />
+            <div className="flex-1 space-y-4">
+              <Skeleton className="h-10 w-1/3" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Skeleton className="h-32 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -276,9 +300,9 @@ export default function PrivateProfilePage() {
 // Saved Problems Tab Component
 function SavedProblemsTab({ savedProblems }: { savedProblems: SavedProblem[] }) {
   const difficultyColors = {
-    EASY: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-    MEDIUM: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-    HARD: 'text-red-400 bg-red-500/10 border-red-500/20',
+    EASY: 'dark:text-emerald-400 text-emerald-600 dark:bg-emerald-500/10 bg-emerald-50 dark:border-emerald-500/20 border-emerald-200',
+    MEDIUM: 'dark:text-amber-400 text-amber-600 dark:bg-amber-500/10 bg-amber-50 dark:border-amber-500/20 border-amber-200',
+    HARD: 'dark:text-red-400 text-red-600 dark:bg-red-500/10 bg-red-50 dark:border-red-500/20 border-red-200',
   };
 
   if (savedProblems.length === 0) {
@@ -334,8 +358,10 @@ function SessionsTab({
 }) {
   if (isLoading) {
     return (
-      <div className="flex justify-center p-12">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+      <div className="space-y-4">
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full" />
       </div>
     );
   }
@@ -429,7 +455,6 @@ function SessionsTab({
 }
 
 // Settings Tab Component
-// Settings Tab Component
 function SettingsTab({
   profile,
   onUpdateProfile,
@@ -449,6 +474,7 @@ function SettingsTab({
   isRecalculating: boolean;
   isChangingPassword: boolean;
 }) {
+  const { setTheme } = useTheme();
   const [formData, setFormData] = useState({
     username: profile.username || '',
     name: profile.name || '',
@@ -465,6 +491,9 @@ function SettingsTab({
     newPassword: '',
     confirmPassword: '',
   });
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [preferences, setPreferences] = useState({
     theme: profile.preferences.theme,
@@ -492,6 +521,8 @@ function SettingsTab({
   const handlePreferencesSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onUpdateSettings(preferences);
+    // Apply theme immediately
+    setTheme(preferences.theme.toLowerCase());
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -602,7 +633,7 @@ function SettingsTab({
             disabled={isUpdating}
             className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-cyan-900/20"
           >
-            {isUpdating ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            {isUpdating ? <Skeleton className="w-[18px] h-[18px] rounded-full bg-white/20" /> : <Save size={18} />}
             Save Profile
           </button>
         </form>
@@ -617,36 +648,63 @@ function SettingsTab({
         <form onSubmit={handlePasswordSubmit} className="space-y-5">
           <div>
             <label className={labelClasses}>Current Password</label>
-            <input
-              type="password"
-              required
-              value={passwordData.currentPassword}
-              onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-              className={inputClasses}
-            />
+            <div className="relative">
+              <input
+                type={showCurrentPassword ? "text" : "password"}
+                required
+                value={passwordData.currentPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                className={`${inputClasses} pr-10`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 transition-colors"
+              >
+                {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className={labelClasses}>New Password</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                className={inputClasses}
-              />
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  value={passwordData.newPassword}
+                  onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                  className={`${inputClasses} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 transition-colors"
+                >
+                  {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
             <div>
               <label className={labelClasses}>Confirm New Password</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                className={inputClasses}
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  value={passwordData.confirmPassword}
+                  onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                  className={`${inputClasses} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -655,14 +713,14 @@ function SettingsTab({
             disabled={isChangingPassword}
             className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-red-900/20"
           >
-            {isChangingPassword ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            {isChangingPassword ? <Skeleton className="w-[18px] h-[18px] rounded-full bg-white/20" /> : <Save size={18} />}
             Update Password
           </button>
         </form>
       </div>
 
       {/* Sync Stats */}
-      <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
+      {/* <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
         <h3 className="text-lg font-semibold dark:text-white text-zinc-900 mb-4 flex items-center gap-2">
           <Zap size={20} className="text-amber-400" />
           Sync Statistics
@@ -675,10 +733,10 @@ function SettingsTab({
           disabled={isRecalculating}
           className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-amber-900/20"
         >
-          {isRecalculating ? <Loader2 size={18} className="animate-spin" /> : <RefreshCw size={18} />}
+          {isRecalculating ? <Skeleton className="w-[18px] h-[18px] rounded-full bg-white/20" /> : <RefreshCw size={18} />}
           {isRecalculating ? 'Syncing...' : 'Sync My Stats'}
         </button>
-      </div>
+      </div> */}
 
       {/* Preferences */}
       <div className="rounded-xl dark:bg-zinc-900/50 bg-white border dark:border-zinc-800 border-zinc-200 p-6 backdrop-blur-sm">
@@ -690,31 +748,39 @@ function SettingsTab({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className={labelClasses}>Theme</label>
-              <select
+              <Select
                 value={preferences.theme}
-                onChange={(e) => setPreferences({ ...preferences, theme: e.target.value as any })}
-                className={inputClasses}
+                onValueChange={(value) => setPreferences({ ...preferences, theme: value as any })}
               >
-                <option value="SYSTEM">System</option>
-                <option value="LIGHT">Light</option>
-                <option value="DARK">Dark</option>
-              </select>
+                <SelectTrigger className={inputClasses}>
+                  <SelectValue placeholder="Select theme" />
+                </SelectTrigger>
+                <SelectContent className="dark:bg-[#0c0c0e] bg-white dark:border-white/10 border-zinc-200">
+                  <SelectItem value="SYSTEM">System</SelectItem>
+                  <SelectItem value="LIGHT">Light</SelectItem>
+                  <SelectItem value="DARK">Dark</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className={labelClasses}>Default Language</label>
-              <select
+              <Select
                 value={preferences.defaultLanguage}
-                onChange={(e) => setPreferences({ ...preferences, defaultLanguage: e.target.value as any })}
-                className={inputClasses}
+                onValueChange={(value) => setPreferences({ ...preferences, defaultLanguage: value as any })}
               >
-                <option value="python">Python</option>
-                <option value="java">Java</option>
-                <option value="cpp">C++</option>
-              </select>
+                <SelectTrigger className={inputClasses}>
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent className="dark:bg-[#0c0c0e] bg-white dark:border-white/10 border-zinc-200">
+                  <SelectItem value="python">Python</SelectItem>
+                  <SelectItem value="java">Java</SelectItem>
+                  <SelectItem value="cpp">C++</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <div className="space-y-4 pt-2">
+          {/* <div className="space-y-4 pt-2">
             <label className="flex items-center gap-3 cursor-pointer group">
               <div className="relative flex items-center">
                 <input
@@ -739,14 +805,14 @@ function SettingsTab({
               </div>
               <span className="dark:text-zinc-300 text-zinc-600 dark:group-hover:text-white group-hover:text-zinc-900 transition-colors">Marketing emails</span>
             </label>
-          </div>
+          </div> */}
 
           <button
             type="submit"
             disabled={isUpdating}
             className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium disabled:opacity-50 transition-all shadow-lg shadow-violet-900/20"
           >
-            {isUpdating ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            {isUpdating ? <Skeleton className="w-[18px] h-[18px] rounded-full bg-white/20" /> : <Save size={18} />}
             Save Preferences
           </button>
         </form>

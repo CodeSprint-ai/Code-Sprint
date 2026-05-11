@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useSprint, SprintSession } from "@/hooks/useSprint";
 import SprintActive from "./SprintActive";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Rocket, Trophy, Loader2 } from "lucide-react";
+import { Rocket, Trophy } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner"; // Assuming sonner
 
@@ -71,7 +72,7 @@ export default function SprintDashboardContainer() {
                             onClick={handleStart}
                             disabled={isCreating}
                         >
-                            {isCreating ? <Loader2 className="animate-spin mr-2" /> : null}
+                            {isCreating ? <Skeleton className="w-4 h-4 rounded-full mr-2 bg-white/20" /> : null}
                             {isCreating ? "Starting..." : "Start Sprint"}
                         </Button>
                     </CardContent>

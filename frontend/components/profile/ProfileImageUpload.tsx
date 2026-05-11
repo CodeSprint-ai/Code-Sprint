@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useRef, useState, useCallback } from 'react';
-import { Camera, Loader2, X, Upload } from 'lucide-react';
+import { Camera, X, Upload } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadProfileImage } from '@/services/profileApi';
 import { useAuthStore } from '@/store/authStore';
@@ -151,7 +152,7 @@ export default function ProfileImageUpload({ currentAvatarUrl, userName }: Profi
                 {/* Loading Overlay */}
                 {uploadMutation.isPending && (
                     <div className="absolute inset-0 rounded-full bg-black/70 flex items-center justify-center">
-                        <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
+                        <Skeleton className="w-8 h-8 rounded-full" />
                     </div>
                 )}
 

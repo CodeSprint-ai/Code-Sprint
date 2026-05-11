@@ -9,6 +9,7 @@ import ProblemPanel from "@/components/layout/ProblemPanel";
 import EditorPanel from "@/components/layout/EditorPanel";
 import type { Submission, TestResult } from "@/types/submission";
 import type { Problem } from "@/types/problems";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileCode2, Clock, Cpu, CheckCircle2, XCircle } from "lucide-react";
 
@@ -61,10 +62,10 @@ export default function SubmissionViewPage({
   // If both are loading, show loading
   if (singleSubmission.isLoading || singleProblem.isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-        <div className="flex flex-col items-center gap-3 text-zinc-500">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-600 border-t-sky-500" />
-          Loading...
+      <div className="h-[calc(100vh-4rem)] w-full flex flex-col gap-4 p-4 overflow-hidden bg-zinc-950">
+        <div className="flex-1 flex gap-4 overflow-hidden">
+          <Skeleton className="flex-1 h-full rounded-xl" />
+          <Skeleton className="flex-1 h-full rounded-xl" />
         </div>
       </div>
     );

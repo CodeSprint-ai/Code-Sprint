@@ -9,11 +9,11 @@ import {
   FileCode,
   Calendar,
   Hash,
-  Loader2,
   AlertTriangle,
   Code2,
   SparklesIcon,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { RealTimeSubmission, getStatusColorClass } from "@/types/realtime";
 
 interface ResultsTabProps {
@@ -29,12 +29,23 @@ export default function ResultsTab({ submission, isLoading, onAnalyze, isAnalyzi
   // Show loading state
   if (isLoading && phase !== "completed" && phase !== "error") {
     return (
-      <div className="h-full flex items-center justify-center p-8">
-        <div className="text-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto text-emerald-500" />
-          <div>
+      <div className="h-full space-y-6 p-8">
+        <div className="space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <div className="grid grid-cols-2 gap-4">
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-4 py-8">
+          <div className="relative">
+             <Skeleton className="h-12 w-12 rounded-full" />
+          </div>
+          <div className="text-center space-y-2">
             <p className="font-medium dark:text-white text-zinc-900">Processing your submission...</p>
-            <p className="text-sm text-zinc-500 mt-1">
+            <p className="text-sm text-zinc-500">
               {phase === "compiling" && "Compiling your code..."}
               {phase === "running" && `Running test cases...`}
               {phase === "queued" && "Waiting in queue..."}
@@ -133,7 +144,7 @@ export default function ResultsTab({ submission, isLoading, onAnalyze, isAnalyzi
           className="flex items-center gap-2 px-4 py-1.5 rounded-md bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-sm font-medium transition-all shadow-lg shadow-emerald-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isAnalyzing ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Skeleton className="w-4 h-4 rounded-full bg-white/20" />
           ) : (
             <SparklesIcon className="w-4 h-4" />
           )}
