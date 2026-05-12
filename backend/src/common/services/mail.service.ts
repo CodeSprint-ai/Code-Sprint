@@ -25,7 +25,7 @@ export class MailService {
     this.resend = new Resend(apiKey);
     this.from =
       this.configService.get<string>('MAIL_FROM') ||
-      'CodeSprint AI <noreply@moinuddin.info>';
+      'CodeSprint AI <noreply@code-sprint.com>';
   }
 
   // ──────────────────────────────────────────────
