@@ -9,7 +9,7 @@ import LiveDemo from "@/components/Landing-page/LiveDemo";
 import Navbar from "@/components/Landing-page/Navbar";
 import Showcase from "@/components/Landing-page/Showcase";
 
-export default function LandingPage() {
+export default function LandingPageClient() {
     return (
         <div className="min-h-screen dark:bg-brand-dark bg-white dark:text-white text-zinc-900 dark:selection:bg-brand-green/30 dark:selection:text-brand-green selection:bg-brand-green/20 selection:text-brand-green">
             <Navbar />
