@@ -7,13 +7,13 @@ import { toast } from "sonner";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, ArrowLeft, Lock, CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import Link from "next/link";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { resetPasswordSchema, ResetPasswordFormValues } from "@/validations/authForm";
-import api from "@/services/api";
+import { Input } from "@/features/shared/components/ui/input";
+import { Button } from "@/features/shared/components/ui/button";
+import { resetPasswordSchema, ResetPasswordFormValues } from "@/features/auth/validations/authForm";
+import api from "@/features/shared/api/api";
 
 const ResetPasswordForm: React.FC = () => {
     const router = useRouter();

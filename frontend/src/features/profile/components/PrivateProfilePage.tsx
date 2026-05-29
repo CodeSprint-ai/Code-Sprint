@@ -14,7 +14,7 @@ import {
   revokeSession,
   revokeAllSessions,
   changePassword,
-} from '@/services/profileApi';
+} from '@/features/profile/api/profile.api';
 import ProfileHeader from './ProfileHeader';
 import StatsCards from './StatsCards';
 import DifficultyChart from './DifficultyChart';
@@ -22,8 +22,8 @@ import SubmissionHeatmap from './SubmissionHeatmap';
 import BadgesGrid from './BadgesGrid';
 import LanguageChart from './LanguageChart';
 import { Settings, Bookmark, Award, Activity, User, Save, Code2, RefreshCw, Zap, Shield, Smartphone, Globe, Monitor, Trash2, Lock, Eye, EyeOff } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { PrivateProfile, SavedProblem, UserPreferences, Session } from '@/types/profile';
+import { Skeleton } from '@/features/shared/components/ui/skeleton';
+import { PrivateProfile, SavedProblem, UserPreferences, Session } from '@/features/profile/types/profile';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import {
@@ -32,7 +32,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/features/shared/components/ui/select";
 import ProfileImageUpload from './ProfileImageUpload';
 
 type TabId = 'overview' | 'badges' | 'saved' | 'settings' | 'sessions';

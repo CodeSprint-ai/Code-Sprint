@@ -1,4 +1,4 @@
-import api from './api';
+import api from '@/features/shared/api/api';
 import {
     PublicProfile,
     PrivateProfile,
@@ -8,8 +8,8 @@ import {
     UserPreferences,
     SocialLinks,
     Session,
-} from '../types/profile';
-import { ApiResponse } from '../types/common';
+} from "@/features/profile/types/profile";
+import { ApiResponse } from "@/features/shared/types/common";
 
 // ============== Public Profile APIs ==============
 

@@ -4,8 +4,8 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ProblemDescription from "../ProblemDescription";
-import { Problem } from "@/types/problems";
+import ProblemDescription from "@/features/problems/components/ProblemDescription";
+import { Problem } from "@/features/problems/types/problems.types";
 
 interface ProblemPanelProps {
   problem: Problem;

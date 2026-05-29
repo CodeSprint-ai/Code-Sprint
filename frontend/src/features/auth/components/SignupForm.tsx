@@ -7,10 +7,10 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, UserPlus, ArrowLeft, Eye, EyeOff } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,10 +18,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useAuth } from "../../hooks/useAuth";
-import { signupSchema, SignupFormValues } from "@/validations/authForm";
+} from "@/features/shared/components/ui/form";
+import { Input } from "@/features/shared/components/ui/input";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { signupSchema, SignupFormValues } from "@/features/auth/validations/authForm";
 
 const SignUpForm: React.FC = () => {
   const { signup, isLoading, error } = useAuth();

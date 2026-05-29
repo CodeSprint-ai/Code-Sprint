@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Menu, X, Terminal, ChevronDown, Code, Cpu, BookOpen, Users, Zap, Globe, FileText, Layout, MessageSquare, Briefcase, BarChart, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import Link from 'next/link';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { ThemeToggle } from '@/features/shared/components/ThemeToggle';
 
 const NAV_ITEMS = [
   {

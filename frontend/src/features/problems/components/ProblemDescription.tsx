@@ -1,4 +1,4 @@
-import { Problem, TestCase, formatTestCaseInput, formatTestCaseOutput } from "@/types/problems";
+import { Problem, TestCase, formatTestCaseInput, formatTestCaseOutput } from "@/features/problems/types/problems.types";
 import HintSystem from "./HintSystem";
 
 interface ProblemDescriptionProps {

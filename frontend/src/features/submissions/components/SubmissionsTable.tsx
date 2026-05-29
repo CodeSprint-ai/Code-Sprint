@@ -1,9 +1,9 @@
 'use client';
 
-import { Submission } from '@/types/submission';
+import { Submission } from '@/features/submissions/types/submission.types';
 import Link from 'next/link';
 import { Eye, FileCode2, User, Calendar } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/features/shared/utils/utils';
 
 interface SubmissionsTableProps {
     submissions: Submission[];

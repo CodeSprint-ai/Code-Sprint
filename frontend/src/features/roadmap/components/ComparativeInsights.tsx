@@ -1,6 +1,6 @@
 'use client';
 
-import { ComparativeInsight } from '@/types/roadmap';
+import { ComparativeInsight } from '@/features/roadmap/types/roadmap.types';
 
 interface Props {
     insights: ComparativeInsight[];

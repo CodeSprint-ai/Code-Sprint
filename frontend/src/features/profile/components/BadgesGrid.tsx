@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Badge } from '@/types/profile';
+import { Badge } from '@/features/profile/types/profile';
 import { Award, Shield, Star, Trophy } from 'lucide-react';
 
 interface BadgesGridProps {

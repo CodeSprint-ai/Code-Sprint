@@ -2,9 +2,9 @@
 
 import React from "react";
 import { Clock, Cpu, Play, CheckCircle2, AlertCircle } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { SubmissionPhase, getPhaseLabel } from "@/types/realtime";
-import { cn } from "@/lib/utils";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { SubmissionPhase, getPhaseLabel } from "@/features/shared/types/realtime";
+import { cn } from "@/features/shared/utils/utils";
 
 interface SubmissionProgressProps {
   phase: SubmissionPhase;

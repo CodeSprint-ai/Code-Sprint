@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ArrowRight, Zap } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/features/auth/store/authStore";
 import Link from "next/link";
 
 interface DashboardHeroProps {

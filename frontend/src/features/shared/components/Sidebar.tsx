@@ -12,10 +12,9 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarFooter,
-} from "@/components/ui/sidebar";
+} from "@/features/shared/components/ui/sidebar";
 import Link from "next/link";
-import { useAuthStore } from "@/store/authStore";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -29,7 +28,7 @@ import {
   Zap,
   Sparkles,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/features/shared/utils/utils";
 
 // Define route type
 type RouteItem = {
@@ -38,8 +37,8 @@ type RouteItem = {
   icon: LucideIcon;
 };
 
-// Menu items.
-const userRoutes: RouteItem[] = [
+// Menu items — unified for all roles (role-based UI handled at component level)
+const routes: RouteItem[] = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Roadmap", url: "/roadmap", icon: Sparkles },
   { title: "Sprint Mode", url: "/sprint", icon: Zap },
@@ -49,30 +48,9 @@ const userRoutes: RouteItem[] = [
   { title: "Profile", url: "/profile", icon: User },
 ];
 
-const adminRoutes: RouteItem[] = [
-  { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
-  { title: "Roadmap", url: "/roadmap", icon: Sparkles },
-  { title: "Sprint Mode", url: "/admin/sprint", icon: Zap },
-  { title: "Problems", url: "/admin/problems", icon: ListTodo },
-  { title: "Submissions", url: "/admin/submission", icon: FileCode },
-  { title: "Contest", url: "/admin/contest", icon: Trophy },
-  { title: "Profile", url: "/admin/profile", icon: User },
-];
-
-const assignedRoleRoutes = (role: string | undefined): RouteItem[] => {
-  if (!role) return [];
-
-  const roleRoutes: Record<string, RouteItem[]> = {
-    ADMIN: adminRoutes,
-    USER: userRoutes,
-  };
-
-  return roleRoutes[role] ?? [];
-};
-
 export function Sidebar() {
   const { state } = useSidebar();
-  const { user } = useAuthStore();
+
   const { logout } = useAuth();
   const pathname = usePathname();
   const isExpanded = state === "expanded";
@@ -134,7 +112,7 @@ export function Sidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {assignedRoleRoutes(user?.role).map((item) => {
+              {routes.map((item) => {
                 const active = isActive(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>

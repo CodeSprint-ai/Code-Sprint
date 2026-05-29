@@ -4,11 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, RotateCcw, Terminal, CheckCircle2, AlertCircle, ChevronDown, Trash2, Code2, Save, Plus, Palette } from 'lucide-react';
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import Editor, { OnMount } from '@monaco-editor/react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/features/shared/components/ui/dialog";
+import { Button } from "@/features/shared/components/ui/button";
+import { Input } from "@/features/shared/components/ui/input";
 
 const EXAMPLES: Record<string, { name: string; lang: string; code: string }> = {
   binarySearch: {

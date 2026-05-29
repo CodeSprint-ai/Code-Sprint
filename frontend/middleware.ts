@@ -1,13 +1,13 @@
 // middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { RoleEnum } from "./enum/role.enum";
+import { RoleEnum } from "./src/features/shared/enum/role.enum";
 
 // Route configs
 const authConfig = {
   protected: {
-    [RoleEnum.USER]: ["/dashboard", "/problems", "/profile", "/submissions", "/contests", "/sprint"],
-    [RoleEnum.ADMIN]: ["/admin"],
+    [RoleEnum.USER]: ["/dashboard", "/problems", "/profile", "/submission", "/contest", "/sprint", "/roadmap"],
+    [RoleEnum.ADMIN]: [],
   },
   public: ["/auth/login", "/auth/signup", "/auth/forgot-password", "/auth/reset-password", "/auth/verify-email", "/"],
 };

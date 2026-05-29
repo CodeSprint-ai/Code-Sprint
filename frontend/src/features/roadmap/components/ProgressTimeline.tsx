@@ -4,7 +4,7 @@ import {
     LineChart, Line, XAxis, YAxis, Tooltip,
     ResponsiveContainer, CartesianGrid
 } from 'recharts';
-import { MasteryHistoryPoint } from '@/types/roadmap';
+import { MasteryHistoryPoint } from '@/features/roadmap/types/roadmap.types';
 
 interface Props {
     history: MasteryHistoryPoint[];

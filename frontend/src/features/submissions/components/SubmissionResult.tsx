@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSubmission } from "@/hooks/useSubmission";
+import { useSubmission } from "@/features/submissions/hooks/useSubmission";
 import {
   Submission,
   TestResult,
@@ -7,7 +7,7 @@ import {
   formatTestResultInput,
   formatTestResultExpected,
   formatTestResultGot,
-} from "@/types/submission";
+} from "@/features/submissions/types/submission.types";
 
 export default function SubmissionResult({
   problemUuid,

@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Split from "react-split";
-import ProblemPanel from "@/components/layout/ProblemPanel";
-import EditorPanel from "@/components/layout/EditorPanel";
-import { SprintSession, SprintSolution } from "@/hooks/useSprint";
+import ProblemPanel from "@/features/problems/components/ProblemPanel";
+import EditorPanel from "@/features/problems/components/EditorPanel";
+import { SprintSession, SprintSolution } from "@/features/sprints/hooks/useSprint";
 import { Clock, Zap, ChevronLeft, ChevronRight } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { cn } from "@/features/shared/utils/utils";
 
 interface SprintActiveProps {
     session: SprintSession;

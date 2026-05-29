@@ -7,17 +7,17 @@ import { toast } from "sonner";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, ArrowLeft, Mail, Eye, EyeOff } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "../../hooks/useAuth";
-import { loginSchema, LoginFormValues } from "@/validations/authForm";
-import { GoogleIcon } from "../icons/GoogleIcon";
-import { GitHubIcon } from "../icons/GithubIcon";
-import api from "@/services/api";
+import { Input } from "@/features/shared/components/ui/input";
+import { Button } from "@/features/shared/components/ui/button";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { loginSchema, LoginFormValues } from "@/features/auth/validations/authForm";
+import { GoogleIcon } from "@/features/shared/components/icons/GoogleIcon";
+import { GitHubIcon } from "@/features/shared/components/icons/GithubIcon";
+import api from "@/features/shared/api/api";
 
 const LoginForm: React.FC = () => {
   const { login, isLoading, error } = useAuth();

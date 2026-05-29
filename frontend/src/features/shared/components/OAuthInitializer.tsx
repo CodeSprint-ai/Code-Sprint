@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export function OAuthInitializer({ children }: { children: React.ReactNode }) {

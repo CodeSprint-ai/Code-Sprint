@@ -2,14 +2,14 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/features/shared/components/ui/select";
 import { FileCode, Settings, ChevronDown } from "lucide-react";
 
 interface Props {

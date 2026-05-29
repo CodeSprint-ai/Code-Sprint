@@ -1,7 +1,7 @@
 'use client';
 
-import { useCountdown } from '../../hooks/useCountdown';
-import { cn } from '../../lib/utils';
+import { useCountdown } from "@/features/shared/hooks/useCountdown";
+import { cn } from "@/features/shared/utils/utils";
 
 interface CountdownTimerProps {
     targetDate: string;

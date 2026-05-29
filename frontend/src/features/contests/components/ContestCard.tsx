@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { Calendar, Bell, ExternalLink, Clock, Timer } from 'lucide-react';
-import { Contest } from '../../types/contest';
+import { Contest } from "@/features/contests/types/contest.types";
 import { CountdownTimer } from './CountdownTimer';
-import { downloadICSFile, getGoogleCalendarUrl } from '../../services/contestApi';
-import { formatDuration } from '../../hooks/useCountdown';
-import { cn } from '../../lib/utils';
+import { downloadICSFile, getGoogleCalendarUrl } from "@/features/contests/api/contests.api";
+import { formatDuration } from "@/features/shared/hooks/useCountdown";
+import { cn } from "@/features/shared/utils/utils";
 
 interface ContestCardProps {
     contest: Contest;

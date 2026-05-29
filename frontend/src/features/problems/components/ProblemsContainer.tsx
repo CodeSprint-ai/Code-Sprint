@@ -1,7 +1,7 @@
 
 'use client'
-import { ProblemCard } from "@/components/ProblemCard";
-import { useProblem } from "@/hooks/useProblems";
+import { ProblemCard } from "@/features/problems/components/ProblemCard";
+import { useProblem } from "@/features/problems/hooks/useProblems";
 import React, { useEffect } from "react";
 
 // Define strict types to match ProblemCardProps

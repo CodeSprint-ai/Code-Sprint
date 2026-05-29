@@ -1,8 +1,8 @@
 // hooks/useSubmissionSocket.ts
 import { useEffect, useCallback } from "react";
 import { Socket } from "socket.io-client";
-import { initSocket } from "@/lib/socket-io";
-import { useAuthStore } from "@/store/authStore";
+import { initSocket } from "@/features/shared/utils/socket-io";
+import { useAuthStore } from "@/features/auth/store/authStore";
 
 /**
  * Socket event types for submission updates

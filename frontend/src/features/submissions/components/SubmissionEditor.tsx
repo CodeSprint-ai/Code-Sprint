@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
+} from "@/features/shared/components/ui/select";
 
-import { useSubmission } from "@/hooks/useSubmission";
-import { initSocket } from "@/lib/socket-io";
+import { useSubmission } from "@/features/submissions/hooks/useSubmission";
+import { initSocket } from "@/features/shared/utils/socket-io";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,

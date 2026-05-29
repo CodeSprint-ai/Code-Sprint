@@ -2,16 +2,15 @@
 "use client";
 
 import { ArrowUpRight, Star, Clock, Code, Bookmark } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Difficulty, ProblemCardProps } from "@/types/problems";
-import { formatDifficulty } from "@/lib/helperFunctions";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { Difficulty, ProblemCardProps } from "@/features/problems/types/problems.types";
+import { formatDifficulty } from "@/features/shared/utils/helperFunctions";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getMySavedProblems, saveProblem, removeSavedProblem } from "@/services/profileApi";
+import { getMySavedProblems, saveProblem, removeSavedProblem } from "@/features/profile/api/profile.api";
 import { toast } from "sonner";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/features/shared/utils/utils";
 
 function BookmarkButton({
   problemUuid,
@@ -101,9 +100,7 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
   type = "check",
   starred = false,
 }) => {
-  const pathname = usePathname();
-  const basePath = pathname?.startsWith("/admin") ? "/admin/problems" : "/problems";
-  const problemUrl = `${basePath}/${uuid}`;
+  const problemUrl = `/problems/${uuid}`;
 
   // Fetch saved problems to check if this one is saved
   const { data: savedProblems = [] } = useQuery({

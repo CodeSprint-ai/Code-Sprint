@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Code2, CheckCircle2, Flame, Trophy, Target, Zap } from 'lucide-react';
-import { PublicUserStats } from '@/types/profile';
+import { PublicUserStats } from '@/features/profile/types/profile';
 
 interface StatsCardsProps {
     stats: PublicUserStats;

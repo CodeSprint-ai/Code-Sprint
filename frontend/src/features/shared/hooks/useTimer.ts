@@ -8,7 +8,7 @@ export function useTimer() {
     const startTimeRef = useRef<number>(Date.now());
     const accumulatedRef = useRef<number>(0);
     const isActiveRef = useRef<boolean>(true);
-    const inactivityTimerRef = useRef<ReturnType<typeof setTimeout>>();
+    const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     const INACTIVITY_LIMIT_MS = 30 * 60 * 1000; // 30 minutes
 

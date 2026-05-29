@@ -1,6 +1,6 @@
 'use client';
 
-import { StreakData } from '@/types/roadmap';
+import { StreakData } from '@/features/roadmap/types/roadmap.types';
 
 interface Props {
     streak: StreakData;

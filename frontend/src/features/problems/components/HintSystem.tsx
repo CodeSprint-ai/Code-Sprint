@@ -10,8 +10,8 @@ import {
     AlertCircle,
     Check,
 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useHints } from "@/hooks/useHints";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { useHints } from "@/features/problems/hooks/useHints";
 import { toast } from "sonner";
 
 /**

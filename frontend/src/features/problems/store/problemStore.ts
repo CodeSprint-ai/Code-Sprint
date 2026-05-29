@@ -1,7 +1,7 @@
 // src/stores/authStore.ts
 import { create } from "zustand";
-import { AuthStore, User } from "../types/auth";
-import { ProblemStore } from "@/types/problems";
+import { AuthStore, User } from "@/features/auth/types/auth.types";
+import { ProblemStore } from "@/features/problems/types/problems.types";
 
 export const useProblemStore = create<ProblemStore>((set, get) => ({
   isAddProblemPopupForm: false,

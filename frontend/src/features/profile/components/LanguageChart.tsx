@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { LanguageUsage } from '@/types/profile';
+import { LanguageUsage } from '@/features/profile/types/profile';
 
 interface LanguageChartProps {
     usage: LanguageUsage;

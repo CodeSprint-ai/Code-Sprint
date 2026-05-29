@@ -13,8 +13,8 @@ import {
   Code2,
   SparklesIcon,
 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { RealTimeSubmission, getStatusColorClass } from "@/types/realtime";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { RealTimeSubmission, getStatusColorClass } from "@/features/shared/types/realtime";
 
 interface ResultsTabProps {
   submission: RealTimeSubmission;

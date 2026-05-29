@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { fetchContests, filtersToParams, ContestQueryParams } from '../services/contestApi';
-import { ContestFilters, ContestsApiResponse, ContestTab } from '../types/contest';
+import { fetchContests, filtersToParams, ContestQueryParams } from "@/features/contests/api/contests.api";
+import { ContestFilters, ContestsApiResponse, ContestTab } from "@/features/contests/types/contest.types";
 
 const QUERY_KEY = 'contests';
 const STALE_TIME = 5 * 60 * 1000; // 5 minutes

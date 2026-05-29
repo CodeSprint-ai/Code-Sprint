@@ -6,14 +6,14 @@ import {
   UseMutationResult,
   UseQueryResult,
 } from "@tanstack/react-query";
-import api from "../services/api";
+import api from "@/features/shared/api/api";
 import {
   CreateProblemInput,
   ProblemResponse,
   ProblemsResponse,
   PaginatedProblemsResponse,
   GetProblemsParams,
-} from "@/types/problems";
+} from "@/features/problems/types/problems.types";
 
 interface UseProblemsReturn {
   allProblems: UseQueryResult<

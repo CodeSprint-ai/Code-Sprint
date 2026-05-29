@@ -10,10 +10,10 @@
 //   DialogHeader,
 //   DialogTitle,
 //   DialogFooter,
-// } from "@/components/ui/dialog";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Textarea } from "@/components/ui/textarea";
+// } from "@/features/shared/components/ui/dialog";
+// import { Button } from "@/features/shared/components/ui/button";
+// import { Input } from "@/features/shared/components/ui/input";
+// import { Textarea } from "@/features/shared/components/ui/textarea";
 // import {
 //   Form,
 //   FormControl,
@@ -21,21 +21,21 @@
 //   FormItem,
 //   FormLabel,
 //   FormMessage,
-// } from "@/components/ui/form";
+// } from "@/features/shared/components/ui/form";
 // import {
 //   Select,
 //   SelectContent,
 //   SelectItem,
 //   SelectTrigger,
 //   SelectValue,
-// } from "@/components/ui/select";
+// } from "@/features/shared/components/ui/select";
 // import {
 //   Tabs,
 //   TabsContent,
 //   TabsList,
 //   TabsTrigger,
-// } from "@/components/ui/tabs";
-// import { useProblemStore } from "@/store/problemStore";
+// } from "@/features/shared/components/ui/tabs";
+// import { useProblemStore } from "@/features/problems/store/problemStore";
 // import {
 //   ProblemFormValues,
 //   problemSchema,
@@ -45,7 +45,7 @@
 //   parseExpectedOutput,
 // } from "@/validations/problemForm";
 // import { toast } from "sonner";
-// import { useProblem } from "@/hooks/useProblems";
+// import { useProblem } from "@/features/problems/hooks/useProblems";
 
 // export default function AddProblemPopupForm() {
 //   const { isAddProblemPopupForm, setIsAddProblemPopupForm } = useProblemStore();

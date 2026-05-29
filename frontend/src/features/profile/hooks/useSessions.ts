@@ -10,8 +10,8 @@ import {
     Session,
     ChangePasswordRequest,
     AddPasswordRequest,
-} from '../services/sessionApi';
-import { useAuthStore } from '../store/authStore';
+} from '../api/session.api';
+import { useAuthStore } from '@/features/auth/store/authStore';
 import { useRouter } from 'next/navigation';
 
 /**

@@ -4,14 +4,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Split from "react-split";
 import { useQuery } from "@tanstack/react-query";
-import EditorHeader from "../editor/EditorHeader";
-import CodeEditor from "../editor/CodeEditor";
-import { SubmissionPanel } from "../submission";
-import { useSubmission } from "@/hooks/useSubmission";
-import { useTimer } from "@/hooks/useTimer";
-import { useHints } from "@/hooks/useHints";
-import { Problem, StarterCode } from "@/types/problems";
-import { getMySettings } from "@/services/profileApi";
+import EditorHeader from "@/features/problems/components/editor/EditorHeader";
+import CodeEditor from "@/features/problems/components/editor/CodeEditor";
+import SubmissionPanel from "@/features/submissions/components/submission/SubmissionPanel";
+import { useSubmission } from "@/features/submissions/hooks/useSubmission";
+import { useTimer } from "@/features/shared/hooks/useTimer";
+import { useHints } from "@/features/problems/hooks/useHints";
+import { Problem, StarterCode } from "@/features/problems/types/problems.types";
+import { getMySettings } from "@/features/profile/api/profile.api";
 
 // Default starter code if problem doesn't have any
 const defaultStarterCode: StarterCode = {

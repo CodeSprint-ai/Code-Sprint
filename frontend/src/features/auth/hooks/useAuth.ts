@@ -6,15 +6,15 @@ import {
   UseMutationResult,
   useQuery,
 } from "@tanstack/react-query";
-import api from "../services/api";
-import { useAuthStore } from "../store/authStore";
+import api from "@/features/shared/api/api";
+import { useAuthStore } from "@/features/auth/store/authStore";
 import {
   AuthResponse,
   LoginCredentials,
   SignupCredentials,
   SignupResponse,
   User,
-} from "../types/auth";
+} from "@/features/auth/types/auth.types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
 

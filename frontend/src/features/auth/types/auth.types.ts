@@ -1,4 +1,4 @@
-import { RoleEnum } from "@/enum/role.enum";
+import { RoleEnum } from "@/features/shared/enum/role.enum";
 
 // src/types/auth.ts
 export interface User {

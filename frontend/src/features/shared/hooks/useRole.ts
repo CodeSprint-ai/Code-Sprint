@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/features/auth/store/authStore";
-import { RoleEnum } from "@/enum/role.enum";
+import { RoleEnum } from "@/features/shared/enum/role.enum";
 
 export function useRole() {
   const user = useAuthStore((state) => state.user);

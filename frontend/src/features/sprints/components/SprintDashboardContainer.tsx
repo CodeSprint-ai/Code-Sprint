@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useSprint, SprintSession, SprintCompletionResult } from "@/hooks/useSprint";
+import { Button } from "@/features/shared/components/ui/button";
+import { useSprint, SprintSession, SprintCompletionResult } from "@/features/sprints/hooks/useSprint";
 import SprintActive from "./SprintActive";
 import SprintCompletionModal from "./SprintCompletionModal";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/features/shared/components/ui/card";
 import { Rocket, Trophy } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthStore } from "@/store/authStore";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { useAuthStore } from "@/features/auth/store/authStore";
 import { toast } from "sonner";
 
 export default function SprintDashboardContainer() {
@@ -26,7 +26,7 @@ export default function SprintDashboardContainer() {
         }
     };
 
-    const handleFinish = async (solutions: import("@/hooks/useSprint").SprintSolution[] = []) => {
+    const handleFinish = async (solutions: import("@/features/sprints/hooks/useSprint").SprintSolution[] = []) => {
         if (!activeSession) return;
         try {
             const result = await finishSprint({ sprintId: activeSession.uuid, solutions });

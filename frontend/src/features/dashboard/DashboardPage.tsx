@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAuthStore } from "@/store/authStore";
-import { DashboardHero } from "@/components/Dashboard/DashboardHero";
+import { useAuthStore } from "@/features/auth/store/authStore";
+import { DashboardHero } from "@/features/dashboard/components/DashboardHero";
 import {
   RankPanel,
   RecentActivity,
@@ -10,7 +10,7 @@ import {
   WeeklyVelocityCard,
   MasteryCard,
   ChallengeCard,
-} from "@/components/Dashboard/DashboardWidgets";
+} from "@/features/dashboard/components/DashboardWidgets";
 import {
   getDashboardStats,
   getRecentSubmissions,
@@ -18,7 +18,7 @@ import {
   DashboardStats,
   RecentSubmission,
   WeeklyActivityEntry,
-} from "@/services/dashboardApi";
+} from "@/features/dashboard/api/dashboard.api";
 
 const DashboardContainer = () => {
   const user = useAuthStore((state) => state.user);

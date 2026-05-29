@@ -1,22 +1,22 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useSubmissionSocket } from "@/hooks/useSubmissionSocket";
-import { useAIAnalysis } from "@/hooks/useAIAnalysis";
+import { useSubmissionSocket } from "@/features/submissions/hooks/useSubmissionSocket";
+import { useAIAnalysis } from "@/features/submissions/hooks/useAIAnalysis";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
+} from "@/features/shared/components/ui/dialog";
 import AIAnalysisView from "./AIAnalysisView";
 import {
   RealTimeSubmission,
   initialSubmissionState,
   SubmissionPhase,
   TestCaseResult,
-} from "@/types/realtime";
+} from "@/features/shared/types/realtime";
 import ResultsTab from "./ResultsTab";
 import TestCasesTab from "./TestCasesTab";
 import AnalysisTab from "./AnalysisTab";

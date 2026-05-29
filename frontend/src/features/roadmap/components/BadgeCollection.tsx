@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { RoadmapBadge } from '@/types/roadmap';
+import { RoadmapBadge } from '@/features/roadmap/types/roadmap.types';
 
 interface Props {
     badges: RoadmapBadge[];

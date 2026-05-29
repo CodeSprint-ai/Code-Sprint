@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Submission } from "@/types/submission";
-import { useSubmissionSocket } from "@/hooks/useSubmissionSocket";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/features/shared/components/ui/tabs";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { Submission } from "@/features/submissions/types/submission.types";
+import { useSubmissionSocket } from "@/features/submissions/hooks/useSubmissionSocket";
 
 interface ResultTabsProps {
   initialResult: Submission | null;

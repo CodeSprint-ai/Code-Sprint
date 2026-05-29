@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { Search, Filter, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { ContestFilters, POPULAR_PLATFORMS } from '../../types/contest';
-import { cn } from '../../lib/utils';
+import { ContestFilters, POPULAR_PLATFORMS } from "@/features/contests/types/contest.types";
+import { cn } from "@/features/shared/utils/utils";
 
 interface ContestFiltersProps {
     filters: ContestFilters;
@@ -26,7 +26,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
     const handlePlatformToggle = (platformId: string) => {
         const currentPlatforms = filters.platforms || [];
         const newPlatforms = currentPlatforms.includes(platformId)
-            ? currentPlatforms.filter(p => p !== platformId)
+            ? currentPlatforms.filter((p: string) => p !== platformId)
             : [...currentPlatforms, platformId];
 
         onFiltersChange({
@@ -114,7 +114,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                     <div>
                         <h4 className="text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider mb-2">Platforms</h4>
                         <div className="flex flex-wrap gap-2">
-                            {POPULAR_PLATFORMS.map((platform) => {
+                            {POPULAR_PLATFORMS.map((platform: any) => {
                                 const isSelected = filters.platforms?.includes(platform.id);
                                 return (
                                     <button

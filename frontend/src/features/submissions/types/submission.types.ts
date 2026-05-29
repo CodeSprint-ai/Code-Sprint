@@ -46,6 +46,7 @@ export interface Submission {
   // Extended fields from backend (when using paginated endpoint)
   problemTitle?: string;
   userName?: string;
+  output?: string;
 }
 
 export interface SubmissionResponse {

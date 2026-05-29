@@ -4,7 +4,7 @@ import {
     RadarChart, Radar, PolarGrid, PolarAngleAxis,
     PolarRadiusAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { TopicMastery } from '@/types/roadmap';
+import { TopicMastery } from '@/features/roadmap/types/roadmap.types';
 
 interface Props {
     data: TopicMastery[];
@@ -65,7 +65,7 @@ export function MasteryRadarChart({ data }: Props) {
                             fontSize: 12,
                         }}
                         labelStyle={{ color: '#f8fafc' }}
-                        formatter={(value: number, _name: string, props: any) => {
+                        formatter={(value: any, _name: any, props: any) => {
                             const level = props.payload?.level || 'Novice';
                             return [`${value} — ${level}`, 'Mastery'];
                         }}

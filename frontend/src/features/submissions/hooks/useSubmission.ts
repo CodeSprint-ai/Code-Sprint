@@ -5,14 +5,14 @@ import {
   UseMutationResult,
   UseQueryResult,
 } from "@tanstack/react-query";
-import api from "../services/api"; // same axios instance you already have
+import api from '@/features/shared/api/api';
 import {
   SubmissionResponse,
   SubmissionsResponse,
   CreateSubmissionInput,
   PaginatedSubmissionsResponse,
   GetSubmissionsParams,
-} from "@/types/submission";
+} from "@/features/submissions/types/submission.types";
 
 interface UseSubmissionsReturn {
   allSubmissions: UseQueryResult<SubmissionsResponse, Error>;

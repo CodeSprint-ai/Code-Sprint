@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { SprintCompletionResult } from "@/hooks/useSprint";
+import { SprintCompletionResult } from "@/features/sprints/hooks/useSprint";
 import {
     Trophy,
     Zap,
@@ -11,7 +11,7 @@ import {
     Star,
     TrendingUp,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/features/shared/utils/utils";
 import {
     Dialog,
     DialogContent,
@@ -19,7 +19,7 @@ import {
     DialogTitle,
     DialogDescription,
     DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/features/shared/components/ui/dialog";
 
 interface SprintCompletionModalProps {
     result: SprintCompletionResult;

@@ -9,7 +9,7 @@ import {
     Lightbulb,
     ShieldAlert,
 } from "lucide-react";
-import type { AIAnalysisResult, AIJobState } from "@/types/ai-analysis";
+import type { AIAnalysisResult, AIJobState } from "@/features/submissions/types/ai-analysis.types";
 
 interface AIAnalysisViewProps {
     data: AIAnalysisResult | null;

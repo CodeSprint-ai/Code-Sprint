@@ -1,7 +1,7 @@
-import api from './api';
-import { Submission, PaginatedSubmissionsResponse } from '@/types/submission';
-import { PrivateProfile, UserStats } from '@/types/profile';
-import { ApiResponse } from '@/types/common';
+import api from '@/features/shared/api/api';
+import { Submission, PaginatedSubmissionsResponse } from '@/features/submissions/types/submission.types';
+import { PrivateProfile, UserStats } from '@/features/profile/types/profile';
+import { ApiResponse } from '@/features/shared/types/common';
 
 // ============== Dashboard Types ==============
 

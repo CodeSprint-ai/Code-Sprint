@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { DifficultyDistribution } from '@/types/profile';
+import { DifficultyDistribution } from '@/features/profile/types/profile';
 
 interface DifficultyChartProps {
     distribution: DifficultyDistribution;

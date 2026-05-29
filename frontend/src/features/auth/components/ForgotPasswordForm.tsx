@@ -6,14 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, ArrowLeft, Mail, CheckCircle } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { forgotPasswordSchema, ForgotPasswordFormValues } from "@/validations/authForm";
-import api from "@/services/api";
+import { Input } from "@/features/shared/components/ui/input";
+import { Button } from "@/features/shared/components/ui/button";
+import { forgotPasswordSchema, ForgotPasswordFormValues } from "@/features/auth/validations/authForm";
+import api from "@/features/shared/api/api";
 
 const ForgotPasswordForm: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(false);

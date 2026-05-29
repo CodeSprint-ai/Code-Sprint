@@ -1,11 +1,11 @@
 import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "@/services/api";
+import api from "@/features/shared/api/api";
 import type {
     Hint,
     HintUsageResponse,
     NextHintResponse,
-} from "@/types/hints";
+} from "@/features/problems/types/hints.types";
 
 interface UseHintsReturn {
     /** All revealed hints so far */

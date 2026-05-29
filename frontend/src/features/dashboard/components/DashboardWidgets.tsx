@@ -17,7 +17,7 @@ import {
     Flame,
 } from "lucide-react";
 import { ActivityChart, DifficultyChart, ActivityChartData } from "./StatsCharts";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import Link from "next/link";
 
 // Types for widget props
@@ -308,7 +308,7 @@ export function ChallengeCard({ problem }: ChallengeCardProps) {
     };
 
     return (
-        <Link href={displayProblem.slug ? `/problem/${displayProblem.slug}` : "/problem"}>
+        <Link href={displayProblem.slug ? `/problems/${displayProblem.slug}` : "/problems"}>
             <div className="dark:bg-[#09090b] bg-white border dark:border-white/5 border-zinc-200 rounded-xl p-6 flex flex-col relative overflow-hidden group dark:hover:border-emerald-500/30 hover:border-emerald-300 transition-all cursor-pointer h-full shadow-sm dark:shadow-none">
                 <div className="absolute top-0 right-0 p-4">
                     <span className={`px-2 py-1 rounded text-[10px] font-bold border ${difficultyColors[displayProblem.difficulty]}`}>

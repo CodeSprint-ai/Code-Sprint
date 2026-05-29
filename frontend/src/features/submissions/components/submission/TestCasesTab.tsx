@@ -12,16 +12,16 @@ import {
   EyeOff,
   Filter,
 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TestCaseResult, getStatusColorClass } from "@/types/realtime";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
+import { TestCaseResult, getStatusColorClass } from "@/features/shared/types/realtime";
+import { cn } from "@/features/shared/utils/utils";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/features/shared/components/ui/dropdown-menu";
 
 interface TestCasesTabProps {
   testResults: TestCaseResult[];

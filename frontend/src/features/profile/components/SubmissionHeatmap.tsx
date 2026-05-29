@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { SubmissionHeatmapEntry } from '@/types/profile';
+import { SubmissionHeatmapEntry } from '@/features/profile/types/profile';
 
 interface SubmissionHeatmapProps {
     data: SubmissionHeatmapEntry[];

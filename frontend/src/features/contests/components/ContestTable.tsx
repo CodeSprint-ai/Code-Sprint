@@ -1,10 +1,10 @@
 'use client';
 
-import { Contest } from '../../types/contest';
-import { formatDuration, useCountdown } from '../../hooks/useCountdown';
-import { downloadICSFile, getGoogleCalendarUrl } from '../../services/contestApi';
+import { Contest } from "@/features/contests/types/contest.types";
+import { formatDuration, useCountdown } from "@/features/shared/hooks/useCountdown";
+import { downloadICSFile, getGoogleCalendarUrl } from "@/features/contests/api/contests.api";
 import { Calendar, ExternalLink, Bell } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from "@/features/shared/utils/utils";
 
 interface ContestTableProps {
     contests: Contest[];

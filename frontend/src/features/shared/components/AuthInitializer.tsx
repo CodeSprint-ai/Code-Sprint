@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/features/auth/store/authStore";
 
 function isJwtExpired(token: string | null): boolean {
   if (!token) return true;

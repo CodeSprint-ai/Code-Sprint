@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '../services/api';
-import { RoadmapData } from '@/types/roadmap';
+import api from '@/features/shared/api/api';
+import { RoadmapData } from '@/features/roadmap/types/roadmap.types';
 
 /**
  * Fetch the user's personalized roadmap from the backend.

@@ -4,8 +4,8 @@ import {
     CardContent,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from "@/features/shared/components/ui/card";
+import { Badge } from "@/features/shared/components/ui/badge";
 import {
     Code,
     Clock,

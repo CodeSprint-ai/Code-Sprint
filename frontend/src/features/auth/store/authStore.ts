@@ -1,6 +1,6 @@
 // src/stores/authStore.ts
 // import { create } from 'zustand';
-// import { AuthStore, User } from '../types/auth';
+// import { AuthStore, User } from "@/features/auth/types/auth.types";
 
 // export const useAuthStore = create<AuthStore>((set, get) => ({
 //   user: null,
@@ -14,7 +14,7 @@
 // src/store/authStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { AuthStore, User } from "../types/auth";
+import { AuthStore, User } from "@/features/auth/types/auth.types";
 
 export const useAuthStore = create(
   persist<AuthStore>(

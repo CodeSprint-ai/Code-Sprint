@@ -4,9 +4,9 @@ import * as React from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Terminal, ArrowRight, CheckCircle, XCircle } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import Link from "next/link";
-import api from "@/services/api";
+import api from "@/features/shared/api/api";
 
 type VerificationState = "loading" | "success" | "error";
 

@@ -2,10 +2,10 @@
 
 import React, { useRef, useState, useCallback } from 'react';
 import { Camera, X, Upload } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/features/shared/components/ui/skeleton';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { uploadProfileImage } from '@/services/profileApi';
-import { useAuthStore } from '@/store/authStore';
+import { uploadProfileImage } from '@/features/profile/api/profile.api';
+import { useAuthStore } from '@/features/auth/store/authStore';
 import { toast } from 'sonner';
 import Image from 'next/image';
 

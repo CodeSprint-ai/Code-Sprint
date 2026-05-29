@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PublicProfile } from '@/types/profile';
+import { PublicProfile } from '@/features/profile/types/profile';
 import { MapPin, Calendar, Github, Linkedin, Twitter, Globe, CheckCircle2, Trophy } from 'lucide-react';
 
 interface ProfileHeaderProps {

@@ -1,12 +1,12 @@
 'use client';
 
-import { Problem, Difficulty } from '@/types/problems';
+import { Problem, Difficulty } from '@/features/problems/types/problems.types';
 import Link from 'next/link';
 import { ExternalLink, Eye, Bookmark } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+import { Skeleton } from '@/features/shared/components/ui/skeleton';
+import { cn } from '@/features/shared/utils/utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getMySavedProblems, saveProblem, removeSavedProblem } from '@/services/profileApi';
+import { getMySavedProblems, saveProblem, removeSavedProblem } from '@/features/profile/api/profile.api';
 import { toast } from 'sonner';
 import { useState } from 'react';
 

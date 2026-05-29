@@ -1,5 +1,5 @@
 // Session management API services
-import api from './api';
+import api from '@/features/shared/api/api';
 
 // ==================== TYPES ====================
 

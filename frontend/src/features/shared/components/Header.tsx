@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { LogOut, Bell, Zap, User, Mail, Shield } from "lucide-react";
-import { Button } from "../ui/button";
-import { useAuth } from "@/hooks/useAuth";
-import { useAuthStore } from "@/store/authStore";
-import { useSidebar } from "@/components/ui/sidebar";
+import { Button } from "@/features/shared/components/ui/button";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuthStore } from "@/features/auth/store/authStore";
+import { useSidebar } from "@/features/shared/components/ui/sidebar";
 import { Menu } from "lucide-react";
 import Image from "next/image";
 import {
@@ -15,10 +15,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/features/shared/components/ui/dropdown-menu";
 import Link from "next/link";
-import { getDashboardStats } from "@/services/dashboardApi";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { getDashboardStats } from "@/features/dashboard/api/dashboard.api";
+import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
 
 const Header = () => {
   const { logout } = useAuth();

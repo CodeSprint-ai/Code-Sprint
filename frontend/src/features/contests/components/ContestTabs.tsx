@@ -1,7 +1,7 @@
 'use client';
 
-import { ContestTab } from '../../types/contest';
-import { cn } from '../../lib/utils';
+import { ContestTab } from "@/features/contests/types/contest.types";
+import { cn } from "@/features/shared/utils/utils";
 import { Zap, Clock, Calendar } from 'lucide-react';
 
 interface ContestTabsProps {

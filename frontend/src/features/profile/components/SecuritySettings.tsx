@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePasswordManagement } from '@/hooks/useSessions';
+import { usePasswordManagement } from '@/features/profile/hooks/useSessions';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 

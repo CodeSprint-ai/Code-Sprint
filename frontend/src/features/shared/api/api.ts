@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useAuthStore } from "../store/authStore";
-import { AuthResponse } from "../types/auth";
+import { useAuthStore } from "@/features/auth/store/authStore";
+import { AuthResponse } from "@/features/auth/types/auth.types";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -34,10 +34,7 @@ api.interceptors.request.use(
     // console.log({ token, user });
 
     if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      };
+      config.headers.set('Authorization', `Bearer ${token}`);
     }
     return config;
   },
@@ -131,8 +128,8 @@ export default api;
 
 
 // import axios from "axios";
-// import { useAuthStore } from "../store/authStore";
-// import { AuthResponse } from "../types/auth";
+// import { useAuthStore } from "@/features/auth/store/authStore";
+// import { AuthResponse } from "@/features/auth/types/auth.types";
 
 // const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 

@@ -1,25 +1,23 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/features/shared/components/ui/input";
+import { Button } from "@/features/shared/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+} from "@/features/shared/components/ui/select";
+import { Separator } from "@/features/shared/components/ui/separator";
 import { Filter } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/features/auth/store/authStore";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+
 
 export default function ProblemsHeader() {
   const user = useAuthStore((state) => state.user);
-  const pathname = usePathname();
-  const isAdmin = pathname?.startsWith("/admin");
-  const addProblemPath = isAdmin ? "/admin/problems/add" : "/problems/add";
+
 
   return (
     <div className="flex flex-col gap-2 p-6 border-b bg-background">
@@ -34,7 +32,7 @@ export default function ProblemsHeader() {
           </p>
         </div>
         { user?.role === "ADMIN" && (
-          <Link href={addProblemPath}>
+          <Link href="/problems/add">
             <Button variant="outline">
               Add Problem
             </Button>

@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import api from "@/services/api";
+import api from "@/features/shared/api/api";
 import type {
   AIAnalysisResult,
   AIJobState,
   AIJobStatusResponse,
   AITriggerResponse,
-} from "@/types/ai-analysis";
+} from "@/features/submissions/types/ai-analysis.types";
 
 interface UseAIAnalysisReturn {
   /** The completed analysis result, or null */

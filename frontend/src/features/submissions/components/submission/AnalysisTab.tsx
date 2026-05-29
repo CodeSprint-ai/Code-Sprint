@@ -13,9 +13,9 @@ import {
   BarChart3,
   Code2,
 } from "lucide-react";
-import { RealTimeSubmission } from "@/types/realtime";
-import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
+import { RealTimeSubmission } from "@/features/shared/types/realtime";
+import { cn } from "@/features/shared/utils/utils";
+import { Progress } from "@/features/shared/components/ui/progress";
 
 interface AnalysisTabProps {
   submission: RealTimeSubmission;

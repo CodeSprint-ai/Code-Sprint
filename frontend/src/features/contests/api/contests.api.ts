@@ -1,5 +1,5 @@
-import api from './api';
-import { Contest, ContestFilters, ContestsApiResponse, ContestTab } from '../types/contest';
+import api from '@/features/shared/api/api';
+import { Contest, ContestFilters, ContestsApiResponse, ContestTab } from "@/features/contests/types/contest.types";
 
 const CONTESTS_BASE_URL = '/api/contests';
 
