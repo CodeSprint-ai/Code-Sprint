@@ -26,7 +26,7 @@
   <a href="#-getting-started--installation">Getting Started</a> •
   <a href="#-available-scripts">Available Scripts</a> •
   <a href="#-live-demo--deployment">Deployment</a> •
-  <a href="#-author--attribution">Author & Attribution</a> •
+  <a href="#-authors--attribution">Authors & Attribution</a> •
   <a href="#-license">License</a>
 </p>
 
@@ -501,12 +501,29 @@ cd Code-Sprint
 
 ---
 
-## 👨‍💻 Author & Attribution
+## 👨‍💻 Authors & Attribution
 
-### Engineering Lead
-* **Jamal Nadeem** — *Full Stack Engineer & System Architect*
-  * **GitHub**: [@Jamal-Nadeem](https://github.com/Jamal-Nadeem)
+### Development Team
+
+* **Syed Moinuddin** — *Full Stack Engineer & System Architect*
+  * **Role & Focus**: System Architecture, Backend Domain Modules, Database Schemas & Infrastructure
+  * **GitHub**: [@moinuddin2004](https://github.com/moinuddin2004)
+  * **Email**: [s.m.moin2004@gmail.com](mailto:s.m.moin2004@gmail.com)
+
+* **Muhammad Usman Khan** — *Full Stack & AI / RAG Engineer*
+  * **Role & Focus**: AI Subsystem, LangChain & Google Gemini Integration, pgvector RAG Pipeline & Embeddings
+  * **GitHub**: [@MuhammedUsmanKhan](https://github.com/MuhammedUsmanKhan)
+  * **Email**: [uktec0310@gmail.com](mailto:uktec0310@gmail.com)
+
+* **Jamal Nadeem** — *Full Stack & Frontend Engineer*
+  * **Role & Focus**: Frontend Application Architecture, Problem Bank Curation & Test Cases, Technical Documentation
+  * **GitHub**: [@beginnercodee](https://github.com/beginnercodee)
   * **Email**: [jamalnadeem2004@gmail.com](mailto:jamalnadeem2004@gmail.com)
+
+* **Muhammad Saad Usmani** — *UI/UX Designer & Technical Writer*
+  * **Role & Focus**: UI/UX Design System, Component Styling, User Experience & Project Documentation
+  * **GitHub**: [@Muhammad-Saad-Usmani7](https://github.com/Muhammad-Saad-Usmani7)
+  * **Email**: [saadusmani2004.20@gmail.com](mailto:saadusmani2004.20@gmail.com)
 
 ### Academic & Institutional Recognition
 * **Final Year Project (Batch 2022F Computer Science)**
