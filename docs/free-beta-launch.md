@@ -11,7 +11,7 @@
 
 ## Backend deployment
 
-Deploy both services from this branch; old backend versions do not provide the new catalogue, forms, inbox, and usage APIs. Apply the existing migration process (`npm run migration:run` in backend) before starting new API/worker processes. Production startup also runs compiled migrations. The backend build includes only src/**/*.ts, emitting dist/main.js and dist/migrations/*.js; CLI helpers under scripts/ are not part of the runtime build.
+Deploy both services from this branch; old backend versions do not provide the new catalogue, forms, inbox, and usage APIs. Apply the existing migration process (`npm run migration:run` in backend) before starting new API/worker processes. Production startup also runs compiled migrations. The backend build includes only src/**/*.ts, emitting dist/main.js and dist/migrations/*.js; CLI helpers under scripts/ are not part of the TypeScript runtime build. The post-build prepare-runtime.cjs validates all compiled migrations and creates a compatibility launcher at dist/src/main.js for the existing Render start command; both node dist/main.js and node dist/src/main.js start the same application.
 
 New migrations create `engagement_requests` and `ai_usage_ledger`. The quota migration invalidates generated level-4 hint cache entries from the old full-solution policy; this cache can be regenerated, but its old contents are not restored by rollback. Account/submission records are not removed. Restart API and analysis/hint workers together so old workers do not write outdated hint content.
 
