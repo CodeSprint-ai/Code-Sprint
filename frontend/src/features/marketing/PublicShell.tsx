@@ -1,16 +1,17 @@
+import { MotionSurface } from "@/features/marketing/MotionSurface";
 import Navbar from "@/features/landing/components/Navbar";
 import Footer from "@/features/landing/components/Footer";
 import "./marketing.css";
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="marketing-site">
+    <MotionSurface>
       <Navbar />
       <main id="main-content" className="m-main">
         {children}
       </main>
       <Footer />
-    </div>
+    </MotionSurface>
   );
 }
 export function PageIntro({

@@ -60,6 +60,7 @@ export function WorkspacePreview() {
               )}
             </div>
             <pre
+              key={language}
               className="m-code-lines"
               aria-label={`${language} starter code`}
             >
@@ -67,6 +68,7 @@ export function WorkspacePreview() {
                 {samples[language].map((line, index) => (
                   <span
                     key={index}
+                    style={{ animationDelay: `${index * 24}ms` }}
                     className={`m-code-line ${line.includes("#") || line.includes("//") ? "m-code-comment" : ""}`}
                   >
                     <span className="m-line-number" aria-hidden="true">
