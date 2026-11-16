@@ -1,103 +1,88 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, Terminal, X } from "lucide-react";
 import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
 import { navigation } from "@/features/marketing/config";
-import { useMounted } from "@/features/shared/hooks/useMounted";
 import { useAuthStore } from "@/features/auth/store/authStore";
-
+import { useMounted } from "@/features/shared/hooks/useMounted";
 export default function Navbar() {
   const [open, setOpen] = useState<string | null>(null);
   const [mobile, setMobile] = useState(false);
   const pathname = usePathname();
   const storedToken = useAuthStore((state) => state.token);
   const mounted = useMounted();
-  const token = mounted && storedToken;
+  const signedIn = mounted && Boolean(storedToken);
   const close = () => {
     setOpen(null);
     setMobile(false);
   };
+  const triggerId = (label: string) =>
+    `nav-trigger-${label.replaceAll(" ", "-")}`;
   return (
     <nav
+      className="m-nav"
       aria-label="Main navigation"
-      className="fixed inset-x-0 top-0 z-50 border-b border-zinc-200/70 bg-white/95 backdrop-blur-xl dark:border-white/10 dark:bg-[#09090b]/95"
       onKeyDown={(event) => {
         if (event.key === "Escape") {
-          const trigger = document.getElementById(
-            open
-              ? `nav-trigger-${open.replaceAll(" ", "-")}`
-              : "mobile-nav-trigger",
-          );
+          document
+            .getElementById(open ? triggerId(open) : "mobile-nav-trigger")
+            ?.focus();
           close();
-          trigger?.focus();
         }
       }}
     >
       <a
+        className="sr-only focus:not-sr-only focus:block focus:p-3"
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:block focus:bg-emerald-500 focus:p-3 focus:text-black"
       >
         Skip to content
       </a>
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-6">
+      <div className="m-container m-nav-inner">
         <Link
           href="/"
-          onClick={close}
+          className="m-brand"
           aria-label="CodeSprint home"
-          className="flex items-center gap-2 text-lg font-bold"
+          onClick={close}
         >
-          <span className="rounded-lg bg-emerald-500 p-2 text-black">
-            <Terminal size={20} />
+          <span className="m-brand-mark">
+            <Terminal size={17} strokeWidth={1.8} />
           </span>
-          CodeSprint
-          <span className="hidden rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] uppercase tracking-wide text-emerald-700 sm:inline dark:text-emerald-400">
-            Free Beta
-          </span>
+          CodeSprint<span className="m-beta">BETA</span>
         </Link>
-        <div className="hidden items-center gap-5 md:flex">
+        <div className="m-nav-links">
           {navigation.map((group) => (
             <div
               key={group.label}
-              className="relative"
+              className="m-nav-group"
               onBlur={(event) => {
                 if (!event.currentTarget.contains(event.relatedTarget))
                   setOpen(null);
               }}
             >
               <button
-                id={`nav-trigger-${group.label.replaceAll(" ", "-")}`}
                 type="button"
+                id={triggerId(group.label)}
+                className="m-nav-link"
                 aria-expanded={open === group.label}
-                aria-controls={`nav-${group.label.replaceAll(" ", "-")}`}
+                aria-controls={`menu-${triggerId(group.label)}`}
                 onClick={() =>
                   setOpen(open === group.label ? null : group.label)
                 }
-                className="flex items-center gap-1 py-3 text-sm font-medium text-zinc-600 hover:text-emerald-600 dark:text-zinc-300"
               >
                 {group.label}
-                <ChevronDown size={14} />
+                <ChevronDown size={12} />
               </button>
               {open === group.label && (
                 <div
-                  id={`nav-${group.label.replaceAll(" ", "-")}`}
-                  className="absolute left-1/2 top-full w-80 -translate-x-1/2 rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-white/10 dark:bg-zinc-950"
+                  id={`menu-${triggerId(group.label)}`}
+                  className="m-dropdown"
                 >
                   {group.links.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={close}
-                      className="block rounded-xl p-3 hover:bg-emerald-500/10"
-                    >
-                      <span className="block text-sm font-semibold">
-                        {link.label}
-                      </span>
-                      <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">
-                        {link.description}
-                      </span>
+                    <Link key={link.href} href={link.href} onClick={close}>
+                      <strong>{link.label}</strong>
+                      <small>{link.description}</small>
                     </Link>
                   ))}
                 </div>
@@ -106,71 +91,67 @@ export default function Navbar() {
           ))}
           <Link
             href="/pricing"
-            onClick={close}
+            className="m-nav-link"
             aria-current={pathname === "/pricing" ? "page" : undefined}
-            className="text-sm font-medium hover:text-emerald-600"
+            onClick={close}
           >
             Pricing
           </Link>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="m-nav-actions">
           <ThemeToggle />
           <Link
-            href={token ? "/dashboard" : "/auth/login"}
-            className="hidden text-sm font-medium sm:inline"
+            href={signedIn ? "/dashboard" : "/auth/login"}
+            className="m-nav-link m-nav-login"
           >
-            {token ? "Dashboard" : "Log in"}
+            {signedIn ? "Dashboard" : "Log in"}
           </Link>
           <Link
-            href={token ? "/problems" : "/auth/signup"}
-            className="hidden rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-black sm:inline"
+            href={signedIn ? "/problems" : "/auth/signup"}
+            className="m-button m-nav-start"
           >
-            {token ? "Start practice" : "Start free"}
+            {signedIn ? "Start practice" : "Start free"}
           </Link>
           <button
-            id="mobile-nav-trigger"
             type="button"
+            id="mobile-nav-trigger"
+            className="m-mobile-toggle"
             aria-label={mobile ? "Close navigation" : "Open navigation"}
             aria-expanded={mobile}
             aria-controls="mobile-navigation"
-            className="rounded-lg p-2 md:hidden"
             onClick={() => setMobile(!mobile)}
           >
-            {mobile ? <X /> : <Menu />}
+            {mobile ? <X size={19} /> : <Menu size={19} />}
           </button>
         </div>
       </div>
       {mobile && (
-        <div
-          id="mobile-navigation"
-          className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-zinc-200 p-6 md:hidden dark:border-white/10"
-        >
+        <div id="mobile-navigation" className="m-mobile-menu">
           {navigation.map((group) => (
-            <div key={group.label} className="mb-6">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                {group.label}
-              </p>
+            <section key={group.label}>
+              <h2>{group.label}</h2>
               {group.links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={close}
-                  className="block rounded-lg px-3 py-3 hover:bg-emerald-500/10"
-                >
+                <Link key={link.href} href={link.href} onClick={close}>
                   {link.label}
                 </Link>
               ))}
-            </div>
+            </section>
           ))}
-          <div className="flex flex-wrap gap-5">
-            <Link href="/pricing" onClick={close}>
-              Pricing
+          <Link href="/pricing" onClick={close}>
+            Pricing
+          </Link>
+          <div className="m-mobile-actions">
+            <Link
+              href={signedIn ? "/dashboard" : "/auth/login"}
+              onClick={close}
+            >
+              {signedIn ? "Dashboard" : "Log in"}
             </Link>
-            <Link href={token ? "/dashboard" : "/auth/login"} onClick={close}>
-              {token ? "Dashboard" : "Log in"}
-            </Link>
-            <Link href={token ? "/problems" : "/auth/signup"} onClick={close}>
-              {token ? "Start practice" : "Create free account"}
+            <Link
+              href={signedIn ? "/problems" : "/auth/signup"}
+              onClick={close}
+            >
+              {signedIn ? "Start practice" : "Create free account"}
             </Link>
           </div>
         </div>
