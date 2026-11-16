@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useMounted } from "@/features/shared/hooks/useMounted";
+import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import { Button } from "@/features/shared/components/ui/button";
@@ -23,22 +24,15 @@ const DEFAULT_CODE: Record<string, string> = {
   cpp: `#include <bits/stdc++.h>\nusing namespace std;\nint main(){ cout<<"hello"; }`,
 };
 
-export default function SubmissionEditor({ problem }: any) {
+export default function SubmissionEditor({ problem }: { problem: import("@/features/problems/types/problems.types").Problem }) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState(DEFAULT_CODE["python"]);
   // const socket = initSocket();
 
   const { createSubmission } = useSubmission(problem?.uuid);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    setCode(DEFAULT_CODE[language] ?? "");
-  }, [language]);
 
   // Use resolvedTheme with a fallback check for the .dark class
   const isDark = mounted 
@@ -47,7 +41,7 @@ export default function SubmissionEditor({ problem }: any) {
 
   const editorTheme = isDark ? "vs-dark" : "vs";
 
-  const handleEditorBeforeMount = (monaco: any) => {
+  const handleEditorBeforeMount = (monaco: import("@monaco-editor/react").Monaco) => {
     // Re-define github-light just in case we want it
     monaco.editor.defineTheme('github-light', {
       base: 'vs',
@@ -95,7 +89,7 @@ export default function SubmissionEditor({ problem }: any) {
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           {/* ✅ Correct Select Structure */}
-          <Select value={language} onValueChange={setLanguage}>
+          <Select value={language} onValueChange={(value) => { setLanguage(value); setCode(DEFAULT_CODE[value] ?? ""); }}>
             <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="Select Language" />
             </SelectTrigger>

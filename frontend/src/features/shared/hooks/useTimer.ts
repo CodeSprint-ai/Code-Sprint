@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * Tracks active coding time on a problem.
  * Pauses when tab is hidden or after 30 minutes of inactivity.
  */
 export function useTimer() {
-    const startTimeRef = useRef<number>(Date.now());
+    const startTimeRef = useRef<number>(0);
     const accumulatedRef = useRef<number>(0);
     const isActiveRef = useRef<boolean>(true);
     const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -13,6 +13,7 @@ export function useTimer() {
     const INACTIVITY_LIMIT_MS = 30 * 60 * 1000; // 30 minutes
 
     useEffect(() => {
+        startTimeRef.current = Date.now();
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'hidden') {
                 accumulatedRef.current += Date.now() - startTimeRef.current;

@@ -27,7 +27,11 @@ export interface AIJobStatusResponse {
   error?: string;
 }
 
-export interface AITriggerResponse {
+export type AITriggerResponse = {
   jobId: string;
   status: "queued";
-}
+} | {
+  jobId: null;
+  status: "cached";
+  result: AIAnalysisResult;
+};

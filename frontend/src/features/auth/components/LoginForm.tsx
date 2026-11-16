@@ -1,4 +1,5 @@
 "use client";
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -48,14 +49,14 @@ const LoginForm: React.FC = () => {
       await login(values);
       toast.success("Login successful 🎉", { description: "Welcome back!" });
       router.push(redirect);
-    } catch (err: any) {
+    } catch (err: unknown) {
       let errorMessage = "Incorrect email or password. Please try again.";
-      const status = err?.response?.status;
-      const apiMessage = (err?.response?.data?.message || err?.message || "").toLowerCase();
+      const status = getErrorDetails(err)?.response?.status;
+      const apiMessage = (getErrorDetails(err)?.response?.data?.message || getErrorDetails(err)?.message || "").toLowerCase();
 
       // Check if error is about email verification
       if (apiMessage.includes("verify your email") || apiMessage.includes("email not verified")) {
-        errorMessage = err?.response?.data?.message || "Please verify your email.";
+        errorMessage = getErrorDetails(err)?.response?.data?.message || "Please verify your email.";
         setShowResendVerification(true);
         setResendEmail(values.email);
       } else if (status === 404 || apiMessage.includes("not found") || apiMessage.includes("does not exist")) {
@@ -77,9 +78,9 @@ const LoginForm: React.FC = () => {
         description: "Please check your inbox and spam folder."
       });
       setShowResendVerification(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Failed to resend", {
-        description: err?.response?.data?.message || "Please try again later."
+        description: getErrorDetails(err)?.response?.data?.message || "Please try again later."
       });
     } finally {
       setIsResending(false);
@@ -104,7 +105,7 @@ const LoginForm: React.FC = () => {
 
       {/* Background Elements */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.05]" />
-      <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as any} />
+      <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as React.CSSProperties} />
 
       {/* Blob Animation */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-green/20 rounded-full blur-[100px] animate-blob pointer-events-none" />
@@ -186,13 +187,13 @@ const LoginForm: React.FC = () => {
             {error && (
               <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium animate-in zoom-in-95 fade-in">
                 {(() => {
-                  const status = (error as any)?.response?.status;
-                  const apiMessage = ((error as any)?.response?.data?.message || error.message || "").toLowerCase();
+                  const status = getErrorDetails(error)?.response?.status;
+                  const apiMessage = (getErrorDetails(error)?.response?.data?.message || error.message || "").toLowerCase();
                   if (status === 404 || apiMessage.includes("not found") || apiMessage.includes("does not exist")) {
                     return "Account does not exist. Please sign up first.";
                   }
                   if (apiMessage.includes("verify your email") || apiMessage.includes("email not verified")) {
-                    return (error as any)?.response?.data?.message || error.message;
+                    return getErrorDetails(error)?.response?.data?.message || error.message;
                   }
                   return "Incorrect email or password. Please try again.";
                 })()}
@@ -278,7 +279,7 @@ const LoginForm: React.FC = () => {
 
           {/* Footer */}
           <p className="mt-8 text-center text-sm dark:text-zinc-500 text-zinc-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
               className="font-medium text-brand-green hover:text-brand-greenGlow transition-colors hover:underline underline-offset-4"

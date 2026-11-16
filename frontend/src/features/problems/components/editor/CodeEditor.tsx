@@ -1,7 +1,8 @@
 "use client";
+import { useMounted } from "@/features/shared/hooks/useMounted";
 
 import dynamic from "next/dynamic";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTheme } from "next-themes";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
@@ -16,16 +17,13 @@ interface Props {
 
 export default function CodeEditor({ language, code, setCode }: Props) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // resolvedTheme is the final computed theme (handles "system" internally)
   const editorTheme = resolvedTheme === "light" ? "github-light" : "vs-dark";
 
-  const handleEditorBeforeMount = (monaco: any) => {
+  const handleEditorBeforeMount = (monaco: import("@monaco-editor/react").Monaco) => {
     // Define github-light theme
     monaco.editor.defineTheme('github-light', {
       base: 'vs',

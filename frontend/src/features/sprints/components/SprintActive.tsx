@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useEffectEvent } from "react";
 import Split from "react-split";
 import ProblemPanel from "@/features/problems/components/ProblemPanel";
 import EditorPanel from "@/features/problems/components/EditorPanel";
@@ -19,7 +19,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
     const [solvedProblems, setSolvedProblems] = useState<Set<string>>(new Set());
 
     // Persist code and language per problem UUID across navigation
-    const codeMapRef = useRef<Map<string, string>>(new Map());
+    const [codeMap, setCodeMap] = useState<Map<string, string>>(() => new Map());
     const langMapRef = useRef<Map<string, string>>(new Map());
 
     // Current problem
@@ -34,7 +34,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
             const problem = sp.problem;
             if (!problem) continue;
 
-            const code = codeMapRef.current.get(problem.uuid);
+            const code = codeMap.get(problem.uuid);
             if (!code || code.trim() === '') continue; // Skip problems with no code
 
             solutions.push({
@@ -46,7 +46,9 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
 
         console.log(`[SPRINT] Finishing with ${solutions.length} solutions`);
         onFinish(solutions);
-    }, [session, onFinish]);
+    }, [session, onFinish, codeMap]);
+
+    const onExpire = useEffectEvent(() => collectAndFinish());
 
     useEffect(() => {
         // Timer Logic
@@ -57,13 +59,13 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
             if (diff <= 0) {
                 setTimeLeft(0);
                 clearInterval(interval);
-                collectAndFinish(); // Auto finish with solutions
+                onExpire(); // Read the latest drafts without restarting the timer on edits
             } else {
                 setTimeLeft(Math.floor(diff / 1000));
             }
         }, 1000);
         return () => clearInterval(interval);
-    }, [session, collectAndFinish]);
+    }, [session.endTime]);
 
     const formatTime = (seconds: number) => {
         const m = Math.floor(seconds / 60);
@@ -85,7 +87,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
 
     // Save code for the current problem
     const handleCodeChange = useCallback((problemUuid: string, code: string) => {
-        codeMapRef.current.set(problemUuid, code);
+        setCodeMap((previous) => new Map(previous).set(problemUuid, code));
     }, []);
 
     // Save language for the current problem
@@ -95,7 +97,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
 
     // Get saved code for a problem (undefined if none saved yet)
     const getSavedCode = (problemUuid: string): string | undefined => {
-        return codeMapRef.current.get(problemUuid);
+        return codeMap.get(problemUuid);
     };
 
     if (!currentProblem) {
@@ -244,7 +246,7 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
 }
 
 // Separate component for problem content without the back link header
-function SprintProblemContent({ problem }: { problem: any }) {
+function SprintProblemContent({ problem }: { problem: import("@/features/problems/types/problems.types").Problem & { examples?: { input: string; output: string; explanation?: string }[] } }) {
     // Difficulty color mapping
     const difficultyStyles: Record<string, string> = {
         EASY: "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
@@ -287,7 +289,7 @@ function SprintProblemContent({ problem }: { problem: any }) {
             {Array.isArray(problem.examples) && problem.examples.length > 0 && (
                 <div className="mb-6">
                     <h3 className="text-sm font-bold dark:text-white text-zinc-900 mb-3">Example:</h3>
-                    {problem.examples.map((example: any, idx: number) => (
+                    {problem.examples.map((example, idx) => (
                         <div key={idx} className="dark:bg-white/[0.02] bg-zinc-50 rounded-lg p-4 border dark:border-white/5 border-zinc-200 font-mono text-xs space-y-1">
                             <div><span className="dark:text-zinc-500 text-zinc-600">Input:</span> <span className="dark:text-zinc-300 text-zinc-800">{example.input}</span></div>
                             <div><span className="dark:text-zinc-500 text-zinc-600">Output:</span> <span className="dark:text-zinc-300 text-zinc-800">{example.output}</span></div>

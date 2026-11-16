@@ -4,6 +4,28 @@ import { Socket } from "socket.io-client";
 import { initSocket } from "@/features/shared/utils/socket-io";
 import { useAuthStore } from "@/features/auth/store/authStore";
 
+import type { SubmissionPhase, TestCaseResult } from "@/features/shared/types/realtime";
+import type { TestResult } from "../types/submission.types";
+
+export interface SubmissionSocketUpdate {
+  id?: string;
+  submissionId?: string;
+  status?: import("../types/submission.types").SubmissionStatus;
+  phase?: SubmissionPhase;
+  language?: string;
+  executionTime?: number;
+  memoryUsage?: number;
+  testResults?: TestResult[];
+  currentTestCase?: number;
+  totalTestCases?: number;
+  testCaseIndex?: number;
+  result?: TestCaseResult;
+  testCaseResult?: TestCaseResult;
+  error?: string;
+  message?: string;
+  compileOutput?: string;
+}
+
 /**
  * Socket event types for submission updates
  */
@@ -24,12 +46,12 @@ export type SubmissionSocketEvent =
  * @param events - Optional array of specific events to listen to (defaults to all)
  */
 export const useSubmissionSocket = (
-  callback: (data: any) => void,
+  callback: (data: SubmissionSocketUpdate) => void,
   events?: SubmissionSocketEvent[]
 ) => {
   const token = useAuthStore((state) => state.token);
 
-  const stableCallback = useCallback(callback, [callback]);
+  const stableCallback = useCallback((data: SubmissionSocketUpdate) => callback(data), [callback]);
 
   useEffect(() => {
     if (!token) return;
@@ -41,7 +63,7 @@ export const useSubmissionSocket = (
       console.log("✅ Socket connected:", socket.id);
     });
 
-    socket.on("connect_error", (err: any) => {
+    socket.on("connect_error", (err: Error) => {
       console.log("❌ Socket connection error:", err.message);
     });
 
@@ -62,10 +84,10 @@ export const useSubmissionSocket = (
     ];
 
     // Create handlers for each event
-    const handlers: Record<string, (data: any) => void> = {};
+    const handlers: Record<string, (data: SubmissionSocketUpdate) => void> = {};
 
     eventsToListen.forEach((event) => {
-      handlers[event] = (data: any) => {
+      handlers[event] = (data: SubmissionSocketUpdate) => {
         console.log(`🔥 [${event}] Received:`, data);
         
         // Normalize the data based on event type
@@ -88,7 +110,7 @@ export const useSubmissionSocket = (
 /**
  * Normalize event data to a consistent format
  */
-function normalizeEventData(event: SubmissionSocketEvent, data: any): any {
+function normalizeEventData(event: SubmissionSocketEvent, data: SubmissionSocketUpdate): SubmissionSocketUpdate {
   switch (event) {
     case "submission:created":
       return {
@@ -150,7 +172,7 @@ function normalizeEventData(event: SubmissionSocketEvent, data: any): any {
  */
 export const useSubmissionUpdates = (
   submissionId: string | null,
-  callback: (data: any) => void
+  callback: (data: SubmissionSocketUpdate) => void
 ) => {
   const token = useAuthStore((state) => state.token);
 
@@ -159,7 +181,7 @@ export const useSubmissionUpdates = (
 
     const socket: Socket = initSocket(token);
 
-    const handleUpdate = (data: any) => {
+    const handleUpdate = (data: SubmissionSocketUpdate) => {
       // Only process updates for the specific submission
       if (data.submissionId === submissionId || data.id === submissionId) {
         callback(data);

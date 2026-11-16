@@ -41,7 +41,7 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ rank, name, xp, avatarC
   </motion.div>
 );
 
-const Badge = ({ icon: Icon, color, bg, label, delay, x, y }: { icon: any, color: string, bg: string, label: string, delay: number, x: string, y: string }) => (
+const Badge = ({ icon: Icon, color, bg, label, delay, x, y }: { icon: import("lucide-react").LucideIcon, color: string, bg: string, label: string, delay: number, x: string, y: string }) => (
     <motion.div
         initial={{ scale: 0, opacity: 0, y: 20 }}
         whileInView={{ scale: 1, opacity: 1, y: 0 }}

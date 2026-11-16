@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { getErrorDetails } from "@/features/shared/utils/api-error";
+import { useState, useCallback, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "@/features/shared/api/api";
 import type {
@@ -34,56 +35,50 @@ interface UseAIAnalysisReturn {
  * @param submissionId - Optional. When provided, auto-resets on change.
  */
 export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
-  const [jobId, setJobId] = useState<string | null>(null);
-  const [data, setData] = useState<AIAnalysisResult | null>(null);
-  const [status, setStatus] = useState<AIJobState | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [request, setRequest] = useState<{
+    owner?: string;
+    generation: number;
+    jobId: string | null;
+    data: AIAnalysisResult | null;
+    status: AIJobState | null;
+    error: string | null;
+  }>({ owner: submissionId, generation: 0, jobId: null, data: null, status: null, error: null });
 
-  // ── Reset helper ──────────────────────────────────────────────────────
+  // Changing submissions resets the local request before children render old data.
+  if (request.owner !== submissionId) {
+    setRequest({ owner: submissionId, generation: request.generation + 1, jobId: null, data: null, status: null, error: null });
+  }
+  const jobId = request.jobId;
+  const requestVersion = useRef(0);
   const reset = useCallback(() => {
-    setJobId(null);
-    setData(null);
-    setStatus(null);
-    setError(null);
-  }, []);
-
-  // Auto-reset when submissionId changes
-  useEffect(() => {
-    reset();
-  }, [submissionId, reset]);
-
-  // ── Terminal states where polling should stop ─────────────────────────
-  const isTerminal =
-    status === "completed" || status === "failed" || status === "not_found";
+    requestVersion.current += 1;
+    setRequest((previous) => ({ ...previous, owner: submissionId, jobId: null, data: null, status: null, error: null }));
+  }, [submissionId]);
 
   // ── 1. Trigger mutation (POST) ────────────────────────────────────────
-  const triggerMutation = useMutation<AITriggerResponse, Error, string>({
-    mutationFn: async (subId: string) => {
+  const triggerMutation = useMutation<AITriggerResponse, Error, { subId: string; owner?: string; version: number; generation: number }>({
+    mutationFn: async ({ subId }) => {
       const response = await api.post<AITriggerResponse>(
         "/ai/analyze-submission",
         { submissionId: subId }
       );
       return response.data;
     },
-    onSuccess: (responseData: any) => {
-      if (responseData.status === "cached" && responseData.result) {
-        // Backend returned cached analysis — no polling needed
-        setData(responseData.result);
-        setStatus("completed");
-        setError(null);
-      } else {
-        // New job queued — start polling
-        setJobId(String(responseData.jobId));
-        setStatus("waiting");
-        setError(null);
-        setData(null);
-      }
+    onSuccess: (responseData, variables) => {
+      if (variables.version !== requestVersion.current) return;
+      setRequest((previous) => {
+        if ((previous.owner !== variables.owner || previous.generation !== variables.generation)) return previous;
+        return responseData.status === "cached"
+          ? { ...previous, jobId: null, data: responseData.result, status: "completed", error: null }
+          : { ...previous, jobId: responseData.jobId, data: null, status: "waiting", error: null };
+      });
     },
-    onError: (err: any) => {
-      const message =
-        err?.response?.data?.message || err.message || "Failed to start analysis";
-      setError(message);
-      setStatus("failed");
+    onError: (err, variables) => {
+      if (variables.version !== requestVersion.current) return;
+      const details = getErrorDetails(err);
+      setRequest((previous) => (previous.owner !== variables.owner || previous.generation !== variables.generation) ? previous : {
+        ...previous, status: "failed", error: details.response?.data?.message || details.message,
+      });
     },
   });
 
@@ -96,37 +91,28 @@ export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
       );
       return response.data;
     },
-    enabled: !!jobId && !isTerminal,
-    refetchInterval: !!jobId && !isTerminal ? 2000 : false,
+    enabled: !!jobId,
+    refetchInterval: (query) => {
+      const state = query.state.data?.state;
+      return state === "completed" || state === "failed" || state === "not_found" ? false : 2000;
+    },
     refetchIntervalInBackground: false,
   });
 
-  // Sync query data → local state via useEffect (NOT inside select, which causes re-render loops)
-  useEffect(() => {
-    const responseData = pollingQuery.data;
-    if (!responseData) return;
-
-    if (responseData.state === "completed" && responseData.result) {
-      setData(responseData.result);
-      setStatus("completed");
-    } else if (responseData.state === "failed") {
-      setError(responseData.error || "Analysis failed");
-      setStatus("failed");
-    } else if (responseData.state === "not_found") {
-      setError("Analysis job not found");
-      setStatus("not_found");
-    } else {
-      setStatus(responseData.state);
-    }
-  }, [pollingQuery.data]);
+  const response = pollingQuery.data;
+  const status = response?.state ?? request.status;
+  const data = response?.result ?? request.data;
+  const error = status === "failed" ? response?.error ?? request.error ?? "Analysis failed"
+    : status === "not_found" ? "Analysis job not found" : request.error;
+  const isTerminal = status === "completed" || status === "failed" || status === "not_found";
 
   // ── 3. Public API ─────────────────────────────────────────────────────
   const triggerAnalysis = useCallback(
     (subId: string) => {
       reset();
-      triggerMutation.mutate(subId);
+      triggerMutation.mutate({ subId, owner: submissionId, version: requestVersion.current, generation: request.generation });
     },
-    [triggerMutation, reset]
+    [triggerMutation, reset, submissionId, request.generation]
   );
 
   const isPolling = !!jobId && !isTerminal;
@@ -135,7 +121,7 @@ export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
     data,
     status,
     isPolling,
-    isLoading: triggerMutation.isPending,
+    isLoading: triggerMutation.isPending && triggerMutation.variables?.owner === submissionId,
     error,
     triggerAnalysis,
     reset,

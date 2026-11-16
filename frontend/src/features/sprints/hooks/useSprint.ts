@@ -4,7 +4,7 @@ import api from '@/features/shared/api/api';
 export interface SprintProblem {
     order: number;
     maxScore: number;
-    problem: any; // Using any for now to match ProblemDto structure broadly
+    problem: import("@/features/problems/types/problems.types").Problem; // Using any for now to match ProblemDto structure broadly
 }
 
 export interface SprintSession {
@@ -46,9 +46,8 @@ export const useSprint = () => {
 
     const createSprintMutation = useMutation<SprintSession, Error, { userId: string }>({
         mutationFn: async ({ userId }) => {
-            const response = await api.post<SprintSession>("/sprint", {});
-            // @ts-ignore wrapper handling
-            return response.data.data ? response.data.data : response.data;
+            const response = await api.post<SprintSession | { data: SprintSession }>("/sprint", {});
+            return 'data' in response.data ? response.data.data : response.data;
         },
     });
 
@@ -58,12 +57,11 @@ export const useSprint = () => {
         { sprintId: string; solutions: SprintSolution[] }
     >({
         mutationFn: async ({ sprintId, solutions }) => {
-            const response = await api.post<SprintCompletionResult>(
+            const response = await api.post<SprintCompletionResult | { data: SprintCompletionResult }>(
                 `/sprint/${sprintId}/finish`,
                 { solutions }
             );
-            // @ts-ignore wrapper handling
-            return response.data.data ? response.data.data : response.data;
+            return 'data' in response.data ? response.data.data : response.data;
         },
         onSuccess: () => {
             // Invalidate all profile/gamification caches so dashboard reflects new data

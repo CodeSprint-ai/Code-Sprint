@@ -1,4 +1,5 @@
 'use client';
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import { useState } from 'react';
 import { usePasswordManagement } from '@/features/profile/hooks/useSessions';
@@ -59,8 +60,8 @@ export default function SecuritySettings({ hasPassword }: SecuritySettingsProps)
             setNewPassword('');
             setConfirmPassword('');
             setShowPasswordForm(false);
-        } catch (err: any) {
-            setErrorMessage(err?.response?.data?.message || 'Failed to update password');
+        } catch (err: unknown) {
+            setErrorMessage(getErrorDetails(err)?.response?.data?.message || 'Failed to update password');
         }
     };
 

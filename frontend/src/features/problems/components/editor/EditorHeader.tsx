@@ -15,7 +15,7 @@ import { FileCode, Settings, ChevronDown } from "lucide-react";
 interface Props {
   language: string;
   setLanguage: (lang: string) => void;
-  problem: any;
+  problem: import("../../types/problems.types").Problem;
   code: string;
   onRun: () => void;
   onSubmit: () => void;

@@ -1,7 +1,7 @@
 // components/layout/EditorPanel.tsx
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Split from "react-split";
 import { useQuery } from "@tanstack/react-query";
 import EditorHeader from "@/features/problems/components/editor/EditorHeader";
@@ -77,59 +77,45 @@ export default function EditorPanel({
 
   // Use user's preferred language or fallback to python
   const defaultLang = userSettings?.defaultLanguage || "python";
-  const [language, setLanguage] = useState<string>(defaultLang);
-  const [hasInitialized, setHasInitialized] = useState(false);
-
-  // Wrap setLanguage to also notify parent
-  const handleSetLanguage = useCallback((lang: string) => {
-    setLanguage(lang);
-    onLanguageChange?.(lang);
-  }, [onLanguageChange]);
-
-  // Update language when user settings are loaded (only once)
-  useEffect(() => {
-    if (userSettings?.defaultLanguage && !hasInitialized) {
-      setLanguage(userSettings.defaultLanguage);
-      setHasInitialized(true);
-    }
-  }, [userSettings?.defaultLanguage, hasInitialized]);
+  const [selectedLanguage, setLanguage] = useState<string | null>(null);
+  const language = selectedLanguage ?? defaultLang;
 
   // Get starter code based on selected language
   const getStarterCode = useCallback((lang: string): string => {
     const langKey = languageMap[lang.toLowerCase()] || "python";
 
     // Use problem's starter code if available
-    if (problem?.starterCode && problem.starterCode[langKey]) {
+    if (problem.starterCode && problem.starterCode[langKey]) {
       return problem.starterCode[langKey];
     }
 
     // Fallback to default
     return defaultStarterCode[langKey];
-  }, [problem?.starterCode]);
+  }, [problem.starterCode]);
 
-  const [code, setCode] = useState(() => initialCode || getStarterCode(defaultLang));
+  const [draft, setDraft] = useState(() => ({
+    problemId: problem.uuid,
+    language,
+    code: initialCode ?? getStarterCode(language),
+  }));
+  // Reset only when the editor's problem/language identity changes.
+  if (draft.problemId !== problem.uuid || draft.language !== language) {
+    setDraft({ problemId: problem.uuid, language, code: initialCode ?? getStarterCode(language) });
+  }
+  const code = draft.code;
 
-  // Notify parent of code changes (for sprint mode persistence)
   const handleCodeChange = useCallback((newCode: string) => {
-    setCode(newCode);
+    setDraft((previous) => ({ ...previous, code: newCode }));
     onCodeChange?.(newCode);
   }, [onCodeChange]);
 
-  // Update code when language changes (only if no initialCode, i.e. not in sprint restore)
-  useEffect(() => {
-    if (!initialCode) {
-      setCode(getStarterCode(language));
-    }
-  }, [language, getStarterCode]);
-
-  // When problem changes in sprint mode, restore initialCode or reset to starter
-  useEffect(() => {
-    if (initialCode !== undefined) {
-      setCode(initialCode);
-    } else {
-      setCode(getStarterCode(language));
-    }
-  }, [problem?.uuid]);
+  const handleSetLanguage = useCallback((lang: string) => {
+    const starter = getStarterCode(lang);
+    setLanguage(lang);
+    setDraft({ problemId: problem.uuid, language: lang, code: starter });
+    onCodeChange?.(starter);
+    onLanguageChange?.(lang);
+  }, [getStarterCode, problem.uuid, onCodeChange, onLanguageChange]);
 
   // State for submission/run status
   const [isSubmitting, setIsSubmitting] = useState(false);

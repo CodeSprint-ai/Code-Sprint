@@ -1,4 +1,5 @@
 "use client";
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -38,9 +39,9 @@ const ForgotPasswordForm: React.FC = () => {
             setSubmittedEmail(values.email);
             setIsSuccess(true);
             toast.success("Reset link sent!", { description: "Check your email for instructions" });
-        } catch (err: any) {
+        } catch (err: unknown) {
             toast.error("Failed to send reset link", {
-                description: err?.response?.data?.message || err?.message || "Please try again",
+                description: getErrorDetails(err)?.response?.data?.message || getErrorDetails(err)?.message || "Please try again",
             });
         } finally {
             setIsLoading(false);
@@ -60,7 +61,7 @@ const ForgotPasswordForm: React.FC = () => {
 
             {/* Background Elements */}
             <div className="absolute inset-0 bg-grid-pattern opacity-[0.05]" />
-            <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as any} />
+            <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as React.CSSProperties} />
 
             {/* Blob Animation */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-green/20 rounded-full blur-[100px] animate-blob pointer-events-none" />
@@ -106,7 +107,7 @@ const ForgotPasswordForm: React.FC = () => {
                                 <p className="text-brand-green font-medium">{submittedEmail}</p>
                             </div>
                             <p className="text-zinc-500 text-sm">
-                                Didn't receive the email? Check your spam folder or{" "}
+                                Didn&apos;t receive the email? Check your spam folder or{" "}
                                 <button
                                     onClick={() => setIsSuccess(false)}
                                     className="text-brand-green hover:underline"
