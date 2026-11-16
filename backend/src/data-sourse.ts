@@ -53,7 +53,7 @@ export const AppDataSource = new DataSource({
     UserRoadmap,
     RoadmapBadge,
   ],
-  migrations: ['src/migrations/*.ts'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
   subscribers: [],
 });
 
