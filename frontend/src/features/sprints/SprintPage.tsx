@@ -64,7 +64,7 @@ export default function SprintPage() {
                 </div>
                 <div>
                     <h1 className="text-2xl md:text-3xl font-black dark:text-white text-zinc-900 tracking-tighter font-mono leading-none">
-                        SPRINT_MODE<span className="animate-pulse text-emerald-500">_</span>
+                        SPRINT_MODE<span className="text-emerald-500">_</span>
                     </h1>
                     <p className="dark:text-zinc-500 text-zinc-500 text-xs font-mono mt-1">
                         5 challenges • 60 minutes • Earn points &amp; badges
@@ -87,7 +87,7 @@ export default function SprintPage() {
                         <div className="space-y-5">
                             <div className="flex items-center justify-between">
                                 <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded dark:bg-emerald-950/50 bg-emerald-50 border dark:border-emerald-500/20 border-emerald-500/30">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                                     <span className="text-[10px] font-bold tracking-widest text-emerald-400 uppercase font-mono">
                                         System Ready
                                     </span>
@@ -111,7 +111,7 @@ export default function SprintPage() {
                                         <span className="text-emerald-500 ml-auto font-bold">OK</span>
                                     </div>
                                     <div className="flex items-center gap-3 border-t dark:border-white/5 border-zinc-200 pt-2.5 mt-1">
-                                        <span className="text-emerald-500 animate-pulse">➜</span>
+                                        <span className="text-emerald-500">➜</span>
                                         <span className="dark:text-zinc-200 text-zinc-800">Ready to begin sequence.</span>
                                     </div>
                                 </div>
