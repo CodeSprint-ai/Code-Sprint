@@ -135,7 +135,9 @@ export default async function FeaturePage({
             Python, Java, and C++ problem evaluation is available in your
             signed-in workspace.
           </p>
-          <LiveDemo />
+          <div className="m-live-demo">
+            <LiveDemo />
+          </div>
         </section>
       )}
     </>

@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { product } from "@/features/marketing/config";
-import {
-  PageIntro,
-  cardClass,
-  primaryClass,
-} from "@/features/marketing/PublicShell";
+import { PageIntro } from "@/features/marketing/PublicShell";
 export const metadata: Metadata = {
   title: "About",
   description:
@@ -16,61 +13,70 @@ export default function AboutPage() {
   return (
     <>
       <PageIntro
-        eyebrow="The people behind the practice"
-        title="Built to help you understand."
+        eyebrow="About CodeSprint"
+        title="Practice should lead to understanding."
       >
-        CodeSprint brings algorithm practice, progressive AI hints, and
-        submission feedback into one workspace for computer science students and
-        aspiring competitive programmers.
+        We are building a place where computer science students can work through
+        algorithmic problems, understand their mistakes, and develop their own
+        reasoning.
       </PageIntro>
-      <div className="mx-auto max-w-6xl space-y-12 px-6">
-        <section className={`${cardClass} grid gap-8 md:grid-cols-2`}>
+      <div className="m-container">
+        <section className="m-about-story">
           <div>
-            <h2 className="text-2xl font-semibold">Our purpose</h2>
-            <p className="mt-4 leading-relaxed text-zinc-600 dark:text-zinc-400">
-              Getting stuck should be part of learning, not the end of a
-              practice session. We are building tools that help students
-              understand mistakes, test their reasoning, and find the next step
-              themselves.
+            <h2>Why we are building it</h2>
+            <p>
+              Getting stuck is part of learning. A verdict tells you whether
+              your code worked, but it does not always tell you what to try
+              next. A complete solution can skip the part that matters most.
+            </p>
+            <p>
+              CodeSprint brings practice, progressive guidance, and submission
+              feedback into one workspace. Our aim is to make the next step
+              easier to see without taking the thinking away.
             </p>
           </div>
           <div>
-            <h2 className="text-2xl font-semibold">Our first chapter</h2>
-            <p className="mt-4 leading-relaxed text-zinc-600 dark:text-zinc-400">
+            <h2>Our starting point</h2>
+            <p>
               CodeSprint began as a computer science final-year project at Sir
               Syed University of Engineering & Technology. We are developing it
-              into a student-focused product, starting with a Free Beta and
-              learning from real practice sessions.
+              into a student-focused product, starting with Free Beta.
+            </p>
+            <p>
+              We are learning from real practice sessions and conversations with
+              students. The product will keep improving through that feedback.
             </p>
           </div>
         </section>
         <section>
-          <h2 className="mb-6 text-3xl font-semibold">Meet the team</h2>
-          <div className="grid gap-5 sm:grid-cols-2">
+          <h2 className="m-section-label">The team</h2>
+          <div className="m-roster">
             {product.team.map((person) => (
-              <article key={person.name} className={cardClass}>
-                <span
-                  aria-hidden="true"
-                  className="flex size-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-xl font-bold text-emerald-600"
-                >
+              <article className="m-person" key={person.name}>
+                <span className="m-person-initials" aria-hidden="true">
                   {person.initials}
                 </span>
-                <h3 className="mt-5 text-xl font-semibold">{person.name}</h3>
-                <p className="mt-2 text-sm text-zinc-500">{person.role}</p>
+                <div>
+                  <h3>{person.name}</h3>
+                  <p>{person.role}</p>
+                </div>
               </article>
             ))}
           </div>
         </section>
-        <section className="text-center">
-          <h2 className="text-2xl font-semibold">
-            Help shape what comes next.
-          </h2>
-          <p className="my-4 text-zinc-500">
-            Student feedback and campus conversations guide the next iteration.
-          </p>
-          <Link className={primaryClass} href="/contact">
-            Talk to the team
-          </Link>
+        <section className="m-section">
+          <div className="m-start-strip">
+            <div>
+              <h2>Help shape the next iteration.</h2>
+              <p>
+                Tell us what is useful, what is missing, or where you got stuck.
+              </p>
+            </div>
+            <Link href="/contact" className="m-button m-button-secondary">
+              Talk to the team
+              <ArrowRight size={14} />
+            </Link>
+          </div>
         </section>
       </div>
     </>
