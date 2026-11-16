@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/admin", "/api/", "/auth/reset-password"],
+        disallow: ["/dashboard", "/admin", "/api/", "/auth/reset-password", "/usage", "/profile", "/submission", "/roadmap", "/sprint$", "/problems"],
       },
     ],
     sitemap: "https://code-sprint.com/sitemap.xml",

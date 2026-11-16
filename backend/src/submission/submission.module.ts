@@ -1,3 +1,4 @@
+import { RateLimiterGuard } from '../auth/guards/rate-limiter.guard';
 import { forwardRef, Module } from '@nestjs/common';
 import { SubmissionController } from './submission.controller';
 import { SubmissionService } from './submission.service';
@@ -26,7 +27,7 @@ import { RoadmapModule } from '../roadmap/roadmap.module';
     }),
   ],
   controllers: [SubmissionController],
-  providers: [SubmissionService, SubmissionProcessor],
+  providers: [SubmissionService, SubmissionProcessor, RateLimiterGuard],
 })
 export class SubmissionModule { }
 

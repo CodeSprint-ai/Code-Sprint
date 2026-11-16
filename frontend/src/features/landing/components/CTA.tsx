@@ -60,16 +60,16 @@ const CTA: React.FC = () => {
 
                     {/* Buttons */}
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
-                        <Link href="/auth/login?redirect=%2Fdashboard" className="group w-full sm:w-auto px-8 py-4 bg-brand-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2">
+                        <Link href="/auth/signup" className="group w-full sm:w-auto px-8 py-4 bg-brand-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] flex items-center justify-center gap-2">
                             Start Coding for Free
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Link>
 
 
-                        <button className="w-full sm:w-auto px-8 py-4 dark:bg-white/5 bg-zinc-100 dark:text-white text-zinc-800 border dark:border-white/10 border-zinc-200 font-bold rounded-xl dark:hover:bg-white/10 hover:bg-zinc-200 transition-all flex items-center justify-center gap-2">
+                        <Link href="/platform/problem-bank" className="w-full sm:w-auto px-8 py-4 dark:bg-white/5 bg-zinc-100 dark:text-white text-zinc-800 border dark:border-white/10 border-zinc-200 font-bold rounded-xl dark:hover:bg-white/10 hover:bg-zinc-200 transition-all flex items-center justify-center gap-2">
                             <Terminal className="w-4 h-4 dark:text-gray-400 text-zinc-500" />
                             Browse Problem Bank
-                        </button>
+                        </Link>
                     </div>
 
                 </div>

@@ -1,3 +1,4 @@
+import { PublicProblemsQueryDto } from './dto/PublicProblemsQueryDto';
 import {
   BadRequestException,
   Injectable,
@@ -36,6 +37,17 @@ export class ProblemService {
     private readonly judge0: Judge0Service,
     private readonly runnerFactory: RunnerFactory,
   ) { }
+
+  async getPublicCatalog(query: PublicProblemsQueryDto) {
+    // Deliberate projection: no test cases, reference solutions, users, or execution internals.
+    const builder = this.problemRepository.createQueryBuilder('problem')
+      .select(['problem.uuid', 'problem.title', 'problem.slug', 'problem.difficulty', 'problem.tags', 'problem.description'])
+      .orderBy('problem.title', 'ASC').addOrderBy('problem.uuid', 'ASC');
+    if (query.search) builder.andWhere('problem.title ILIKE :search', { search: `%${query.search}%` });
+    if (query.difficulty) builder.andWhere('problem.difficulty = :difficulty', { difficulty: query.difficulty });
+    const [data, total] = await builder.skip((query.page - 1) * query.pageSize).take(query.pageSize).getManyAndCount();
+    return { data, meta: { total, page: query.page, pageSize: query.pageSize, totalPages: Math.ceil(total / query.pageSize) } };
+  }
 
   /**
    * Creates a new problem with its associated test cases.

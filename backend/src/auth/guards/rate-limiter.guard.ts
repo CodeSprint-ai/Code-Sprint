@@ -52,7 +52,7 @@ setInterval(() => {
             rateLimitStore.delete(key);
         }
     }
-}, 60000); // Cleanup every minute
+}, 60000).unref(); // Cleanup every minute without keeping test/CLI processes alive
 
 /**
  * Rate Limiter Guard

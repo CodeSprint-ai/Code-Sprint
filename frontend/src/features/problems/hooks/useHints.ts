@@ -63,6 +63,7 @@ export function useHints(problemUuid: string): UseHintsReturn {
         },
         onSuccess: () => {
             setError(null);
+            queryClient.invalidateQueries({ queryKey: ["ai-usage"] });
             // Refetch usage to get the full updated hint list
             queryClient.invalidateQueries({ queryKey: ["hint-usage", problemUuid] });
         },

@@ -57,20 +57,14 @@ export const useAuth = (): UseAuthReturn => {
     mutationFn: async (
       credentials: LoginCredentials
     ): Promise<AuthResponse> => {
-      console.log(credentials);
 
       const response = await api.post<AuthResponse>("/auth/login", credentials);
       return response.data;
     },
     onSuccess: (data: AuthResponse) => {
-      console.log({
-        access_token: data.data.accessToken,
-        user: data.data.user,
-      });
 
       setAuth(data.data.user, data.data.accessToken);
       Cookies.set("is_authenticated", "true", { expires: 7 }); // For middleware
-      console.log("🔥 Zustand state after login:", useAuthStore.getState());
 
       // Let the caller component handle redirection
     },

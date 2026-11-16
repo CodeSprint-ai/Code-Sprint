@@ -1,3 +1,4 @@
+import { EngagementRequest } from './engagement/engagement.entity';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
@@ -31,6 +32,7 @@ export const AppDataSource = new DataSource({
   synchronize: false,
   logging: true,
   entities: [
+    EngagementRequest,
     User,
     Problem,
     TestCase,

@@ -146,7 +146,7 @@ const LiveDemo: React.FC = () => {
   const [selectedTheme, setActiveTheme] = useState<string | null>(null);
   const activeTheme = selectedTheme ?? (resolvedTheme === 'light' ? 'github-light' : 'vs-dark');
   const [code, setCode] = useState(EXAMPLES.binarySearch.code);
-  const [output, setOutput] = useState<string[]>(['// Compiled in 12ms.', '// All tests passed.']);
+  const [output, setOutput] = useState<string[]>(['// Choose an example and click Run Code.']);
   const [isRunning, setIsRunning] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -466,7 +466,7 @@ const LiveDemo: React.FC = () => {
         }
     }
     
-    setOutput(['// Compiled in 12ms.', '// All tests passed.']);
+    setOutput(['// Choose an example and click Run Code.']);
     setStatus('idle');
     if (monacoRef.current && editorRef.current) {
         monacoRef.current.editor.setModelMarkers(editorRef.current.getModel(), 'owner', []);

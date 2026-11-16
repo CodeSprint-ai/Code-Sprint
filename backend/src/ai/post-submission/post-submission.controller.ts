@@ -1,3 +1,4 @@
+import { UsageService } from '../../usage/usage.service';
 import {
   Controller,
   Post,
@@ -30,6 +31,7 @@ export class PostSubmissionController {
     @InjectRepository(Problem)
     private readonly problemRepo: Repository<Problem>,
     private readonly ragService: RagService,
+    private readonly quota: UsageService,
   ) {}
 
   /**
@@ -66,7 +68,7 @@ export class PostSubmissionController {
     }
 
     // Return cached analysis if it already exists (avoid wasting tokens)
-    if (submission.aiAnalysis) {
+    if (submission.aiAnalysis && !('error' in submission.aiAnalysis)) {
       return {
         jobId: null,
         status: 'cached',
@@ -74,12 +76,20 @@ export class PostSubmissionController {
       };
     }
 
-    // Dispatch job — retry config is on the queue's defaultJobOptions
-    const job = await this.analysisQueue.add('analyze', {
-      submissionId,
-      userId: req.user.uuid,
-    });
-
+    // One reservation/job per submission and month, including concurrent retries.
+    const reservationId = await this.quota.reserveAnalysis(req.user.uuid, submissionId);
+    const jobId = `analysis-${reservationId}`;
+    let job;
+    try {
+      job = await this.analysisQueue.add('analyze', {
+        submissionId, userId: req.user.uuid, reservationId,
+      }, { jobId });
+    } catch (error) {
+      // Preserve the reservation if a timed-out enqueue actually created a job.
+      const queued = await this.analysisQueue.getJob(jobId);
+      if (!queued) await this.quota.release(reservationId);
+      throw error;
+    }
     return { jobId: job.id, status: 'queued' };
   }
 
@@ -88,12 +98,13 @@ export class PostSubmissionController {
    */
   @Get('job-status/:id')
   @UseGuards(AuthGuard('jwt'))
-  async getJobStatus(@Param('id') id: string) {
+  async getJobStatus(@Param('id') id: string, @Req() req: { user: { uuid: string } }) {
     const job = await this.analysisQueue.getJob(id);
     if (!job) {
       return { status: 'not_found' };
     }
 
+    if (job.data.userId !== req.user.uuid) throw new ForbiddenException("You can only view your own analysis jobs");
     const state = await job.getState();
 
     return {

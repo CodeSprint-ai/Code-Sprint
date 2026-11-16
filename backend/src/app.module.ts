@@ -1,3 +1,5 @@
+import { UsageModule } from './usage/usage.module';
+import { EngagementModule } from './engagement/engagement.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -27,6 +29,8 @@ import { RoadmapModule } from './roadmap/roadmap.module';
 
 @Module({
   imports: [
+    UsageModule,
+    EngagementModule,
     ConfigModule.forRoot({
       isGlobal: true, // Makes env available globally
     }),

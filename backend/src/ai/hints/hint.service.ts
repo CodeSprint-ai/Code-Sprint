@@ -1,3 +1,4 @@
+import { UsageService } from '../../usage/usage.service';
 import {
     Injectable,
     Logger,
@@ -5,7 +6,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, MoreThanOrEqual } from 'typeorm';
 import { ProblemHint } from './entities/problem-hint.entity';
 import { HintUsage } from './entities/hint-usage.entity';
 import { HintGenerationService } from './hint-generation.service';
@@ -33,6 +34,7 @@ export class HintService {
         private readonly usageRepo: Repository<HintUsage>,
         private readonly dataSource: DataSource,
         private readonly generationService: HintGenerationService,
+        private readonly quota: UsageService,
     ) { }
 
     /**
@@ -44,7 +46,7 @@ export class HintService {
         problemUuid: string,
         preferredLang: string = 'python',
     ) {
-        return await this.dataSource.transaction(async (manager) => {
+        return await this.quota.revealHint(userUuid, async (manager) => {
             // 1. Pessimistic lock on usage to prevent double-charging from concurrent clicks
             let usage = await manager.findOne(HintUsage, {
                 where: { userUuid, problemUuid },
@@ -72,7 +74,7 @@ export class HintService {
             // 2. Fetch pre-generated hint (language-specific only for Level 4)
             const hintLanguage = nextLevel === 4 ? preferredLang : 'python';
             let hint = await manager.findOne(ProblemHint, {
-                where: { problemUuid, level: nextLevel, language: hintLanguage },
+                where: { problemUuid, level: nextLevel, language: hintLanguage, ...(nextLevel === 4 ? { version: MoreThanOrEqual(2) } : {}) },
             });
 
             // 3. Live fallback: generate on-the-fly if no pre-generated hint exists
@@ -87,10 +89,12 @@ export class HintService {
                     preferredLang,
                 );
 
+                if (nextLevel === 4) await manager.delete(ProblemHint, { problemUuid, level: 4, language: hintLanguage });
                 hint = manager.create(ProblemHint, {
                     problemUuid,
                     level: nextLevel,
                     content,
+                    version: 2,
                     language: hintLanguage,
                 });
 
@@ -144,6 +148,7 @@ export class HintService {
             .createQueryBuilder('hint')
             .where('hint.problemUuid = :problemUuid', { problemUuid })
             .andWhere('hint.level <= :level', { level: usage.levelReached })
+            .andWhere('(hint.level < 4 OR hint.version >= 2)')
             .orderBy('hint.level', 'ASC')
             .getMany();
 

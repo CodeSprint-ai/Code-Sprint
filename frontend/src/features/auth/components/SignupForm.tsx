@@ -217,6 +217,7 @@ const SignUpForm: React.FC = () => {
             </form>
           </Form>
 
+          <p className="mt-5 text-center text-xs leading-relaxed text-zinc-500">CodeSprint is currently Free Beta. Review the <Link href="/terms" className="underline">Terms of Service</Link> and <Link href="/privacy" className="underline">Privacy Policy</Link> before creating an account.</p>
           {/* Footer */}
           <p className="mt-8 text-center text-sm dark:text-zinc-500 text-zinc-600">
             Already have an account?{" "}

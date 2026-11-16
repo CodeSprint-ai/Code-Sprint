@@ -13,7 +13,7 @@ export default function LandingPage() {
     return (
         <div className="min-h-screen dark:bg-brand-dark bg-white dark:text-white text-zinc-900 dark:selection:bg-brand-green/30 dark:selection:text-brand-green selection:bg-brand-green/20 selection:text-brand-green">
             <Navbar />
-            <main>
+            <main id="main-content">
                 <Hero />
                 <Features />
                 <Showcase />

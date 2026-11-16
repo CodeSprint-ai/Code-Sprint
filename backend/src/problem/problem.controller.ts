@@ -1,3 +1,6 @@
+import { Public } from '../common/decorators/publicDecorator';
+import { PublicProblemsQueryDto } from './dto/PublicProblemsQueryDto';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -29,6 +32,13 @@ import { Roles } from 'src/common/decorators/roleDecorater';
 @Controller('problems')
 export class ProblemController {
   constructor(private readonly problemService: ProblemService) { }
+
+  @Public()
+  @Get('public')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }))
+  publicCatalog(@Query() query: PublicProblemsQueryDto) {
+    return this.problemService.getPublicCatalog(query);
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

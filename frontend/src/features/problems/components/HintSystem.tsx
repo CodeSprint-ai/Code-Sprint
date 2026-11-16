@@ -1,5 +1,6 @@
 "use client";
 
+import { UsageCard } from "@/features/marketing/UsageCard";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -28,7 +29,7 @@ const LEVEL_LABELS: Record<number, string> = {
     1: "Thinking Direction",
     2: "Approach",
     3: "Pseudocode",
-    4: "Solution",
+    4: "Reasoning Check",
 };
 
 interface HintSystemProps {
@@ -82,6 +83,7 @@ export default function HintSystem({ problemUuid }: HintSystemProps) {
 
     return (
         <div className="mt-8 border-t dark:border-white/5 border-zinc-200 pt-6">
+            <div className="mb-4"><UsageCard compact/></div>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-emerald-400 font-semibold text-sm flex items-center gap-2">
