@@ -1,3 +1,4 @@
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/features/shared/api/api";
@@ -65,9 +66,9 @@ export function useHints(problemUuid: string): UseHintsReturn {
             // Refetch usage to get the full updated hint list
             queryClient.invalidateQueries({ queryKey: ["hint-usage", problemUuid] });
         },
-        onError: (err: any) => {
+        onError: (err: unknown) => {
             const message =
-                err?.response?.data?.message || err.message || "Failed to unlock hint";
+                getErrorDetails(err)?.response?.data?.message || getErrorDetails(err).message || "Failed to unlock hint";
             setError(message);
         },
     });

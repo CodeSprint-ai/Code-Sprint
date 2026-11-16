@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 
 interface SubmissionCardProps {
-    submission: any;
+    submission: import("../types/submission.types").Submission;
     index: number;
 }
 

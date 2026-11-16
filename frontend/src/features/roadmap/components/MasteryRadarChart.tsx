@@ -65,7 +65,7 @@ export function MasteryRadarChart({ data }: Props) {
                             fontSize: 12,
                         }}
                         labelStyle={{ color: '#f8fafc' }}
-                        formatter={(value: any, _name: any, props: any) => {
+                        formatter={(value, _name, props) => {
                             const level = props.payload?.level || 'Novice';
                             return [`${value} — ${level}`, 'Mastery'];
                         }}

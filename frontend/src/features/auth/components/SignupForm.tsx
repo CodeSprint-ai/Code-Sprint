@@ -1,4 +1,5 @@
 "use client";
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -44,9 +45,9 @@ const SignUpForm: React.FC = () => {
         description: "Check your email to verify your account",
       });
       router.push("/auth/login");
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Sign up failed", {
-        description: err?.response?.data?.devMessage || err?.response?.data?.message || err?.message || "Something went wrong",
+        description: getErrorDetails(err)?.response?.data?.devMessage || getErrorDetails(err)?.response?.data?.message || getErrorDetails(err)?.message || "Something went wrong",
       });
     }
   };
@@ -64,7 +65,7 @@ const SignUpForm: React.FC = () => {
 
       {/* Background Elements */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.05]" />
-      <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as any} />
+      <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as React.CSSProperties} />
 
       {/* Blob Animation */}
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-brand-green/10 rounded-full blur-[100px] animate-blob animation-delay-2000 pointer-events-none" />
@@ -193,7 +194,7 @@ const SignUpForm: React.FC = () => {
               {/* Error Message */}
               {error && (
                 <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center font-medium animate-in zoom-in-95 fade-in">
-                  {(error as any)?.response?.data?.devMessage || (error as any)?.response?.data?.message || error.message}
+                  {getErrorDetails(error)?.response?.data?.devMessage || getErrorDetails(error)?.response?.data?.message || error.message}
                 </div>
               )}
 

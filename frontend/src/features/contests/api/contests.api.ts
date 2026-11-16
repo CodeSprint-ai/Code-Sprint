@@ -1,3 +1,4 @@
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 import api from '@/features/shared/api/api';
 import { Contest, ContestFilters, ContestsApiResponse, ContestTab } from "@/features/contests/types/contest.types";
 
@@ -18,10 +19,10 @@ export async function fetchContests(params: ContestQueryParams = {}): Promise<Co
     try {
         const response = await api.get<ContestsApiResponse>(CONTESTS_BASE_URL, { params });
         return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
         // Handle rate limit
-        if (error.response?.status === 429) {
-            const retryAfter = error.response?.data?.retryAfter || 60;
+        if (getErrorDetails(error).response?.status === 429) {
+            const retryAfter = getErrorDetails(error).response?.data?.retryAfter || 60;
             return {
                 success: false,
                 data: [],
@@ -31,7 +32,7 @@ export async function fetchContests(params: ContestQueryParams = {}): Promise<Co
         }
 
         // Handle service unavailable
-        if (error.response?.status === 503) {
+        if (getErrorDetails(error).response?.status === 503) {
             return {
                 success: false,
                 data: [],
@@ -45,7 +46,7 @@ export async function fetchContests(params: ContestQueryParams = {}): Promise<Co
             success: false,
             data: [],
             meta: { total: 0, cached: false, source: 'error' },
-            error: error.message || 'Failed to fetch contests',
+            error: getErrorDetails(error).message || 'Failed to fetch contests',
         };
     }
 }

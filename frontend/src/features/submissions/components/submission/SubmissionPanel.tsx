@@ -1,6 +1,7 @@
 "use client";
+import type { SubmissionSocketUpdate } from "@/features/submissions/hooks/useSubmissionSocket";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useSubmissionSocket } from "@/features/submissions/hooks/useSubmissionSocket";
 import { useAIAnalysis } from "@/features/submissions/hooks/useAIAnalysis";
 import {
@@ -55,18 +56,14 @@ export default function SubmissionPanel({
     }
   }, [submission.id, triggerAnalysis]);
 
-  // Reset submission state when starting new submission
-  useEffect(() => {
-    if (isSubmitting) {
-      setSubmission({
-        ...initialSubmissionState,
-        phase: "created",
-      });
-    }
-  }, [isSubmitting]);
+  const [previousSubmitting, setPreviousSubmitting] = useState(isSubmitting);
+  if (previousSubmitting !== isSubmitting) {
+    setPreviousSubmitting(isSubmitting);
+    if (isSubmitting) setSubmission({ ...initialSubmissionState, phase: "created" });
+  }
 
   // Handle real-time socket updates
-  const handleSocketUpdate = useCallback((data: any) => {
+  const handleSocketUpdate = useCallback((data: SubmissionSocketUpdate) => {
     console.log("📡 Socket update received:", data);
 
     setSubmission((prev) => {
@@ -85,7 +82,7 @@ export default function SubmissionPanel({
                 : prev.phase;
 
         const testResults: TestCaseResult[] = (data.testResults || []).map(
-          (tr: any, index: number) => ({
+          (tr, index: number) => ({
             index,
             input: tr.input || {},
             expected: tr.expected,
@@ -125,10 +122,10 @@ export default function SubmissionPanel({
         };
       }
 
-      if (data.testCaseResult) {
+      if (data.testCaseResult && data.testCaseIndex !== undefined) {
         const newResult: TestCaseResult = {
-          index: data.testCaseIndex,
           ...data.testCaseResult,
+          index: data.testCaseIndex,
           passed: data.testCaseResult.verdict === "ACCEPTED",
         };
 

@@ -129,7 +129,7 @@ export const revokeAllSessions = async (): Promise<{ sessionsRevoked: number }> 
     return data.data;
 };
 
-export const changePassword = async (data: any): Promise<{ message: string }> => {
+export const changePassword = async (data: { currentPassword: string; newPassword: string }): Promise<{ message: string }> => {
     const { data: response } = await api.post<ApiResponse<{ message: string }>>('/auth/change-password', data);
     return response.data;
 };

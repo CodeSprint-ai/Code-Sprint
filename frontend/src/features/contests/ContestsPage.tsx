@@ -1,4 +1,5 @@
 'use client';
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import { useState, useMemo } from 'react';
 import { LayoutGrid, List, RefreshCw, AlertTriangle } from 'lucide-react';
@@ -167,7 +168,7 @@ export default function ContestsPage() {
             </div>
             <h3 className="text-lg font-semibold dark:text-white text-zinc-800 mb-2">Failed to load contests</h3>
             <p className="dark:text-zinc-400 text-zinc-500 max-w-md mb-4">
-              {data?.error || (error as any)?.message || 'Something went wrong. Please try again.'}
+              {data?.error || getErrorDetails(error)?.message || 'Something went wrong. Please try again.'}
             </p>
             <button
               onClick={() => refetch()}

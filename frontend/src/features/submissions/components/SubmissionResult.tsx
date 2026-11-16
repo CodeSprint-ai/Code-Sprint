@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSubmission } from "@/features/submissions/hooks/useSubmission";
 import {
   Submission,
@@ -14,24 +14,8 @@ export default function SubmissionResult({
 }: {
   problemUuid: string;
 }) {
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
-
   const { allSubmissions } = useSubmission(problemUuid);
-
-  useEffect(() => {
-    if (allSubmissions.data) {
-      const data = allSubmissions.data as any;
-      if (Array.isArray(data)) {
-        setSubmissions(data);
-      } else if (Array.isArray(data.submissions)) {
-        setSubmissions(data.submissions);
-      } else {
-        setSubmissions([]);
-      }
-    } else {
-      setSubmissions([]);
-    }
-  }, [allSubmissions.data]);
+  const submissions = allSubmissions.data ?? [];
 
   return (
     <div className="p-4 border rounded-lg">

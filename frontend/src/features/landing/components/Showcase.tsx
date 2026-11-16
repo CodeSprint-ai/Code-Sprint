@@ -32,7 +32,7 @@ const Showcase: React.FC = () => {
               </h2>
               
               <p className="dark:text-gray-400 text-zinc-600 text-lg mb-10 leading-relaxed max-w-xl">
-                Go beyond simple 'Wrong Answer' alerts. Get intelligent insights into your code's complexity, edge cases, and algorithmic approach.
+                Go beyond simple &apos;Wrong Answer&apos; alerts. Get intelligent insights into your code&apos;s complexity, edge cases, and algorithmic approach.
               </p>
 
               <div className="space-y-4">
@@ -102,7 +102,7 @@ const Showcase: React.FC = () => {
                             </div>
                             <div className="pl-8 relative group">
                                 <div className="absolute inset-0 bg-brand-green/10 -mx-2 rounded border border-brand-green/30" />
-                                <span className="dark:text-gray-400 text-zinc-500">// AI Suggestion: Use reduce for better performance</span>
+                                <span className="dark:text-gray-400 text-zinc-500">{'// AI Suggestion: Use reduce for better performance'}</span>
                             </div>
                             <div className="pl-8 dark:text-white text-zinc-800">
                                 <span className="dark:text-pink-400 text-pink-600">return</span> users.reduce(...)

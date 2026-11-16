@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/features/shared/components/ui/tabs";
 import { Skeleton } from "@/features/shared/components/ui/skeleton";
 import { Submission } from "@/features/submissions/types/submission.types";
@@ -14,11 +14,12 @@ export default function ResultTabs({ initialResult, isLoading }: ResultTabsProps
   const [result, setResult] = useState<Submission | null>(initialResult);
 
   // --- Subscribe to real-time updates ---
-  useSubmissionSocket((update: Submission) => {
+  useSubmissionSocket((update) => {
     // update the local state whenever backend sends new submission data
     console.log({ update });
 
-    setResult(update);
+    setResult((previous) => previous && (update.id === previous.uuid || update.submissionId === previous.uuid)
+      ? { ...previous, ...update, status: update.status ?? previous.status } : previous);
   });
 
   const statusColor =

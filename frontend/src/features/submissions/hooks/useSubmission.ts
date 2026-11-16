@@ -8,6 +8,7 @@ import {
 import api from '@/features/shared/api/api';
 import {
   SubmissionResponse,
+  Submission,
   SubmissionsResponse,
   CreateSubmissionInput,
   PaginatedSubmissionsResponse,
@@ -15,7 +16,7 @@ import {
 } from "@/features/submissions/types/submission.types";
 
 interface UseSubmissionsReturn {
-  allSubmissions: UseQueryResult<SubmissionsResponse, Error>;
+  allSubmissions: UseQueryResult<Submission[], Error>;
   singleSubmission: UseQueryResult<SubmissionResponse, Error>;
   createSubmission: UseMutationResult<
     SubmissionResponse,
@@ -38,7 +39,7 @@ export const useSubmission = (
   const queryClient = useQueryClient();
 
   // 🟢 Get all submissions (either for a user, or for a problem)
-  const allSubmissionsQuery = useQuery<any, Error>({
+  const allSubmissionsQuery = useQuery<Submission[], Error>({
     queryKey: ["submissions", { userUuid, problemUuid }],
     queryFn: async () => {
       let endpoint = "";
@@ -52,8 +53,8 @@ export const useSubmission = (
         return [];
       }
 
-      const response = await api.get(endpoint);
-      return response.data;
+      const response = await api.get<Submission[] | SubmissionsResponse>(endpoint);
+      return Array.isArray(response.data) ? response.data : response.data.submissions;
     },
     enabled: (Boolean(userUuid) && userUuid !== "undefined") || (Boolean(problemUuid) && problemUuid !== "undefined"),
   });

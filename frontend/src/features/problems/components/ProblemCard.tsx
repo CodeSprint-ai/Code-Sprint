@@ -1,3 +1,4 @@
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 // components/ProblemCard.tsx
 "use client";
 
@@ -31,8 +32,8 @@ function BookmarkButton({
       queryClient.invalidateQueries({ queryKey: ['my-saved-problems'] });
       toast.success('Problem saved');
     },
-    onError: (error: any) => {
-      if (error?.response?.status === 409) {
+    onError: (error: unknown) => {
+      if (getErrorDetails(error)?.response?.status === 409) {
         toast.info('Problem already saved');
       } else {
         toast.error('Failed to save problem');

@@ -114,7 +114,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                     <div>
                         <h4 className="text-xs font-medium dark:text-zinc-400 text-zinc-500 uppercase tracking-wider mb-2">Platforms</h4>
                         <div className="flex flex-wrap gap-2">
-                            {POPULAR_PLATFORMS.map((platform: any) => {
+                            {POPULAR_PLATFORMS.map((platform) => {
                                 const isSelected = filters.platforms?.includes(platform.id);
                                 return (
                                     <button
@@ -149,7 +149,7 @@ export function ContestFiltersPanel({ filters, onFiltersChange }: ContestFilters
                                 return (
                                     <button
                                         key={option.id}
-                                        onClick={() => handleOrderByChange(option.id as any)}
+                                        onClick={() => handleOrderByChange(option.id as NonNullable<ContestFiltersProps['filters']['orderBy']>)}
                                         className={cn(
                                             'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                                             'border',

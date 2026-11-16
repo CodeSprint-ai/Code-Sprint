@@ -69,7 +69,7 @@ export function useCountdown(targetDate: string | Date): CountdownResult {
 
     useEffect(() => {
         // Update immediately
-        setTimeLeft(calculateTimeLeft());
+        const immediate = setTimeout(() => setTimeLeft(calculateTimeLeft()), 0);
 
         // Update every second
         const timer = setInterval(() => {
@@ -82,7 +82,7 @@ export function useCountdown(targetDate: string | Date): CountdownResult {
             }
         }, 1000);
 
-        return () => clearInterval(timer);
+        return () => { clearTimeout(immediate); clearInterval(timer); };
     }, [calculateTimeLeft]);
 
     return timeLeft;

@@ -1,4 +1,5 @@
 "use client";
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -54,8 +55,8 @@ const ResetPasswordForm: React.FC = () => {
             setTimeout(() => {
                 router.push("/auth/login");
             }, 3000);
-        } catch (err: any) {
-            const message = err?.response?.data?.message || err?.message || "Failed to reset password";
+        } catch (err: unknown) {
+            const message = getErrorDetails(err)?.response?.data?.message || getErrorDetails(err)?.message || "Failed to reset password";
             setError(message);
             toast.error("Reset failed", { description: message });
         } finally {
@@ -107,7 +108,7 @@ const ResetPasswordForm: React.FC = () => {
 
             {/* Background Elements */}
             <div className="absolute inset-0 bg-grid-pattern opacity-[0.05]" />
-            <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as any} />
+            <div className="absolute inset-0 bg-radial-glow opacity-20" style={{ '--gradient-stops': 'rgba(16, 185, 129, 0.3), transparent 70%' } as React.CSSProperties} />
 
             {/* Blob Animation */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-green/20 rounded-full blur-[100px] animate-blob pointer-events-none" />

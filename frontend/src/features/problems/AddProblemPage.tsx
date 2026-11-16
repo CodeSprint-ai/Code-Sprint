@@ -1,4 +1,5 @@
 "use client";
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ import {
 } from "@/features/shared/components/ui/tabs";
 import {
   ProblemFormValues,
+  ProblemFormInput,
   problemSchema,
   defaultStarterCode,
   defaultRunnerTemplate,
@@ -58,8 +60,8 @@ export default function AddProblemPage() {
     }
   }, [isAdmin, router]);
 
-  const form = useForm<ProblemFormValues>({
-    resolver: zodResolver(problemSchema) as any,
+  const form = useForm<ProblemFormInput, unknown, ProblemFormValues>({
+    resolver: zodResolver(problemSchema),
     mode: "onChange",
     defaultValues: {
       title: "",
@@ -107,8 +109,8 @@ export default function AddProblemPage() {
         ...values,
         createdByUuid: user.userUuid,
         testCases: values.testCases.map((tc) => {
-          const inputText = (tc as any).inputText || "";
-          const expectedOutputText = (tc as any).expectedOutputText || "";
+          const inputText = tc.inputText || "";
+          const expectedOutputText = tc.expectedOutputText || "";
 
           return {
             input: parseTestCaseInput(inputText) || {},
@@ -121,22 +123,22 @@ export default function AddProblemPage() {
         }),
       };
 
-      await createProblem(transformedValues as any);
+      await createProblem({ ...transformedValues, inputFormat: values.inputFormat ?? "", outputFormat: values.outputFormat ?? "", constraints: values.constraints ?? "", sampleInput: values.sampleInput ?? "", sampleOutput: values.sampleOutput ?? "" });
       toast.success("Problem Created Successfully 🎉");
       form.reset();
       router.push("/problems");
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Failed to create problem", {
-        description: err?.message || "Something went wrong",
+        description: getErrorDetails(err)?.message || "Something went wrong",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onError = (errors: any) => {
-    const firstError = Object.values(errors)[0] as any;
-    const message = firstError?.message || "Please fix the highlighted fields";
+  const onError = (errors: import("react-hook-form").FieldErrors<ProblemFormInput>) => {
+    const firstError = Object.values(errors)[0];
+    const message = typeof firstError?.message === "string" ? firstError.message : "Please fix the highlighted fields";
     toast.error(message);
   };
 
@@ -173,7 +175,7 @@ export default function AddProblemPage() {
                 {/* Basic Info Tab */}
                 <TabsContent value="basic" className="space-y-4 mt-6">
                   <FormField
-                    control={form.control as any}
+                    control={form.control}
                     name="title"
                     render={({ field }) => (
                       <FormItem>
@@ -191,7 +193,7 @@ export default function AddProblemPage() {
                   />
 
                   <FormField
-                    control={form.control as any}
+                    control={form.control}
                     name="description"
                     render={({ field }) => (
                       <FormItem>
@@ -233,7 +235,7 @@ export default function AddProblemPage() {
                     />
 
                     <FormField
-                      control={form.control as any}
+                      control={form.control}
                       name="tags"
                       render={({ field }) => (
                         <FormItem>
@@ -270,7 +272,7 @@ export default function AddProblemPage() {
 
                     <div className="grid grid-cols-2 gap-2">
                       <FormField
-                        control={form.control as any}
+                        control={form.control}
                         name="timeLimitSeconds"
                         render={({ field }) => (
                           <FormItem>
@@ -287,7 +289,7 @@ export default function AddProblemPage() {
                         )}
                       />
                       <FormField
-                        control={form.control as any}
+                        control={form.control}
                         name="memoryLimitMB"
                         render={({ field }) => (
                           <FormItem>
@@ -332,7 +334,7 @@ export default function AddProblemPage() {
                   </p>
 
                   <FormField
-                    control={form.control as any}
+                    control={form.control}
                     name="starterCode.java"
                     render={({ field }) => (
                       <FormItem>
@@ -350,7 +352,7 @@ export default function AddProblemPage() {
                   />
 
                   <FormField
-                    control={form.control as any}
+                    control={form.control}
                     name="starterCode.python"
                     render={({ field }) => (
                       <FormItem>
@@ -394,7 +396,7 @@ export default function AddProblemPage() {
                   </p>
 
                   <FormField
-                    control={form.control as any}
+                    control={form.control}
                     name="runnerTemplate.java"
                     render={({ field }) => (
                       <FormItem>
@@ -430,7 +432,7 @@ export default function AddProblemPage() {
                   />
 
                   <FormField
-                    control={form.control as any}
+                    control={form.control}
                     name="runnerTemplate.cpp"
                     render={({ field }) => (
                       <FormItem>
@@ -477,7 +479,7 @@ export default function AddProblemPage() {
                             rows={3}
                             className="font-mono text-sm border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             placeholder='{"nums": [2,7,11,15], "target": 9}'
-                            {...form.register(`testCases.${index}.inputText` as any)}
+                            {...form.register(`testCases.${index}.inputText`)}
                           />
                         </FormItem>
 
@@ -487,7 +489,7 @@ export default function AddProblemPage() {
                             rows={3}
                             className="font-mono text-sm border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-100 text-zinc-900"
                             placeholder="[0, 1]"
-                            {...form.register(`testCases.${index}.expectedOutputText` as any)}
+                            {...form.register(`testCases.${index}.expectedOutputText`)}
                           />
                         </FormItem>
                       </div>
@@ -517,7 +519,7 @@ export default function AddProblemPage() {
                     type="button"
                     variant="outline"
                     onClick={() =>
-                      append({ inputText: "", expectedOutputText: "", isSample: false, isHidden: false } as any)
+                      append({ inputText: "", expectedOutputText: "", isSample: false, isHidden: false })
                     }
                     className="border dark:border-zinc-700 border-zinc-200 dark:bg-zinc-800/50 bg-white dark:text-zinc-200 text-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   >

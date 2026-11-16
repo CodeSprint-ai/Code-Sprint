@@ -1,4 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+
+type RetryRequest = InternalAxiosRequestConfig & { _retry?: boolean };
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthResponse } from "@/features/auth/types/auth.types";
@@ -18,10 +20,10 @@ const api = axios.create({
 let isRefreshing = false;
 let failedQueue: {
   resolve: (value?: unknown) => void;
-  reject: (reason?: any) => void;
+  reject: (reason?: unknown) => void;
 }[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token)));
   failedQueue = [];
 };
@@ -44,18 +46,19 @@ api.interceptors.request.use(
 // --- Response Interceptor with Refresh Queue ---
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config as any;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryRequest | undefined;
+    if (!originalRequest) return Promise.reject(error);
     const authStore = useAuthStore.getState();
 
-    console.log({authStore});
+
     
 
     // ✅ Skip refresh logic for login/signup requests
     if (
       error.response?.status === 401 &&
-      (originalRequest.url.includes("/auth/login") ||
-        originalRequest.url.includes("/auth/signup"))
+      (originalRequest.url?.includes("/auth/login") ||
+        originalRequest.url?.includes("/auth/signup"))
     ) {
       return Promise.reject(error);
     }
@@ -109,148 +112,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import axios from "axios";
-// import { useAuthStore } from "@/features/auth/store/authStore";
-// import { AuthResponse } from "@/features/auth/types/auth.types";
-
-// const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-// const api = axios.create({
-//   baseURL,
-//   headers: {
-//     Accept: "application/json",
-//     "Content-Type": "application/json",
-//   },
-//   withCredentials: true,
-// });
-
-// // --- Refresh Queue State ---
-// let isRefreshing = false;
-// let failedQueue: {
-//   resolve: (value?: unknown) => void;
-//   reject: (reason?: any) => void;
-// }[] = [];
-
-// const processQueue = (error: any, token: string | null = null) => {
-//   failedQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token)));
-//   failedQueue = [];
-// };
-
-// // --- Request Interceptor ---
-// api.interceptors.request.use(
-//   async (config: any) => {
-//     const authStore = useAuthStore.getState();
-//     let token = authStore.token;
-
-//     // If no token in memory, try to refresh using HttpOnly cookie
-//     if (!token && !config._retryRefresh) {
-//       config._retryRefresh = true;
-//       try {
-//         const { data } = await axios.post<AuthResponse>(
-//           `${baseURL}/auth/refresh`,
-//           {},
-//           { withCredentials: true }
-//         );
-//         console.log(`i am here`);
-        
-//         console.log({ data });
-//         token = data.data.accessToken;
-//         // console.log({ token });
-//         authStore.setToken(token);
-//       } catch (err) {
-//         authStore.clearAuth();
-//         window.location.href = "/auth/login";
-//         return Promise.reject(err);
-//       }
-//     }
-
-//     if (token) {
-//       config.headers = {
-//         ...config.headers,
-//         Authorization: `Bearer ${token}`,
-//       };
-//     }
-
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
-
-// // --- Response Interceptor with Refresh Queue ---
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config as any;
-//     const authStore = useAuthStore.getState();
-
-//     // Skip refresh logic for login/signup requests
-//     if (
-//       error.response?.status === 401 &&
-//       (originalRequest.url.includes("/auth/login") ||
-//         originalRequest.url.includes("/auth/signup"))
-//     ) {
-//       return Promise.reject(error);
-//     }
-
-//     // Refresh logic for expired access tokens
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-
-//       if (isRefreshing) {
-//         // Wait for ongoing refresh to complete
-//         return new Promise((resolve, reject) => {
-//           failedQueue.push({ resolve, reject });
-//         }).then((token) => {
-//           originalRequest.headers["Authorization"] = `Bearer ${token}`;
-//           return api(originalRequest);
-//         });
-//       }
-
-//       isRefreshing = true;
-
-//       try {
-//         const { data } = await axios.post<AuthResponse>(
-//           `${baseURL}/auth/refresh`,
-//           {},
-//           { withCredentials: true }
-//         );
-
-//         const newToken = data.data.accessToken;
-//         authStore.setToken(newToken);
-//         processQueue(null, newToken);
-
-//         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-//         return api(originalRequest);
-//       } catch (refreshError) {
-//         processQueue(refreshError, null);
-//         authStore.clearAuth();
-//         window.location.href = "/auth/login";
-//         return Promise.reject(refreshError);
-//       } finally {
-//         isRefreshing = false;
-//       }
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
-
-// export default api;

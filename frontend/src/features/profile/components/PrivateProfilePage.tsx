@@ -1,4 +1,5 @@
 'use client';
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -107,8 +108,8 @@ export default function PrivateProfilePage() {
     onSuccess: () => {
       toast.success('Password changed successfully');
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Failed to change password');
+    onError: (error: unknown) => {
+      toast.error(getErrorDetails(error)?.response?.data?.message || 'Failed to change password');
     },
   });
 
@@ -118,8 +119,8 @@ export default function PrivateProfilePage() {
       queryClient.invalidateQueries({ queryKey: ['my-sessions'] });
       toast.success('Session revoked successfully');
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Failed to revoke session');
+    onError: (error: unknown) => {
+      toast.error(getErrorDetails(error)?.response?.data?.message || 'Failed to revoke session');
     },
   });
 
@@ -129,8 +130,8 @@ export default function PrivateProfilePage() {
       queryClient.invalidateQueries({ queryKey: ['my-sessions'] });
       toast.success(`Logged out from ${data.sessionsRevoked} other sessions`);
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || 'Failed to revoke all sessions');
+    onError: (error: unknown) => {
+      toast.error(getErrorDetails(error)?.response?.data?.message || 'Failed to revoke all sessions');
     },
   });
 
@@ -466,10 +467,10 @@ function SettingsTab({
   isChangingPassword,
 }: {
   profile: PrivateProfile;
-  onUpdateProfile: (data: any) => void;
+  onUpdateProfile: (data: Parameters<typeof updateMyProfile>[0]) => void;
   onUpdateSettings: (data: Partial<UserPreferences>) => void;
   onRecalculateStats: () => void;
-  onChangePassword: (data: any) => void;
+  onChangePassword: (data: { currentPassword: string; newPassword: string }) => void;
   isUpdating: boolean;
   isRecalculating: boolean;
   isChangingPassword: boolean;
@@ -750,7 +751,7 @@ function SettingsTab({
               <label className={labelClasses}>Theme</label>
               <Select
                 value={preferences.theme}
-                onValueChange={(value) => setPreferences({ ...preferences, theme: value as any })}
+                onValueChange={(value) => setPreferences({ ...preferences, theme: value as UserPreferences['theme'] })}
               >
                 <SelectTrigger className={inputClasses}>
                   <SelectValue placeholder="Select theme" />
@@ -766,7 +767,7 @@ function SettingsTab({
               <label className={labelClasses}>Default Language</label>
               <Select
                 value={preferences.defaultLanguage}
-                onValueChange={(value) => setPreferences({ ...preferences, defaultLanguage: value as any })}
+                onValueChange={(value) => setPreferences({ ...preferences, defaultLanguage: value as UserPreferences['defaultLanguage'] })}
               >
                 <SelectTrigger className={inputClasses}>
                   <SelectValue placeholder="Select language" />
