@@ -1,3 +1,4 @@
+import { MotionSurface } from "@/features/marketing/MotionSurface";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -15,7 +16,7 @@ import "@/features/marketing/marketing.css";
 
 export default function LandingPage() {
   return (
-    <div className="marketing-site">
+    <MotionSurface>
       <Navbar />
       <main id="main-content" className="m-main">
         <section className="m-hero">
@@ -180,6 +181,6 @@ export default function LandingPage() {
         </div>
       </main>
       <Footer />
-    </div>
+    </MotionSurface>
   );
 }

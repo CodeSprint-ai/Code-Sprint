@@ -1392,3 +1392,112 @@
     animation: none;
   }
 }
+
+/* Short, purposeful motion; no looping decoration or hidden initial content. */
+@keyframes m-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes m-code-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes app-milestone {
+  0% {
+    transform: scale(0.86);
+  }
+  65% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .marketing-site .m-dropdown,
+  .marketing-site .m-mobile-menu {
+    animation: m-content-enter 180ms ease-out;
+    transform-origin: top;
+  }
+  .marketing-site .m-hint-transition {
+    animation: m-content-enter 240ms ease-out;
+  }
+  .marketing-site .m-price-transition {
+    animation: m-content-enter 200ms ease-out;
+  }
+  .marketing-site .m-code-line {
+    animation: m-code-enter 220ms ease-out backwards;
+  }
+  .marketing-site .m-button {
+    transition:
+      background 180ms,
+      border-color 180ms,
+      transform 180ms,
+      box-shadow 180ms;
+  }
+  .marketing-site .m-button:active:not(:disabled) {
+    transform: translateY(1px) scale(0.985);
+  }
+  .marketing-site .m-text-link svg,
+  .marketing-site .m-button svg {
+    transition: transform 180ms ease-out;
+  }
+  .marketing-site .m-language-tabs button {
+    transition:
+      color 180ms,
+      border-color 180ms,
+      background 180ms;
+  }
+  .marketing-site .m-nav-link svg {
+    transition: transform 180ms;
+  }
+  .marketing-site .m-nav-link[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+  .marketing-site .m-billing-toggle button {
+    transition:
+      background 180ms,
+      color 180ms,
+      box-shadow 180ms;
+  }
+  .product-app .app-navigation-link {
+    transition:
+      background 180ms,
+      color 180ms;
+  }
+  .product-app .app-milestone-enter,
+  .product-app [data-new-badge="true"] {
+    animation: app-milestone 420ms ease-out;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .marketing-site .m-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px #15231b12;
+  }
+  .marketing-site .m-text-link:hover svg,
+  .marketing-site .m-button:hover svg {
+    transform: translateX(3px);
+  }
+  .marketing-site .m-resources article {
+    transition:
+      transform 220ms,
+      border-color 220ms;
+  }
+  .marketing-site .m-resources article:hover {
+    transform: translateY(-3px);
+    border-color: var(--m-accent);
+  }
+}

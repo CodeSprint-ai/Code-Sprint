@@ -73,7 +73,7 @@ export function PricingView({
             <h2>Pro</h2>
             <span className="m-plan-status">Planned · waitlist only</span>
           </div>
-          <p className="m-price">
+          <p key={plan} className="m-price m-price-transition">
             ${annual ? product.pricing.yearly : product.pricing.monthly}
             <span>USD / {annual ? "year" : "month"}</span>
           </p>

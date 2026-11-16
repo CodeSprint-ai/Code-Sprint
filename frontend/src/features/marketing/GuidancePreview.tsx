@@ -33,11 +33,13 @@ export function GuidancePreview() {
         <span className="m-muted">Sample guidance</span>
       </div>
       <div className="m-example-body" aria-live="polite">
-        <p className="m-small-label">
-          Hint {step + 1} of 4 · {hint.stage}
-        </p>
-        <h3>{hint.title}</h3>
-        <p>{hint.text}</p>
+        <div key={step} className="m-hint-transition">
+          <p className="m-small-label">
+            Hint {step + 1} of 4 · {hint.stage}
+          </p>
+          <h3>{hint.title}</h3>
+          <p>{hint.text}</p>
+        </div>
       </div>
       <div className="m-example-bottom">
         <span>Preview only · no allowance used</span>
