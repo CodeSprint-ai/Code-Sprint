@@ -1,3 +1,4 @@
+import { filterHiddenResults } from '../../common/utils/filter-hidden-results';
 /**
  * Submission Processor
  *
@@ -215,7 +216,7 @@ export class SubmissionProcessor {
 
       this.emitUpdate(submission, {
         status: submission.status,
-        testResults: this.filterHiddenResults(testResults),
+        testResults: filterHiddenResults(testResults),
         executionTime: submission.executionTime,
         memoryUsage: submission.memoryUsage,
       });
@@ -326,7 +327,7 @@ export class SubmissionProcessor {
 
     this.emitUpdate(submission, {
       status: submission.status,
-      testResults: this.filterHiddenResults(testResults),
+      testResults: filterHiddenResults(testResults),
       executionTime: submission.executionTime,
       memoryUsage: submission.memoryUsage,
     });
@@ -351,20 +352,6 @@ export class SubmissionProcessor {
     };
 
     return statusMap[statusId] || SubmissionStatus.INTERNAL_ERROR;
-  }
-
-  private filterHiddenResults(results: TestResult[]): TestResult[] {
-    return results.map((r) => {
-      if (r.isHidden) {
-        return {
-          ...r,
-          input: {},
-          expected: null,
-          got: null,
-        };
-      }
-      return r;
-    });
   }
 
   private emitUpdate(

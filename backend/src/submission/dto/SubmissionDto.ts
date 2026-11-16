@@ -1,3 +1,4 @@
+import { filterHiddenResults } from '../../common/utils/filter-hidden-results';
 import { Submission } from '../entities/Submission';
 import { AnalysisResult } from '../../ai/post-submission/schema/analysis.schema';
 
@@ -36,7 +37,9 @@ export class SubmissionDto {
       createdAt: submission.createdAt,
       problemTitle: submission.problem?.title,
       userName: submission.user?.name,
-      testResults: submission.testResults,
+      testResults: submission.testResults == null
+        ? submission.testResults
+        : filterHiddenResults(submission.testResults),
       compileOutput: submission.compileOutput,
       aiAnalysis: submission.aiAnalysis,
       finishedAt: submission.finishedAt,

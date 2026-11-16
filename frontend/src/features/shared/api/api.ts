@@ -48,7 +48,7 @@ api.interceptors.response.use(
     const originalRequest = error.config as any;
     const authStore = useAuthStore.getState();
 
-    console.log({authStore});
+
     
 
     // ✅ Skip refresh logic for login/signup requests

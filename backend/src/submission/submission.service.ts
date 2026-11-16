@@ -1,5 +1,5 @@
 // submission.service.ts
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Submission } from './entities/Submission';
 import { Repository } from 'typeorm';
@@ -11,6 +11,9 @@ import { SubmissionStatus } from './enum/SubmissionStatus';
 import { SprintSession } from '../sprint/entities/SprintSession';
 import { SubmissionDto } from './dto/SubmissionDto';
 import { GetSubmissionsQueryDto } from './dto/GetSubmissionsQueryDto';
+import { RoleEnum } from '../user/enum/RoleEnum';
+
+type SubmissionReader = { uuid: string; role: RoleEnum };
 
 @Injectable()
 export class SubmissionService {
@@ -19,6 +22,20 @@ export class SubmissionService {
     @InjectRepository(Problem) private problemRepo: Repository<Problem>,
     @InjectQueue('submissions') private submissionQueue: Queue
   ) { }
+
+  private userScope(user: SubmissionReader) {
+    this.assertUserFilter(user);
+    return user.role === RoleEnum.ADMIN ? {} : { user: { uuid: user.uuid } };
+  }
+
+  private assertUserFilter(user: SubmissionReader, userId?: string) {
+    if (!user?.uuid) {
+      throw new ForbiddenException('An authenticated user is required');
+    }
+    if (user.role !== RoleEnum.ADMIN && userId && userId !== user.uuid) {
+      throw new ForbiddenException('You can only view your own submissions');
+    }
+  }
 
   async createSubmission(command: SubmissionCommand, user: any) {
     const problem = command.problemUuid ? await this.problemRepo.findOne({ where: { uuid: command.problemUuid }, relations: ['testCases'] })
@@ -55,25 +72,26 @@ export class SubmissionService {
     return submission;
   }
 
-  async getSubmissionsByUuid(submissionUuid: string): Promise<SubmissionDto> {
+  async getSubmissionsByUuid(submissionUuid: string, requestingUser: SubmissionReader): Promise<SubmissionDto> {
     const submissions = await this.repo.findOne({
-      where: { uuid: submissionUuid },
+      where: { uuid: submissionUuid, ...this.userScope(requestingUser) },
     });
-    if (!submissions) throw new Error('Submission not found');
+    if (!submissions) throw new NotFoundException('Submission not found');
     return SubmissionDto.toDto(submissions);
   }
 
   // get submissions by problem UUID
-  async getSubmissionsByProblemUuid(problemUuid: string): Promise<SubmissionDto[]> {
+  async getSubmissionsByProblemUuid(problemUuid: string, requestingUser: SubmissionReader): Promise<SubmissionDto[]> {
     const submissions = await this.repo.find({
-      where: { problem: { uuid: problemUuid } },
+      where: { problem: { uuid: problemUuid }, ...this.userScope(requestingUser) },
       order: { createdAt: 'DESC' },
     });
     return submissions.map(SubmissionDto.toDto);
   }
 
   // get submissions by problem UUID
-  async getSubmissionsByUserUuid(userUuid: string): Promise<SubmissionDto[]> {
+  async getSubmissionsByUserUuid(userUuid: string, requestingUser: SubmissionReader): Promise<SubmissionDto[]> {
+    this.assertUserFilter(requestingUser, userUuid);
     const submissions = await this.repo.find({
       where: { user: { uuid: userUuid } },
       order: { createdAt: 'DESC' },
@@ -87,7 +105,7 @@ export class SubmissionService {
    */
   async getSubmissionsPaginated(
     query: GetSubmissionsQueryDto,
-    requestingUser?: any
+    requestingUser: SubmissionReader
   ): Promise<{
     data: SubmissionDto[];
     meta: {
@@ -117,14 +135,10 @@ export class SubmissionService {
       .leftJoinAndSelect('submission.problem', 'problem')
       .orderBy('submission.createdAt', 'DESC');
 
-    // Apply userId filter - if not admin, only show own submissions
-    // If userId is provided in query, use it; otherwise, if user is not admin, filter by their own userId
-    if (userId) {
-      queryBuilder.andWhere('user.uuid = :userId', { userId });
-    } else if (requestingUser && requestingUser.role !== 'ADMIN') {
-      queryBuilder.andWhere('user.uuid = :requestingUserId', {
-        requestingUserId: requestingUser.uuid,
-      });
+    this.assertUserFilter(requestingUser, userId);
+    const scopedUserId = requestingUser.role === RoleEnum.ADMIN ? userId : requestingUser.uuid;
+    if (scopedUserId) {
+      queryBuilder.andWhere('user.uuid = :userId', { userId: scopedUserId });
     }
 
     // Apply status filter
