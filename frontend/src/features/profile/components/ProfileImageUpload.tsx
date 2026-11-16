@@ -1,4 +1,5 @@
 'use client';
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import React, { useRef, useState, useCallback } from 'react';
 import { Camera, X, Upload } from 'lucide-react';
@@ -34,8 +35,8 @@ export default function ProfileImageUpload({ currentAvatarUrl, userName }: Profi
             setPreview(null);
             toast.success('Profile image updated successfully!');
         },
-        onError: (error: any) => {
-            toast.error(error?.response?.data?.message || 'Failed to upload image');
+        onError: (error: unknown) => {
+            toast.error(getErrorDetails(error)?.response?.data?.message || 'Failed to upload image');
         },
     });
 

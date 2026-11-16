@@ -59,7 +59,7 @@ export default function PublicProfilePage() {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-white mb-2">User Not Found</h1>
-                    <p className="text-slate-400">The profile you're looking for doesn't exist.</p>
+                    <p className="text-slate-400">The profile you&apos;re looking for doesn&apos;t exist.</p>
                 </div>
             </div>
         );

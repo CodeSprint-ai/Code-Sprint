@@ -26,7 +26,7 @@ export interface TestCaseResult {
   input: Record<string, unknown>;
   expected: unknown;
   got: unknown;
-  verdict: "ACCEPTED" | "WRONG_ANSWER" | "TIME_LIMIT_EXCEEDED" | "RUNTIME_ERROR" | "COMPILATION_ERROR";
+  verdict: import("@/features/submissions/types/submission.types").SubmissionStatus;
   time: number; // seconds
   memory: number; // KB
   isHidden: boolean;

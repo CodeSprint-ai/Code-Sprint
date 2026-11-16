@@ -49,6 +49,7 @@ export const problemSchema = z.object({
   testCases: z.array(testCaseSchema).min(1, "At least one test case is required"),
 });
 
+export type ProblemFormInput = z.input<typeof problemSchema>;
 export type ProblemFormValues = z.infer<typeof problemSchema>;
 export type StarterCodeValues = z.infer<typeof starterCodeSchema>;
 export type TestCaseValues = z.infer<typeof testCaseSchema>;

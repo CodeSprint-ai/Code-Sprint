@@ -1,14 +1,13 @@
 "use client";
+import { useMounted } from "@/features/shared/hooks/useMounted";
 
 import { useTheme } from "next-themes";
 import { Sun, Moon, Monitor } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
 
-  useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
   const toggleTheme = (e: React.MouseEvent) => {
@@ -16,8 +15,6 @@ export function ThemeToggle() {
     if (theme === "system") nextTheme = "light";
     else if (theme === "light") nextTheme = "dark";
     else if (theme === "dark") nextTheme = "system";
-
-    // @ts-ignore - View Transitions API
     if (!document.startViewTransition) {
       setTheme(nextTheme);
       return;
@@ -29,8 +26,6 @@ export function ThemeToggle() {
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     );
-
-    // @ts-ignore
     const transition = document.startViewTransition(() => {
       setTheme(nextTheme);
     });

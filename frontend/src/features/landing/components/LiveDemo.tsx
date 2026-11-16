@@ -1,4 +1,9 @@
 "use client";
+import { useSyncExternalStore } from "react";
+import type { Monaco } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
+import { runDemoScript } from "../utils/run-demo-script";
+import { getErrorDetails } from "@/features/shared/utils/api-error";
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
@@ -84,7 +89,7 @@ async function fetchUserData(id) {
     await new Promise(r => setTimeout(r, 400));
     console.log("Done.");
   } catch (err) {
-    console.error(err.message);
+    console.error(getErrorDetails(err).message);
   }
 })();`
   },
@@ -138,34 +143,34 @@ interface SavedSnippet {
 const LiveDemo: React.FC = () => {
   const { resolvedTheme } = useTheme();
   const [activeExampleId, setActiveExampleId] = useState<string>('binarySearch');
-  const [activeTheme, setActiveTheme] = useState<string>('vs-dark');
+  const [selectedTheme, setActiveTheme] = useState<string | null>(null);
+  const activeTheme = selectedTheme ?? (resolvedTheme === 'light' ? 'github-light' : 'vs-dark');
   const [code, setCode] = useState(EXAMPLES.binarySearch.code);
   const [output, setOutput] = useState<string[]>(['// Compiled in 12ms.', '// All tests passed.']);
   const [isRunning, setIsRunning] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
-  const [savedSnippets, setSavedSnippets] = useState<SavedSnippet[]>([]);
-  const [problems, setProblems] = useState<any[]>([]);
+  const [problems, setProblems] = useState<DemoProblem[]>([]);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [snippetName, setSnippetName] = useState("My Snippet");
   const [deleteSnippetId, setDeleteSnippetId] = useState<string | null>(null);
   
   const terminalRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<any>(null);
-  const monacoRef = useRef<any>(null);
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const monacoRef = useRef<Monaco | null>(null);
 
-  // Load saved snippets
+  // Subscribe to browser storage and overlay edits made in this tab.
+  const storedSnippets = useSyncExternalStore(subscribeToSnippets, getSnippetsSnapshot, getServerSnippetsSnapshot);
+  const [snippetEdits, setSnippetEdits] = useState<SavedSnippet[] | null>(null);
+  const parsedSnippets: SavedSnippet[] = (() => {
+    try { return storedSnippets ? JSON.parse(storedSnippets) : []; }
+    catch { return []; }
+  })();
+  const savedSnippets = snippetEdits ?? parsedSnippets;
+  const setSavedSnippets = setSnippetEdits;
+
   useEffect(() => {
-    const saved = localStorage.getItem('codesprint_snippets');
-    if (saved) {
-      try {
-        setSavedSnippets(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load snippets", e);
-      }
-    }
-    
     // Fetch problems
     const fetchProblems = async () => {
       try {
@@ -206,16 +211,7 @@ const LiveDemo: React.FC = () => {
     }
   }, [output, isRunning]);
 
-  // Sync theme
-  useEffect(() => {
-    if (resolvedTheme === 'light') {
-      setActiveTheme('github-light');
-    } else {
-      setActiveTheme('vs-dark');
-    }
-  }, [resolvedTheme]);
-
-  const defineMonacoThemes = (monaco: any) => {
+  const defineMonacoThemes = (monaco: Monaco) => {
     monaco.editor.defineTheme('dracula', {
       base: 'vs-dark',
       inherit: true,
@@ -316,7 +312,7 @@ const LiveDemo: React.FC = () => {
     // Clear editor markers
     if (monacoRef.current && editorRef.current) {
       const model = editorRef.current.getModel();
-      monacoRef.current.editor.setModelMarkers(model, 'owner', []);
+      if (model) monacoRef.current.editor.setModelMarkers(model, 'owner', []);
     }
 
     const isProblem = problems.some(p => p.uuid === activeExampleId);
@@ -340,7 +336,7 @@ const LiveDemo: React.FC = () => {
                if (result.output) logs.push(result.output);
                setStatus('error');
            } else {
-               result.testResults.forEach((tr: any, i: number) => {
+               result.testResults.forEach((tr: { passed: boolean; isHidden: boolean; expected: unknown; got: unknown }, i: number) => {
                    logs.push(`Test Case ${i+1}: ${tr.passed ? '✅ Passed' : '❌ Failed'}`);
                    if (!tr.passed && !tr.isHidden) {
                        logs.push(`   Expected: ${tr.expected}`);
@@ -355,9 +351,9 @@ const LiveDemo: React.FC = () => {
                    setStatus('error');
                }
            }
-           setOutput(logs);
-       } catch (err: any) {
-           setOutput([`[Error] ${err.message}`]);
+           setOutput([...logs]);
+       } catch (err: unknown) {
+           setOutput([`[Error] ${getErrorDetails(err).message}`]);
            setStatus('error');
        } finally {
            setIsRunning(false);
@@ -371,7 +367,7 @@ const LiveDemo: React.FC = () => {
     const logs: string[] = [];
     
     const mockConsole = {
-        log: (...args: any[]) => {
+        log: (...args: unknown[]) => {
             logs.push(args.map(arg => {
                 if (typeof arg === 'object') {
                     try {
@@ -384,15 +380,15 @@ const LiveDemo: React.FC = () => {
             }).join(' '));
             setOutput([...logs]); 
         },
-        error: (...args: any[]) => {
+        error: (...args: unknown[]) => {
              logs.push(`[Error] ${args.map(arg => String(arg)).join(' ')}`);
              setOutput([...logs]);
         },
-        warn: (...args: any[]) => {
+        warn: (...args: unknown[]) => {
              logs.push(`[Warn] ${args.map(arg => String(arg)).join(' ')}`);
              setOutput([...logs]);
         },
-        info: (...args: any[]) => {
+        info: (...args: unknown[]) => {
              logs.push(`[Info] ${args.map(arg => String(arg)).join(' ')}`);
              setOutput([...logs]);
         },
@@ -403,26 +399,20 @@ const LiveDemo: React.FC = () => {
     };
 
     try {
-        // Use AsyncFunction to allow top-level await logic
-        const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-        const runUserCode = new AsyncFunction('console', code);
-        
-        const startTime = performance.now();
-        await runUserCode(mockConsole);
-        const endTime = performance.now();
-        
+        const elapsedMs = await runDemoScript(code, mockConsole);
+
         logs.push('');
-        logs.push(`> Execution time: ${(endTime - startTime).toFixed(2)}ms ⚡️`);
+        logs.push(`> Execution time: ${elapsedMs.toFixed(2)}ms ⚡️`);
         
-        setOutput(logs);
+        setOutput([...logs]);
         setStatus('success');
-    } catch (error: any) {
-        logs.push(`Runtime Error: ${error.message}`);
-        setOutput(logs);
+    } catch (error: unknown) {
+        logs.push(`Runtime Error: ${getErrorDetails(error).message}`);
+        setOutput([...logs]);
         setStatus('error');
 
         // Attempt to map error to line number
-        if (monacoRef.current && editorRef.current && error.stack) {
+        if (monacoRef.current && editorRef.current && error instanceof Error && error.stack) {
             // Check for line number in stack trace
             const match = error.stack.match(/<anonymous>:(\d+):(\d+)/);
             if (match) {
@@ -437,7 +427,7 @@ const LiveDemo: React.FC = () => {
                         startColumn: 1,
                         endLineNumber: adjustedLine,
                         endColumn: 1000,
-                        message: error.message,
+                        message: getErrorDetails(error).message,
                         severity: 8 // MarkerSeverity.Error
                      }]);
                 }
@@ -997,5 +987,18 @@ const LiveDemo: React.FC = () => {
     </section>
   );
 };
+
+const subscribeToSnippets = (listener: () => void) => {
+  window.addEventListener('storage', listener);
+  return () => window.removeEventListener('storage', listener);
+};
+const getSnippetsSnapshot = () => localStorage.getItem('codesprint_snippets');
+const getServerSnippetsSnapshot = () => null;
+
+interface DemoProblem {
+  uuid: string;
+  title: string;
+  starterCode?: string | Record<string, string>;
+}
 
 export default LiveDemo;

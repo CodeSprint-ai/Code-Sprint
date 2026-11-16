@@ -109,18 +109,12 @@ export const usePaginatedProblems = (
       if (params.fromDate) queryParams.append("fromDate", params.fromDate);
       if (params.toDate) queryParams.append("toDate", params.toDate);
 
-      const response = await api.get<any>(
+      const response = await api.get<PaginatedProblemsResponse | { data: PaginatedProblemsResponse }>(
         `/problems?${queryParams.toString()}`
       );
       const raw = response.data;
-      // Backend may return { data, meta } directly or wrapped in ResponseWrapper { data: { data, meta }, message, ... }
-      if (raw?.data?.data && raw?.data?.meta) {
-        return raw.data as PaginatedProblemsResponse;
-      }
-      if (raw?.data && raw?.meta) {
-        return raw as PaginatedProblemsResponse;
-      }
-      return raw as PaginatedProblemsResponse;
+      return Array.isArray(raw.data) ? raw as PaginatedProblemsResponse : raw.data as PaginatedProblemsResponse;
+
     },
     enabled: true,
   });
