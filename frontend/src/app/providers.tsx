@@ -1,5 +1,6 @@
 "use client";
 
+import { MotionConfig } from "framer-motion";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import React, { Suspense, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,16 +17,24 @@ const queryClient = new QueryClient();
 
 export function Provider({ children }: Props) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <NextThemesProvider attribute="class" defaultTheme="system" enableSystem={true} storageKey="codesprint-theme" disableTransitionOnChange>
-        <AuthInitializer>
-          <Suspense fallback={null}>
-            <OAuthInitializer>{children}</OAuthInitializer>
-          </Suspense>
-        </AuthInitializer>
-        <Toaster />
-      </NextThemesProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <MotionConfig reducedMotion="user">
+      <QueryClientProvider client={queryClient}>
+        <NextThemesProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem={true}
+          storageKey="codesprint-theme"
+          disableTransitionOnChange
+        >
+          <AuthInitializer>
+            <Suspense fallback={null}>
+              <OAuthInitializer>{children}</OAuthInitializer>
+            </Suspense>
+          </AuthInitializer>
+          <Toaster />
+        </NextThemesProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </MotionConfig>
   );
 }
