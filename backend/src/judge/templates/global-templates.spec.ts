@@ -75,13 +75,15 @@ describe('Global Templates', () => {
 
         it('should read payload from stdin', () => {
             const template = getJavaTemplate();
-            expect(template).toContain('System.in.readAllBytes');
+            expect(template).toContain('new Scanner(System.in)');
+            expect(template).toContain('scanner.hasNext() ? scanner.next()');
             expect(template).toContain('executionConfig');
         });
 
         it('should use reflection for method invocation', () => {
             const template = getJavaTemplate();
-            expect(template).toContain('getMethod');
+            expect(template).toContain('getDeclaredMethods()');
+            expect(template).toContain('method.setAccessible(true)');
             expect(template).toContain('invoke');
         });
     });
@@ -93,9 +95,11 @@ describe('Global Templates', () => {
             expect(template).toContain('{{USER_CODE}}');
         });
 
-        it('should include nlohmann/json', () => {
+        it('should provide JSON parsing without external headers', () => {
             const template = getCppTemplate();
-            expect(template).toContain('nlohmann/json.hpp');
+            expect(template).toContain('class json');
+            expect(template).toContain('json::parse(raw)');
+            expect(template).not.toContain('#include <nlohmann/json.hpp>');
         });
 
         it('should contain compare function', () => {
@@ -107,7 +111,8 @@ describe('Global Templates', () => {
 
         it('should read payload from stdin', () => {
             const template = getCppTemplate();
-            expect(template).toContain('istreambuf_iterator');
+            expect(template).toContain('while (getline(cin, line))');
+            expect(template).toContain('json::parse(raw)');
             expect(template).toContain('executionConfig');
         });
 
