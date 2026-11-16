@@ -9,7 +9,7 @@ import { getCppTemplate } from '../templates/global-templates';
  * Uses the global C++ runner template.
  * The runner receives all test cases + executionConfig as a single JSON payload.
  *
- * ⚠️ CRITICAL: C++ requires nlohmann/json.hpp (supported in Judge0 GNU++17)
+ * The template includes its own JSON parser and needs no external headers.
  */
 export class CppRunner implements Runner {
   readonly language = Language.CPP;
