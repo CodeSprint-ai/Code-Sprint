@@ -1,3 +1,4 @@
+import { RateLimit, RateLimiterGuard } from '../auth/guards/rate-limiter.guard';
 import { Body, Controller, Get, Param, Post, Query, Req, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { SubmissionCommand } from './command/SubmissionCommand';
 import { SubmissionService } from './submission.service';
@@ -8,7 +9,8 @@ import { GetSubmissionsQueryDto } from './dto/GetSubmissionsQueryDto';
 export class SubmissionController {
   constructor(private readonly submissionService: SubmissionService) { }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RateLimiterGuard)
+  @RateLimit({ maxAttempts: 10, windowSeconds: 60, keyGenerator: (req) => `submission:${(req.user as { uuid: string }).uuid}` })
   @Post()
   async create(@Req() req, @Body() command: SubmissionCommand) {
     // req.user assumed set via auth middleware

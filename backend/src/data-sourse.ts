@@ -1,3 +1,4 @@
+import { EngagementRequest } from './engagement/engagement.entity';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
@@ -31,6 +32,7 @@ export const AppDataSource = new DataSource({
   synchronize: false,
   logging: true,
   entities: [
+    EngagementRequest,
     User,
     Problem,
     TestCase,
@@ -51,7 +53,7 @@ export const AppDataSource = new DataSource({
     UserRoadmap,
     RoadmapBadge,
   ],
-  migrations: ['src/migrations/*.ts'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
   subscribers: [],
 });
 

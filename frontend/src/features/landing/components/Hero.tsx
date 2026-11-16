@@ -56,7 +56,7 @@ const Hero: React.FC = () => {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full dark:bg-white/5 bg-orange-50 dark:border-white/10 border-orange-200 border mb-6">
               <span className="w-2 h-2 rounded-full bg-brand-orange animate-pulse" />
-              <span className="text-xs font-medium text-brand-orange tracking-wide uppercase">New AI Features</span>
+              <span className="text-xs font-medium text-brand-orange tracking-wide uppercase">Free Beta · No payment card</span>
             </div>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight dark:text-white text-zinc-900 mb-6 leading-[1.1]">
@@ -68,11 +68,11 @@ const Hero: React.FC = () => {
             </h1>
             
             <p className="text-lg dark:text-gray-400 text-zinc-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Stop struggling with fragmented resources. CodeSprint gives you adaptive learning paths, real-time code execution, and a personalized AI mentor to explain every failure and optimize every success.
+              Practice algorithms, reveal progressive hints, and review submission feedback in one workspace. Build your next approach with a clearer understanding of what to try.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <Link href="/auth/login?redirect=%2Fdashboard" className="w-full sm:w-auto px-8 py-4 bg-brand-green text-black font-bold rounded-lg hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 group">
+              <Link href="/auth/signup" className="w-full sm:w-auto px-8 py-4 bg-brand-green text-black font-bold rounded-lg hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 group">
                 Start Coding for Free
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -89,15 +89,7 @@ const Hero: React.FC = () => {
               </button>
             </div>
             
-            <div className="mt-10 flex items-center justify-center lg:justify-start gap-8 dark:text-gray-500 text-zinc-500 text-sm font-medium">
-              <span>Empowering Computer Science Students Worldwide</span>
-              <div className="flex gap-4 opacity-70 grayscale">
-                <span className="font-bold text-lg">SSUET</span>
-                <span className="font-bold text-lg">FAST</span>
-                <span className="font-bold text-lg">NUST</span>
-                <span className="font-bold text-lg">NED</span>
-              </div>
-            </div>
+            <p className="mt-8 text-sm text-zinc-500">Built for computer science students and aspiring competitive programmers.</p>
           </motion.div>
         </div>
 
@@ -108,6 +100,7 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="relative"
         >
+          <p className="mb-5 text-center text-xs text-zinc-500">Illustrative workspace · sample results</p>
           {/* Floating Elements */}
           <motion.div 
             animate={{ y: [0, -10, 0] }}

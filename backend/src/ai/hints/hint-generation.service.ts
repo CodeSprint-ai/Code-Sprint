@@ -11,13 +11,13 @@ import { Problem } from '../../problem/entities/Problem';
  * Strict level instructions to prevent hint "leakage":
  * - Level 1 must NOT name any algorithm or data structure
  * - Level 3 must NOT be valid code in any language
- * - Level 4 is the only level that produces actual code
+ * - Level 4 checks reasoning and edge cases; no level provides a complete solution
  */
 const LEVEL_INSTRUCTIONS: Record<number, string> = {
     1: 'THINKING DIRECTION: Only provide conceptual nudges. Strictly NO mention of specific algorithms (e.g., do not say "BFS", "DFS", "dynamic programming") or data structures (e.g., do not say "hash map", "stack"). Just guide the student\'s thinking.',
     2: 'APPROACH: Name the algorithm or data structure and explain WHY it works for this problem. Still NO code, NO pseudocode.',
     3: 'PSEUDOCODE: Provide a step-by-step logical breakdown using plain english and indentation. Ensure it is NOT valid code in any programming language. Use natural language for all steps.',
-    4: 'SOLUTION: Provide a complete, production-grade implementation in {language} with Big-O time and space complexity comments. Include edge case handling.',
+    4: 'REASONING CHECK: Help the learner validate their own approach with edge cases, invariants, and complexity questions. Use structured natural-language pseudocode if needed. Never provide a complete solution or executable implementation in {language} or any other language.',
 };
 
 @Injectable()
@@ -99,6 +99,7 @@ export class HintGenerationService {
                 problemUuid,
                 level,
                 content,
+                version: 2,
                 language: level === 4 ? language : 'python',
             });
 

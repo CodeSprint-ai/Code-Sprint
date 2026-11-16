@@ -1,3 +1,4 @@
+import { UsageService } from '../../usage/usage.service';
 import { Process, Processor, OnQueueFailed } from '@nestjs/bull';
 import { Job } from 'bull';
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
@@ -19,6 +20,7 @@ export class AnalysisProcessor implements OnModuleDestroy {
     private readonly postSubmissionService: PostSubmissionService,
     @InjectRepository(Submission)
     private readonly submissionRepo: Repository<Submission>,
+    private readonly quota: UsageService,
   ) {}
 
   @Process('analyze')
@@ -33,6 +35,7 @@ export class AnalysisProcessor implements OnModuleDestroy {
       submissionId,
       userId,
     );
+    await this.quota.complete(job.data.reservationId);
     const elapsed = Date.now() - start;
 
     this.logger.log(
@@ -48,6 +51,8 @@ export class AnalysisProcessor implements OnModuleDestroy {
    */
   @OnQueueFailed()
   async onFailed(job: Job, error: Error): Promise<void> {
+    if (job.attemptsMade < (job.opts.attempts ?? 1)) return;
+    await this.quota.release(job.data.reservationId);
     this.logger.error(
       `Analysis job ${job.id} failed permanently after ${job.attemptsMade} attempts: ${error.message}`,
       error.stack,

@@ -1,6 +1,7 @@
 "use client";
 import type { SubmissionSocketUpdate } from "@/features/submissions/hooks/useSubmissionSocket";
 
+import { UsageCard } from "@/features/marketing/UsageCard";
 import React, { useState, useCallback } from "react";
 import { useSubmissionSocket } from "@/features/submissions/hooks/useSubmissionSocket";
 import { useAIAnalysis } from "@/features/submissions/hooks/useAIAnalysis";
@@ -180,6 +181,7 @@ export default function SubmissionPanel({
         />
       )}
 
+      <div className="px-3 py-2"><UsageCard compact/></div>
       {/* Custom Tabs */}
       <div className="h-10 border-b dark:border-white/5 border-zinc-200 flex items-center px-2 dark:bg-white/[0.02] bg-zinc-50 shrink-0">
         <button

@@ -1,6 +1,6 @@
 import { getErrorDetails } from "@/features/shared/utils/api-error";
 import { useState, useCallback, useRef } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/features/shared/api/api";
 import type {
   AIAnalysisResult,
@@ -35,6 +35,7 @@ interface UseAIAnalysisReturn {
  * @param submissionId - Optional. When provided, auto-resets on change.
  */
 export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
+  const queryClient = useQueryClient();
   const [request, setRequest] = useState<{
     owner?: string;
     generation: number;
@@ -65,6 +66,7 @@ export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
       return response.data;
     },
     onSuccess: (responseData, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["ai-usage"] });
       if (variables.version !== requestVersion.current) return;
       setRequest((previous) => {
         if ((previous.owner !== variables.owner || previous.generation !== variables.generation)) return previous;
@@ -86,10 +88,10 @@ export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
   const pollingQuery = useQuery<AIJobStatusResponse>({
     queryKey: ["ai-job-status", jobId],
     queryFn: async () => {
-      const response = await api.get<AIJobStatusResponse>(
+      const response = await api.get<AIJobStatusResponse | { status: "not_found" }>(
         `/ai/job-status/${jobId}`
       );
-      return response.data;
+      return "status" in response.data ? { id: String(jobId), state: "not_found" as const } : response.data;
     },
     enabled: !!jobId,
     refetchInterval: (query) => {

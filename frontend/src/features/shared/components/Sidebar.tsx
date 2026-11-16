@@ -28,6 +28,7 @@ import {
   Zap,
   Sparkles,
 } from "lucide-react";
+import { useRole } from "@/features/shared/hooks/useRole";
 import { cn } from "@/features/shared/utils/utils";
 
 // Define route type
@@ -45,11 +46,13 @@ const routes: RouteItem[] = [
   { title: "Problems", url: "/problems", icon: ListTodo },
   { title: "Submissions", url: "/submission", icon: FileCode },
   { title: "Contest", url: "/contest", icon: Trophy },
+  { title: "AI Usage", url: "/usage", icon: Sparkles },
   { title: "Profile", url: "/profile", icon: User },
 ];
 
 export function Sidebar() {
   const { state } = useSidebar();
+  const { isAdmin } = useRole();
 
   const { logout } = useAuth();
   const pathname = usePathname();
@@ -112,7 +115,7 @@ export function Sidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {routes.map((item) => {
+              {[...routes, ...(isAdmin ? [{ title: "Support Inbox", url: "/admin/inbox", icon: FileCode }] : [])].map((item) => {
                 const active = isActive(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>

@@ -163,17 +163,14 @@ Analyze this submission and extract the required information.
       }
     }
 
-    // ── 6. Cache & Save ──────────────────────────────────────────
-    await this.redis.set(
-      cacheKey,
-      JSON.stringify(analysis),
-      'EX',
-      CACHE_TTL_SECONDS,
-    );
-
-    await this.submissionRepo.update(submissionId, {
-      aiAnalysis: analysis,
-    });
+    // Persist the report before publishing the optional cache, so future reads
+    // can bypass quota even if cache delivery is interrupted.
+    await this.submissionRepo.update(submissionId, { aiAnalysis: analysis });
+    try {
+      await this.redis.set(cacheKey, JSON.stringify(analysis), 'EX', CACHE_TTL_SECONDS);
+    } catch {
+      this.logger.warn('Analysis saved; optional cache update failed.');
+    }
 
     const totalElapsed = Date.now() - totalStart;
     this.logger.log(

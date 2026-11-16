@@ -1,201 +1,77 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Trophy, Flame, Target, Zap, Crown, Award, Star } from 'lucide-react';
-
-interface LeaderboardRowProps {
-  rank: number;
-  name: string;
-  xp: string;
-  avatarColor: string;
-  delay: number;
-  isUser?: boolean;
+import Link from "next/link";
+import { Award, Flame, Timer, ArrowRight } from "lucide-react";
+export default function Gamification() {
+  return (
+    <section id="gamification" className="relative overflow-hidden px-6 py-24">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-orange-500">
+            Progress you can come back to
+          </p>
+          <h2 className="mt-5 text-4xl font-bold tracking-tight md:text-5xl">
+            Build a habit.
+            <br />
+            <span className="text-emerald-500">Build your understanding.</span>
+          </h2>
+          <p className="mt-6 max-w-lg text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+            Keep track of your practice, celebrate earned milestones, and
+            challenge yourself in a timed sprint. Your own progress comes first.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="/badges"
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-6 py-3 font-semibold text-black"
+            >
+              Explore badges
+              <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="/sprints"
+              className="rounded-xl border border-zinc-300 px-6 py-3 font-medium dark:border-white/20"
+            >
+              Try coding sprints
+            </Link>
+          </div>
+        </div>
+        <div className="grid gap-4">
+          {[
+            {
+              icon: Flame,
+              title: "Keep your streak going",
+              text: "Your profile helps you see consistency across practice sessions.",
+            },
+            {
+              icon: Award,
+              title: "Earn your achievements",
+              text: "Find earned badges and mastery milestones connected to your account.",
+            },
+            {
+              icon: Timer,
+              title: "Focus with a timed sprint",
+              text: "Work through problems against the clock, then review the result.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="flex items-start gap-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-6 dark:border-white/10 dark:bg-white/[0.025]"
+            >
+              <span className="rounded-xl bg-emerald-500/10 p-3 text-emerald-500">
+                <item.icon size={25} />
+              </span>
+              <div>
+                <h3 className="text-lg font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+                  {item.text}
+                </p>
+              </div>
+            </div>
+          ))}
+          <p className="px-2 text-xs text-zinc-500">
+            Public rankings are in development. Free Beta does not display
+            simulated standings as real results.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
 }
-
-const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ rank, name, xp, avatarColor, delay, isUser }) => (
-  <motion.div 
-    initial={{ opacity: 0, x: 20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ delay, duration: 0.5 }}
-    className={`flex items-center gap-4 p-3 rounded-xl border mb-3 transition-colors ${
-      isUser 
-        ? 'bg-brand-green/10 border-brand-green/30' 
-        : 'dark:bg-white/5 bg-zinc-50 dark:border-white/5 border-zinc-200 dark:hover:bg-white/10 hover:bg-zinc-100'
-    }`}
-  >
-    <div className={`font-bold w-6 text-center ${
-      rank === 1 ? 'text-yellow-400' : 
-      rank === 2 ? 'text-gray-300' : 
-      rank === 3 ? 'text-amber-600' : 'text-gray-500'
-    }`}>
-      {rank}
-    </div>
-    <div className={`w-8 h-8 rounded-full ${avatarColor} flex items-center justify-center text-white font-bold text-xs shadow-inner`}>
-      {name.charAt(0)}
-    </div>
-    <div className="flex-1">
-        <div className={`text-sm font-medium ${isUser ? 'dark:text-white text-zinc-900' : 'dark:text-gray-200 text-zinc-700'}`}>
-            {name} {isUser && <span className="text-[10px] bg-brand-green text-black px-1.5 py-0.5 rounded ml-2 font-bold">YOU</span>}
-        </div>
-    </div>
-    <div className="text-xs font-mono text-brand-green/80 font-bold">{xp} XP</div>
-  </motion.div>
-);
-
-const Badge = ({ icon: Icon, color, bg, label, delay, x, y }: { icon: import("lucide-react").LucideIcon, color: string, bg: string, label: string, delay: number, x: string, y: string }) => (
-    <motion.div
-        initial={{ scale: 0, opacity: 0, y: 20 }}
-        whileInView={{ scale: 1, opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.1, y: -5 }}
-        transition={{ delay, type: "spring", stiffness: 200, damping: 15 }}
-        className={`absolute ${x} ${y} p-3 rounded-2xl dark:bg-[#18181B] bg-white border dark:border-white/10 border-zinc-200 backdrop-blur-md shadow-2xl z-20 flex items-center gap-3 cursor-pointer group`}
-    >
-        <div className={`${color} p-2 rounded-full dark:bg-white/10 bg-zinc-100`}>
-            <Icon size={20} />
-        </div>
-        <div className="hidden sm:block pr-2">
-            <p className="text-xs dark:text-gray-400 text-zinc-500 uppercase font-bold tracking-wider mb-0.5">Unlocked</p>
-            <p className="text-sm font-bold dark:text-white text-zinc-800 whitespace-nowrap">{label}</p>
-        </div>
-    </motion.div>
-)
-
-const Gamification: React.FC = () => {
-    return (
-        <section className="py-24 relative overflow-hidden">
-             {/* Background Effects */}
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
-             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-orange/5 rounded-full blur-[100px] pointer-events-none" />
-             
-             <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center relative z-10">
-                
-                {/* Left Content */}
-                <div className="order-2 lg:order-1">
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-xs font-bold uppercase tracking-wider mb-6">
-                            <Trophy size={14} />
-                            GAMIFIED MASTERY
-                        </div>
-                        
-                        <h2 className="text-4xl md:text-5xl font-bold dark:text-white text-zinc-900 mb-6 leading-tight">
-                            Make Coding <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-brand-orange">Addictive.</span>
-                        </h2>
-                        
-                        <p className="dark:text-gray-400 text-zinc-600 text-lg mb-10 leading-relaxed max-w-lg">
-                            Replace doom-scrolling with code-shipping. Maintain your streak, climb the global leaderboards, and earn badges that prove your mastery.
-                        </p>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <motion.div 
-                                whileHover={{ y: -5 }}
-                                className="p-5 rounded-2xl bg-gradient-to-br dark:from-white/5 dark:to-white/[0.02] from-zinc-50 to-white border dark:border-white/10 border-zinc-200"
-                            >
-                                <div className="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-500 mb-4">
-                                    <Flame size={24} />
-                                </div>
-                                <h3 className="dark:text-white text-zinc-800 font-bold text-lg mb-1">Daily Streaks</h3>
-                                <p className="text-sm dark:text-gray-400 text-zinc-500">Build a habit that sticks.</p>
-                            </motion.div>
-                            
-                            <motion.div 
-                                whileHover={{ y: -5 }}
-                                className="p-5 rounded-2xl bg-gradient-to-br dark:from-white/5 dark:to-white/[0.02] from-zinc-50 to-white border dark:border-white/10 border-zinc-200"
-                            >
-                                <div className="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center text-yellow-500 mb-4">
-                                    <Award size={24} />
-                                </div>
-                                <h3 className="dark:text-white text-zinc-800 font-bold text-lg mb-1">Skill Badges</h3>
-                                <p className="text-sm dark:text-gray-400 text-zinc-500">Show off your specialized mastery.</p>
-                            </motion.div>
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* Right Visuals */}
-                <div className="relative order-1 lg:order-2 flex justify-center lg:block">
-                    {/* Main Card - Leaderboard */}
-                    <div className="relative dark:bg-[#121214] bg-white rounded-3xl border dark:border-white/10 border-zinc-200 p-6 shadow-lg dark:shadow-2xl z-10 w-full max-w-md backdrop-blur-xl">
-                        {/* Card Header */}
-                        <div className="flex items-center justify-between mb-8 pb-4 border-b dark:border-white/5 border-zinc-200">
-                            <div>
-                                <h3 className="dark:text-white text-zinc-800 font-bold flex items-center gap-2 text-lg">
-                                    <Crown size={20} className="text-yellow-500" />
-                                    Global Leaderboard
-                                </h3>
-                                <p className="text-xs dark:text-gray-500 text-zinc-500 mt-1">Season 4 ends in 2 days</p>
-                            </div>
-                            <div className="px-2 py-1 bg-brand-green/10 rounded text-xs text-brand-green font-mono font-bold">
-                                DIV 1
-                            </div>
-                        </div>
-                        
-                        <LeaderboardRow rank={1} name="Sarah Jenkins" xp="12,450" avatarColor="bg-purple-500" delay={0.1} />
-                        <LeaderboardRow rank={2} name="Alex Chen" xp="11,200" avatarColor="bg-blue-500" delay={0.2} />
-                        <LeaderboardRow rank={3} name="Mike Ross" xp="10,890" avatarColor="bg-pink-500" delay={0.3} />
-                        
-                        {/* Divider with label */}
-                        <div className="relative py-4">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t dark:border-white/5 border-zinc-200"></div>
-                            </div>
-                            <div className="relative flex justify-center">
-                                <span className="dark:bg-[#121214] bg-white px-2 text-[10px] dark:text-gray-500 text-zinc-400 uppercase tracking-widest">Your Rank</span>
-                            </div>
-                        </div>
-
-                        <LeaderboardRow rank={42} name="You" xp="8,450" avatarColor="bg-brand-green" delay={0.4} isUser />
-                        
-                        {/* CTA within card */}
-                        <button className="w-full mt-4 py-3 rounded-xl dark:bg-white/5 bg-zinc-50 dark:hover:bg-white/10 hover:bg-zinc-100 dark:text-white text-zinc-700 text-sm font-semibold transition-colors border dark:border-white/5 border-zinc-200 flex items-center justify-center gap-2 group">
-                            View Full Standings
-                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
-                    </div>
-
-                    {/* Floating Badges */}
-                    <Badge 
-                        icon={Flame} 
-                        color="text-orange-500" 
-                        bg="bg-[#18181B]" 
-                        label="30 Day Streak" 
-                        delay={0.6} 
-                        x="-top-12" 
-                        y="-right-4 md:-right-12" 
-                    />
-                    <Badge 
-                        icon={Zap} 
-                        color="text-blue-400" 
-                        bg="bg-[#18181B]" 
-                        label="Speed Demon" 
-                        delay={0.8} 
-                        x="top-1/2" 
-                        y="-left-8 md:-left-16" 
-                    />
-                    <Badge 
-                        icon={Target} 
-                        color="text-brand-green" 
-                        bg="bg-[#18181B]" 
-                        label="Bug Hunter" 
-                        delay={1.0} 
-                        x="-bottom-8" 
-                        y="right-0 md:-right-8" 
-                    />
-                </div>
-             </div>
-        </section>
-    )
-}
-
-// Simple arrow component locally since we are inside the file
-const ArrowRight = ({ size, className }: { size: number, className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="M5 12h14"></path>
-        <path d="m12 5 7 7-7 7"></path>
-    </svg>
-);
-
-export default Gamification;

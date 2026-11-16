@@ -1,24 +1,5 @@
-import { MetadataRoute } from "next";
-
+import type { MetadataRoute } from "next";
+import { features } from "@/features/marketing/config";
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: "https://code-sprint.com",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1.0,
-    },
-    {
-      url: "https://code-sprint.com/auth/login",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: "https://code-sprint.com/auth/signup",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.5,
-    },
-  ];
+  return ["", "/about", "/contact", "/pricing", "/calendar", "/badges", "/sprints", "/legal", "/privacy", "/terms", "/cookies", "/legal/billing", ...Object.keys(features).map((slug) => `/platform/${slug}`)].map((path) => ({ url: `https://code-sprint.com${path}`, changeFrequency: path === "/calendar" ? "daily" : "monthly", priority: path ? 0.6 : 1 }));
 }

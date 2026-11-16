@@ -6,7 +6,7 @@ import { RoleEnum } from "./src/features/shared/enum/role.enum";
 // Route configs
 const authConfig = {
   protected: {
-    [RoleEnum.USER]: ["/dashboard", "/problems", "/profile", "/submission", "/contest", "/sprint", "/roadmap"],
+    [RoleEnum.USER]: ["/dashboard", "/problems", "/profile", "/submission", "/contest", "/sprint", "/roadmap", "/usage", "/admin"],
     [RoleEnum.ADMIN]: [],
   },
   public: ["/auth/login", "/auth/signup", "/auth/forgot-password", "/auth/reset-password", "/auth/verify-email", "/"],

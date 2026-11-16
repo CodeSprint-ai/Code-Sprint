@@ -1,215 +1,180 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Menu, X, Terminal, ChevronDown, Code, Cpu, BookOpen, Users, Zap, Globe, FileText, Layout, MessageSquare, Briefcase, BarChart, ShieldCheck } from 'lucide-react';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import Link from 'next/link';
-import { ThemeToggle } from '@/features/shared/components/ThemeToggle';
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ChevronDown, Menu, Terminal, X } from "lucide-react";
+import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
+import { navigation } from "@/features/marketing/config";
+import { useMounted } from "@/features/shared/hooks/useMounted";
+import { useAuthStore } from "@/features/auth/store/authStore";
 
-const NAV_ITEMS = [
-  {
-    label: 'Platform',
-    href: '#platform',
-    children: [
-      { label: 'Problem Bank', desc: 'Categorized challenges across all difficulties', icon: Code, href: '#' },
-      { label: 'Coding Workspace', desc: 'Real-time execution via Judge0', icon: Terminal, href: '#' },
-      { label: 'AI Tutor', desc: 'Post-submission analysis & smart hints', icon: Cpu, href: '#' },
-      { label: 'Learning Roadmap', desc: 'Adaptive paths based on your performance', icon: Layout, href: '#' },
-    ]
-  },
-  {
-    label: 'Gamification & Events',
-    href: '#gamification',
-    children: [
-      { label: 'Leaderboard', desc: 'Global ranking and daily streaks', icon: BarChart, href: '#' },
-      { label: 'Contest Calendar', desc: 'Global competitive programming events', icon: Globe, href: '#' },
-      { label: 'Badges', desc: 'Earn achievements based on mastery', icon: ShieldCheck, href: '#' },
-    ]
-  },
-  {
-    label: 'Pricing',
-    href: '#pricing',
-    children: [
-      { label: 'Freemium', desc: 'Free basic access & problems', icon: Zap, href: '#' },
-      { label: 'Premium SaaS', desc: 'Unlimited AI generation & deep analysis', icon: Users, href: '#' },
-    ]
-  },
-];
-
-// Extracted NavItem component to prevent parent re-renders
-const NavItem = ({ item }: { item: typeof NAV_ITEMS[0] }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <div
-      className="relative px-3 py-2 group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <a
-        href={item.href}
-        className={`flex items-center gap-1.5 text-sm font-medium transition-all duration-300 ${isHovered
-          ? 'dark:text-white text-zinc-900'
-          : 'dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-zinc-900'
-          }`}
-      >
-        {item.label}
-        <ChevronDown
-          size={12}
-          className={`transition-transform duration-300 opacity-50 group-hover:opacity-100 ${isHovered ? 'rotate-180 text-brand-green' : ''}`}
-        />
-      </a>
-
-      {/* Dropdown Menu */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute top-full left-1/2 -translate-x-1/2 pt-6 w-[320px]"
-          >
-            <div className="dark:bg-[#0c0c0e] bg-white backdrop-blur-2xl dark:border-white/10 border-zinc-200 border rounded-2xl p-2 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_40px_-15px_rgba(0,0,0,1)] overflow-hidden dark:ring-1 dark:ring-white/5 ring-1 ring-zinc-100">
-              <div className="flex flex-col gap-1">
-                {item.children.map((child, idx) => (
-                  <a
-                    key={idx}
-                    href={child.href}
-                    className="flex items-start gap-3 p-3 rounded-xl dark:hover:bg-white/5 hover:bg-zinc-50 transition-colors group/item"
-                  >
-                    <div className="mt-1 w-8 h-8 rounded-lg dark:bg-white/5 bg-zinc-100 flex items-center justify-center dark:text-zinc-400 text-zinc-500 group-hover/item:text-brand-green group-hover/item:bg-brand-green/10 transition-colors dark:border-white/5 border-zinc-200 border group-hover/item:border-brand-green/20">
-                      <child.icon size={16} />
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold dark:text-zinc-200 text-zinc-800 dark:group-hover/item:text-white group-hover/item:text-zinc-900 mb-0.5 flex items-center gap-2">
-                        {child.label}
-                      </div>
-                      <div className="text-xs dark:text-zinc-500 text-zinc-500 dark:group-hover/item:text-zinc-400 group-hover/item:text-zinc-600 leading-relaxed">
-                        {child.desc}
-                      </div>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setIsScrolled(latest > 20);
-  });
-
+export default function Navbar() {
+  const [open, setOpen] = useState<string | null>(null);
+  const [mobile, setMobile] = useState(false);
+  const pathname = usePathname();
+  const storedToken = useAuthStore((state) => state.token);
+  const mounted = useMounted();
+  const token = mounted && storedToken;
+  const close = () => {
+    setOpen(null);
+    setMobile(false);
+  };
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-        ? 'dark:bg-[#09090B]/80 bg-white/80 backdrop-blur-lg py-4 shadow-sm dark:shadow-none'
-        : 'bg-transparent py-6'
-        }`}
+      aria-label="Main navigation"
+      className="fixed inset-x-0 top-0 z-50 border-b border-zinc-200/70 bg-white/95 backdrop-blur-xl dark:border-white/10 dark:bg-[#09090b]/95"
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          const trigger = document.getElementById(
+            open
+              ? `nav-trigger-${open.replaceAll(" ", "-")}`
+              : "mobile-nav-trigger",
+          );
+          close();
+          trigger?.focus();
+        }
+      }}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-2 cursor-pointer group z-50 relative">
-          <div className="bg-gradient-to-tr from-brand-green to-emerald-900 p-2 rounded-lg group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all duration-300">
-            <Terminal className="text-white w-5 h-5" />
-          </div>
-          <span className="text-lg font-bold tracking-tight dark:text-white text-zinc-900 code-font">
-            CodeSprint
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:block focus:bg-emerald-500 focus:p-3 focus:text-black"
+      >
+        Skip to content
+      </a>
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-6">
+        <Link
+          href="/"
+          onClick={close}
+          aria-label="CodeSprint home"
+          className="flex items-center gap-2 text-lg font-bold"
+        >
+          <span className="rounded-lg bg-emerald-500 p-2 text-black">
+            <Terminal size={20} />
           </span>
-        </div>
-
-        {/* Desktop Links with Dropdowns */}
-        <div className="hidden md:flex items-center gap-1">
-          {NAV_ITEMS.map((item) => (
-            <NavItem key={item.label} item={item} />
+          CodeSprint
+          <span className="hidden rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] uppercase tracking-wide text-emerald-700 sm:inline dark:text-emerald-400">
+            Free Beta
+          </span>
+        </Link>
+        <div className="hidden items-center gap-5 md:flex">
+          {navigation.map((group) => (
+            <div
+              key={group.label}
+              className="relative"
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget))
+                  setOpen(null);
+              }}
+            >
+              <button
+                id={`nav-trigger-${group.label.replaceAll(" ", "-")}`}
+                type="button"
+                aria-expanded={open === group.label}
+                aria-controls={`nav-${group.label.replaceAll(" ", "-")}`}
+                onClick={() =>
+                  setOpen(open === group.label ? null : group.label)
+                }
+                className="flex items-center gap-1 py-3 text-sm font-medium text-zinc-600 hover:text-emerald-600 dark:text-zinc-300"
+              >
+                {group.label}
+                <ChevronDown size={14} />
+              </button>
+              {open === group.label && (
+                <div
+                  id={`nav-${group.label.replaceAll(" ", "-")}`}
+                  className="absolute left-1/2 top-full w-80 -translate-x-1/2 rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl dark:border-white/10 dark:bg-zinc-950"
+                >
+                  {group.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={close}
+                      className="block rounded-xl p-3 hover:bg-emerald-500/10"
+                    >
+                      <span className="block text-sm font-semibold">
+                        {link.label}
+                      </span>
+                      <span className="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">
+                        {link.description}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
-        </div>
-
-        {/* CTAs */}
-        <div className="hidden md:flex items-center gap-4">
-          <ThemeToggle />
-          <Link href="/auth/login?redirect=%2Fdashboard">
-            <button className="text-sm font-medium dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-zinc-900 transition-colors cursor-pointer">
-              Log In
-            </button>
-          </Link>
-          <Link href="/auth/signup">
-            <button className="relative overflow-hidden bg-brand-green  text-black font-semibold text-sm px-5 py-2.5 rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] group cursor-pointer">
-              <span className="relative z-10">Create New Account</span>
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-            </button>
-          </Link>
-        </div>
-
-        {/* Mobile Toggle */}
-        <div className="flex md:hidden items-center gap-2">
-          <ThemeToggle />
-          <button
-            className="text-foreground p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          <Link
+            href="/pricing"
+            onClick={close}
+            aria-current={pathname === "/pricing" ? "page" : undefined}
+            className="text-sm font-medium hover:text-emerald-600"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            Pricing
+          </Link>
+        </div>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <Link
+            href={token ? "/dashboard" : "/auth/login"}
+            className="hidden text-sm font-medium sm:inline"
+          >
+            {token ? "Dashboard" : "Log in"}
+          </Link>
+          <Link
+            href={token ? "/problems" : "/auth/signup"}
+            className="hidden rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-black sm:inline"
+          >
+            {token ? "Start practice" : "Start free"}
+          </Link>
+          <button
+            id="mobile-nav-trigger"
+            type="button"
+            aria-label={mobile ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobile}
+            aria-controls="mobile-navigation"
+            className="rounded-lg p-2 md:hidden"
+            onClick={() => setMobile(!mobile)}
+          >
+            {mobile ? <X /> : <Menu />}
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: '100vh' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden dark:bg-[#09090B] bg-white fixed inset-0 top-[72px] z-40 overflow-y-auto"
-          >
-            <div className="p-6 flex flex-col gap-6 min-h-full pb-32 pb-[calc(8rem+env(safe-area-inset-bottom))]">
-              {NAV_ITEMS.map((item) => (
-                <div key={item.label}>
-                  <div className="dark:text-white text-zinc-900 text-lg font-bold mb-4 flex items-center gap-2">
-                    {item.label}
-                  </div>
-                  <div className="grid gap-3">
-                    {item.children.map((child, i) => (
-                      <a
-                        key={i}
-                        href={child.href}
-                        className="flex items-center gap-4 p-3 rounded-xl dark:bg-white/5 bg-zinc-50 dark:border-white/5 border-zinc-200 border dark:active:bg-white/10 active:bg-zinc-100"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <div className="w-8 h-8 rounded-lg dark:bg-black/50 bg-brand-green/10 flex items-center justify-center text-brand-green">
-                          <child.icon size={16} />
-                        </div>
-                        <div className="font-medium dark:text-zinc-300 text-zinc-700 text-sm">{child.label}</div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
+      {mobile && (
+        <div
+          id="mobile-navigation"
+          className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-zinc-200 p-6 md:hidden dark:border-white/10"
+        >
+          {navigation.map((group) => (
+            <div key={group.label} className="mb-6">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                {group.label}
+              </p>
+              {group.links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={close}
+                  className="block rounded-lg px-3 py-3 hover:bg-emerald-500/10"
+                >
+                  {link.label}
+                </Link>
               ))}
-              <div className="h-px dark:bg-white/10 bg-zinc-200 my-2" />
-              <div className="h-px dark:bg-white/10 bg-zinc-200 my-2" />
-              <Link href="/auth/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="dark:text-white text-zinc-800 font-medium py-4 border dark:border-white/10 border-zinc-200 rounded-xl dark:hover:bg-white/5 hover:bg-zinc-50 transition-colors w-full mb-4">Log In</button>
-              </Link>
-              <Link href="/auth/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="bg-brand-green text-black font-bold py-4 rounded-xl w-full shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                  Create New Account
-                </button>
-              </Link>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ))}
+          <div className="flex flex-wrap gap-5">
+            <Link href="/pricing" onClick={close}>
+              Pricing
+            </Link>
+            <Link href={token ? "/dashboard" : "/auth/login"} onClick={close}>
+              {token ? "Dashboard" : "Log in"}
+            </Link>
+            <Link href={token ? "/problems" : "/auth/signup"} onClick={close}>
+              {token ? "Start practice" : "Create free account"}
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   );
-};
-
-export default Navbar;
+}

@@ -184,7 +184,7 @@ const Features: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-bold dark:text-white text-zinc-900 mb-2">Global Contest Calendar</h3>
                   <p className="dark:text-gray-400 text-zinc-600 text-sm leading-relaxed max-w-lg">
-                    Never miss a competition. Aggregate upcoming events from Codeforces, HackerRank, and LeetCode with automated email reminders.
+                    Never miss a competition. Aggregate upcoming events from Codeforces, HackerRank, and LeetCode with calendar export.
                   </p>
                </div>
                
