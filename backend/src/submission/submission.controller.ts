@@ -20,16 +20,16 @@ export class SubmissionController {
   // get submissions by problem UUID - must come before @Get() to avoid route conflicts
   @UseGuards(AuthGuard('jwt'))
   @Get('/problem/:uuid')
-  async getByProblemUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    const submissions = await this.submissionService.getSubmissionsByProblemUuid(uuid);
+  async getByProblemUuid(@Param('uuid', ParseUUIDPipe) uuid: string, @Req() req) {
+    const submissions = await this.submissionService.getSubmissionsByProblemUuid(uuid, req.user);
     return submissions;
   }
 
   // get submissions by user UUID - must come before @Get() to avoid route conflicts
   @UseGuards(AuthGuard('jwt'))
   @Get('/problem/user/:uuid')
-  async getByUserUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    const submissions = await this.submissionService.getSubmissionsByUserUuid(uuid);
+  async getByUserUuid(@Param('uuid', ParseUUIDPipe) uuid: string, @Req() req) {
+    const submissions = await this.submissionService.getSubmissionsByUserUuid(uuid, req.user);
     return submissions;
   }
 
@@ -46,8 +46,8 @@ export class SubmissionController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get(':uuid')
-  async getByUuid(@Param('uuid') uuid: string) {
-    const submission = await this.submissionService.getSubmissionsByUuid(uuid);
+  async getByUuid(@Param('uuid', ParseUUIDPipe) uuid: string, @Req() req) {
+    const submission = await this.submissionService.getSubmissionsByUuid(uuid, req.user);
     return submission;
   }
 }

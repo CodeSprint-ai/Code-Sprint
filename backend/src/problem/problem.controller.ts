@@ -145,6 +145,7 @@ export class ProblemController {
 
 
   @Post('/update')
+  @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
@@ -169,6 +170,7 @@ export class ProblemController {
   }
 
   @Delete(':uuid')
+  @Roles('ADMIN')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
