@@ -80,12 +80,6 @@ export default function EditorPanel({
   const [selectedLanguage, setLanguage] = useState<string | null>(null);
   const language = selectedLanguage ?? defaultLang;
 
-  // Wrap setLanguage to also notify parent
-  const handleSetLanguage = useCallback((lang: string) => {
-    setLanguage(lang);
-    onLanguageChange?.(lang);
-  }, [onLanguageChange]);
-
   // Get starter code based on selected language
   const getStarterCode = useCallback((lang: string): string => {
     const langKey = languageMap[lang.toLowerCase()] || "python";
@@ -114,6 +108,14 @@ export default function EditorPanel({
     setDraft((previous) => ({ ...previous, code: newCode }));
     onCodeChange?.(newCode);
   }, [onCodeChange]);
+
+  const handleSetLanguage = useCallback((lang: string) => {
+    const starter = getStarterCode(lang);
+    setLanguage(lang);
+    setDraft({ problemId: problem.uuid, language: lang, code: starter });
+    onCodeChange?.(starter);
+    onLanguageChange?.(lang);
+  }, [getStarterCode, problem.uuid, onCodeChange, onLanguageChange]);
 
   // State for submission/run status
   const [isSubmitting, setIsSubmitting] = useState(false);

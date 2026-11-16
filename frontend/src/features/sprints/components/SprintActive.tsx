@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useEffectEvent } from "react";
 import Split from "react-split";
 import ProblemPanel from "@/features/problems/components/ProblemPanel";
 import EditorPanel from "@/features/problems/components/EditorPanel";
@@ -48,6 +48,8 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
         onFinish(solutions);
     }, [session, onFinish, codeMap]);
 
+    const onExpire = useEffectEvent(() => collectAndFinish());
+
     useEffect(() => {
         // Timer Logic
         const end = new Date(session.endTime).getTime();
@@ -57,13 +59,13 @@ export default function SprintActive({ session, onFinish }: SprintActiveProps) {
             if (diff <= 0) {
                 setTimeLeft(0);
                 clearInterval(interval);
-                collectAndFinish(); // Auto finish with solutions
+                onExpire(); // Read the latest drafts without restarting the timer on edits
             } else {
                 setTimeLeft(Math.floor(diff / 1000));
             }
         }, 1000);
         return () => clearInterval(interval);
-    }, [session, collectAndFinish]);
+    }, [session.endTime]);
 
     const formatTime = (seconds: number) => {
         const m = Math.floor(seconds / 60);

@@ -1,6 +1,6 @@
+"use client";
 import { getErrorDetails } from "@/features/shared/utils/api-error";
 // components/ProblemCard.tsx
-"use client";
 
 import { ArrowUpRight, Star, Clock, Code, Bookmark } from "lucide-react";
 import { Skeleton } from "@/features/shared/components/ui/skeleton";

@@ -1,5 +1,5 @@
 import { getErrorDetails } from "@/features/shared/utils/api-error";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "@/features/shared/api/api";
 import type {
@@ -37,41 +37,46 @@ interface UseAIAnalysisReturn {
 export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
   const [request, setRequest] = useState<{
     owner?: string;
+    generation: number;
     jobId: string | null;
     data: AIAnalysisResult | null;
     status: AIJobState | null;
     error: string | null;
-  }>({ owner: submissionId, jobId: null, data: null, status: null, error: null });
+  }>({ owner: submissionId, generation: 0, jobId: null, data: null, status: null, error: null });
 
   // Changing submissions resets the local request before children render old data.
   if (request.owner !== submissionId) {
-    setRequest({ owner: submissionId, jobId: null, data: null, status: null, error: null });
+    setRequest({ owner: submissionId, generation: request.generation + 1, jobId: null, data: null, status: null, error: null });
   }
   const jobId = request.jobId;
+  const requestVersion = useRef(0);
   const reset = useCallback(() => {
-    setRequest({ owner: submissionId, jobId: null, data: null, status: null, error: null });
+    requestVersion.current += 1;
+    setRequest((previous) => ({ ...previous, owner: submissionId, jobId: null, data: null, status: null, error: null }));
   }, [submissionId]);
 
   // ── 1. Trigger mutation (POST) ────────────────────────────────────────
-  const triggerMutation = useMutation<AITriggerResponse, Error, string>({
-    mutationFn: async (subId: string) => {
+  const triggerMutation = useMutation<AITriggerResponse, Error, { subId: string; owner?: string; version: number; generation: number }>({
+    mutationFn: async ({ subId }) => {
       const response = await api.post<AITriggerResponse>(
         "/ai/analyze-submission",
         { submissionId: subId }
       );
       return response.data;
     },
-    onSuccess: (responseData) => {
+    onSuccess: (responseData, variables) => {
+      if (variables.version !== requestVersion.current) return;
       setRequest((previous) => {
-        if (previous.owner !== submissionId) return previous;
+        if ((previous.owner !== variables.owner || previous.generation !== variables.generation)) return previous;
         return responseData.status === "cached"
           ? { ...previous, jobId: null, data: responseData.result, status: "completed", error: null }
           : { ...previous, jobId: responseData.jobId, data: null, status: "waiting", error: null };
       });
     },
-    onError: (err) => {
+    onError: (err, variables) => {
+      if (variables.version !== requestVersion.current) return;
       const details = getErrorDetails(err);
-      setRequest((previous) => previous.owner !== submissionId ? previous : {
+      setRequest((previous) => (previous.owner !== variables.owner || previous.generation !== variables.generation) ? previous : {
         ...previous, status: "failed", error: details.response?.data?.message || details.message,
       });
     },
@@ -105,9 +110,9 @@ export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
   const triggerAnalysis = useCallback(
     (subId: string) => {
       reset();
-      triggerMutation.mutate(subId);
+      triggerMutation.mutate({ subId, owner: submissionId, version: requestVersion.current, generation: request.generation });
     },
-    [triggerMutation, reset]
+    [triggerMutation, reset, submissionId, request.generation]
   );
 
   const isPolling = !!jobId && !isTerminal;
@@ -116,7 +121,7 @@ export function useAIAnalysis(submissionId?: string): UseAIAnalysisReturn {
     data,
     status,
     isPolling,
-    isLoading: triggerMutation.isPending,
+    isLoading: triggerMutation.isPending && triggerMutation.variables?.owner === submissionId,
     error,
     triggerAnalysis,
     reset,
